@@ -1,0 +1,5 @@
+[
+  {"sample_rate":24000,"start_frame":2400,"end_frame":7200,"queries":[[0,false],[99999,false],[100000,true],[299999,true],[300000,false],[999999,false]]},
+  {"sample_rate":10001,"start_frame":401,"end_frame":2001,"queries":[[40095,false],[40096,true],[200079,true],[200080,false]]},
+  {"sample_rate":44100,"start_frame":1,"end_frame":4411,"queries":[[22,false],[23,true],[100022,true],[100023,false]]}
+]

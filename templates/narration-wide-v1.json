@@ -1,0 +1,33 @@
+{
+  "preset_id": "narration-wide-v1",
+  "name": "一人ナレーション・横動画",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "input": "1話者、左側の立ち絵、背景、複数場面の台本。説明図・BGM・前書きは任意",
+  "intro_us": 3000000,
+  "credits_us": 3500000,
+  "layout": "話者の立ち絵を左側へ配置し、説明図は中央。字幕は下部の共通領域。右側に別の話者は配置しない",
+  "standing_presets": [
+    "zundamon-sakamoto-2.3-mouth",
+    "metan-sakamoto-2.1-mouth",
+    "image-custom-v1",
+    "sprite-custom-v1"
+  ],
+  "credits": "話者と使用した背景・立ち絵・説明図・BGMの登録creditを収集。空欄は拒否",
+  "visual_checks": [
+    "左の立ち絵と字幕の重なり",
+    "説明図の全体と文字の可読性",
+    "字幕の全行とはみ出し",
+    "発話と口形の同期",
+    "前書き・タイトル・末尾クレジット",
+    "全編の声とBGMの試聴"
+  ],
+  "limitations": [
+    "VOICEVOX制作経路を使用",
+    "GUIのプリセット選択は接続済み・ネイティブ操作検証は未実施",
+    "VOICEVOX/ずんだもんの4発話・34.3秒を実制作、代表9フレーム目視済み。全編試聴と他エンジンは未検証"
+  ]
+}

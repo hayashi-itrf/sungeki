@@ -1,0 +1,27 @@
+{
+  "preset_id": "zundamon-voice",
+  "name": "ずんだもん",
+  "engine_id": "074fc39e-678b-4c13-8916-ffca8d505d1d",
+  "style_name": "ノーマル",
+  "style_id": 3,
+  "credit": "VOICEVOX:ずんだもん",
+  "subtitle_style": {
+    "font_size": 54,
+    "color": "#205b30"
+  },
+  "settings": {
+    "style_id": 3,
+    "speed_scale": 1,
+    "pitch_scale": 0,
+    "intonation_scale": 1,
+    "volume_scale": 1,
+    "pre_phoneme_length": 0.1,
+    "post_phoneme_length": 0.1,
+    "pause_length": null,
+    "pause_length_scale": 1,
+    "output_sampling_rate": 24000,
+    "output_stereo": false,
+    "enable_interrogative_upspeak": true
+  },
+  "speaker_uuid": "388f246b-8c41-4ac1-8e2d-5d79f3ff56d9"
+}

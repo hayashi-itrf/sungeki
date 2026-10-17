@@ -1,0 +1,64 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color-scheme: light;
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --workspace: #aebed1;
+  --panel-border: #647994;
+  --panel-edge: #526b8b;
+  --panel-header: #cbd9e9;
+  --panel-shadow: 0 3px 6px #17243c30;
+  --text: #1c2939;
+  --muted: #4b5c70;
+  --border: #cbd5e1;
+  --accent: #2563eb;
+  --button: #2563eb;
+  --button-text: #ffffff;
+  --focus: #2563eb;
+  color: var(--text);
+  background: var(--background);
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background: #111824;
+  --surface: #182231;
+  --workspace: #0d131e;
+  --panel-border: #657a96;
+  --panel-edge: #90a9ca;
+  --panel-header: #263448;
+  --panel-shadow: 0 2px 4px #0005;
+  --text: #e6edf6;
+  --muted: #bdc9db;
+  --border: #334257;
+  --accent: #93b4ff;
+  --button: #93b4ff;
+  --button-text: #101d25;
+  --focus: #93b4ff;
+}
+* { box-sizing:border-box; }
+body { margin:0; font-size:13px; }
+main { height:100dvh; min-width:720px; min-height:480px; display:flex; flex-direction:column; overflow:hidden; }
+h1 { font-size:20px; } h2 { font-size:18px; } h3 { font-size:14px; margin:0 0 12px; }
+p { line-height:1.6; color:var(--muted); }
+.badge { color:var(--accent); font-size:10px; margin-left:8px; }
+button { border:1px solid var(--border); border-radius:5px; background:var(--surface); color:var(--text); padding:7px 10px; font:inherit; cursor:pointer; }
+button:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
+button:disabled { opacity:.5; cursor:default; }
+button[type=submit] { background:var(--button); color:var(--button-text); border-color:var(--button); }
+button[type=submit]:hover:not(:disabled) { color:var(--button-text); border-color:var(--button); }
+:where(button,select,summary,input,textarea):focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+summary { cursor:pointer; font-weight:600; }
+.appearance { padding-top:16px; }
+input,select,textarea { font:inherit; color:var(--text); background:var(--surface); border:1px solid var(--border); border-radius:5px; padding:7px; }
+dialog { width:min(760px,90vw); max-height:85dvh; overflow:auto; color:var(--text); background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px; box-shadow:0 18px 60px #0003; }
+dialog::backdrop { background:#17243c66; }
+dialog details { margin:14px 0; }
+[hidden] { display:none !important; }
+
+/* Keep the grab handle visible on both light and dark panel surfaces. */
+input[type='range'] { appearance:none; -webkit-appearance:none; height:26px; padding:0; border:0; background:transparent; cursor:pointer; }
+input[type='range']::-webkit-slider-runnable-track { height:6px; border:1px solid var(--panel-border); border-radius:3px; background:var(--panel-header); }
+input[type='range']::-moz-range-track { height:4px; border:1px solid var(--panel-border); border-radius:3px; background:var(--panel-header); }
+input[type='range']::-webkit-slider-thumb { appearance:none; -webkit-appearance:none; width:18px; height:18px; margin-top:-7px; border:2px solid var(--accent); border-radius:50%; background:var(--surface); box-shadow:0 1px 3px #17243c55; }
+input[type='range']::-moz-range-thumb { width:14px; height:14px; border:2px solid var(--accent); border-radius:50%; background:var(--surface); box-shadow:0 1px 3px #17243c55; }
+input[type='range']:disabled { opacity:.5; cursor:default; }

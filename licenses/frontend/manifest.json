@@ -1,0 +1,113 @@
+{
+  "scope": "Desktop frontend only; native and external dependencies are separate",
+  "packages": [
+    {
+      "name": "svelte",
+      "version": "5.57.1",
+      "integrity": "sha512-Uqj49lWKB+iSSnneuwiYYJ7MZgkB+eXr0LXBhv4uDuAkXqnWmq65Sxflfvp0Lc6MdKjMUxGaeOKWJqz5SNiVIA==",
+      "selected_license": "MIT",
+      "file": "svelte-MIT.txt",
+      "sha256": "06257f4847b13a49a039efb17b944c141e71b12fd8d231b362d86919067d77a3",
+      "source": "node_modules/svelte/LICENSE.md"
+    },
+    {
+      "name": "@tauri-apps/api",
+      "version": "2.11.1",
+      "integrity": "sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA==",
+      "selected_license": "MIT",
+      "file": "tauri-api-MIT.txt",
+      "sha256": "9dd42ea92cff2ede5cd477cbfcce051b2d0115c0ac7f368ee88cb545055dff1d",
+      "source": "node_modules/@tauri-apps/api/LICENSE_MIT"
+    },
+    {
+      "name": "@tauri-apps/plugin-dialog",
+      "version": "2.7.3",
+      "integrity": "sha512-CRgE+7TP4tvq9MjBU6f04NLTFIqVMLKHk3hAqlhil00ngK9ACTrXPH3oHpKMProxILodd3YjBoKbMwSI4IEcfA==",
+      "selected_license": "MIT",
+      "file": "tauri-dialog-MIT.txt",
+      "sha256": "89ff9689dcf9dd53968785d05a26f7898bb169dbfcada8d032b3e68cf0d55607",
+      "source": "https://raw.githubusercontent.com/tauri-apps/plugins-workspace/6aa2854f314481a459be1189b02c65a2450789ab/LICENSE_MIT"
+    },
+    {
+      "name": "three",
+      "version": "0.186.0",
+      "integrity": "sha512-cr/fIM2ddMSVbYVgkfD4jLJv7Fh/8ZTjvo+7gQeSVGUZHxpx9FDwoL5iC7hUz/LiRA8wMbqfnb90xKfm1/HHkQ==",
+      "selected_license": "MIT",
+      "file": "three-MIT.txt",
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
+      "source": "node_modules/three/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm-materials-mtoon",
+      "version": "3.5.5",
+      "integrity": "sha512-7lThHf4OKBOsVenD+R6L6HffNUlKO3Twnhr3+z77MnUsSzsOanjVKJtjSIly9QJ6hgl8YJmI6RnxCKqXcpplog==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-materials-mtoon-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm-materials-mtoon/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm-node-constraint",
+      "version": "3.5.5",
+      "integrity": "sha512-+ShEXioZ5Ctf0EZ5ZViZ4n0jhV/qtJRH0Juw8nRnMNODZXDSr+B3An2lrfRoMhowCzG63GiUG4lXWV9noMXosA==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-node-constraint-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm-node-constraint/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm-materials-v0compat",
+      "version": "3.5.5",
+      "integrity": "sha512-NjsTK4P4qdcr+RoL2gEUNgF2CY/aplNvyHHxI99N7D6CxDZ2H93FQ9aIuLCABj5b+4CIvldWMCcnS7YuLIr3Lw==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-materials-v0compat-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm-materials-v0compat/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm-springbone",
+      "version": "3.5.5",
+      "integrity": "sha512-GWAWrIegGH/u1ZA+Es03Qzc2yafrQOrhtal9jzUIAgU8Wm2DYuqAABOY+du/9RpBRK8D4T8DBPvRGQqvfrQ/uA==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-springbone-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm-springbone/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm",
+      "version": "3.5.5",
+      "integrity": "sha512-RPXy7jYAXs704NIpZlosB0U2ENu21G9DrqGWdQgRe8dShaCo1ugpj+6BVPRCy91nt+MPMA96j5rbsSzEl0HlQA==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm-animation",
+      "version": "3.5.5",
+      "integrity": "sha512-Q0kEtmftxfv0iCUHQkJH2jAr1zmT9ywYXnAzhxnLPMYCsx0Kken3J3U2GJF9PdGZmLlKpoK0LFEXVdD/L7ZA4Q==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-animation-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm-animation/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm-core",
+      "version": "3.5.5",
+      "integrity": "sha512-jjaXZbMVRsk2HAGVxqDLmSJyGOJqbMcJpuTHR1TY/TN1FxiKdAzSqdr/ZUcczYipNf8IL9vDT9NX2XmWj+ybRQ==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-core-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm-core/LICENSE"
+    },
+    {
+      "name": "@pixiv/three-vrm-materials-hdr-emissive-multiplier",
+      "version": "3.5.5",
+      "integrity": "sha512-XnHEqpY4ctYMucpeRcptdphOe0RrW7V5fUvojasD8Ja4MTjjrjCNFxsAvp3+HBkPZbkTM2sDCjJBJNzxN1scrA==",
+      "selected_license": "MIT",
+      "file": "pixiv-three-vrm-materials-hdr-emissive-multiplier-MIT.txt",
+      "sha256": "279ec82987aec7e72ecb9850bb704a87e352d577bc7581454c30f3551a88ea92",
+      "source": "node_modules/@pixiv/three-vrm-materials-hdr-emissive-multiplier/LICENSE"
+    }
+  ]
+}

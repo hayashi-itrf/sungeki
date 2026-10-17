@@ -1,0 +1,15 @@
+{
+  "preset_id": "foreword-wide-v1",
+  "name": "背景をぼかした前書き・横動画",
+  "canvas": {"width": 1920, "height": 1080, "fps": 30},
+  "duration_us": 8000000,
+  "fade_us": 800000,
+  "sigma": 18,
+  "shade_opacity": 0.4,
+  "font_size": 52,
+  "text_rect": {"x": 260, "y": 390, "width": 1400, "height": 350},
+  "default_text": "この動画は、開発中のアプリで制作した\n機能確認用のサンプルです。\n背景・字幕・立ち絵の表示を確認しています。\n公開用の完成作品ではありません。",
+  "credit_policy": "登録済みの背景を参照し、素材のクレジットを終了画面に保持する",
+  "review": ["前面の文字は鮮明", "ぼかしと文字の終了フェード", "会話と説明図の相対時刻を維持", "無音の前書き後に既存音声が開始"],
+  "status": "共通prepend_forewordとGUI入力へ接続済み。MCP実出力とGUI実機確認済み。build_video経由のMCP実出力も確認済み。制作開始フォームの前書き入力は接続済み、GUI開始経路の実出力検証は未実施。"
+}

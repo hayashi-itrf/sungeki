@@ -1,0 +1,23 @@
+{
+  "format_version": 1,
+  "python": "3.11.14",
+  "uv": "0.10.6",
+  "platform_tested": "macOS arm64",
+  "source_project": "Irodori-TTS external checkout (not included)",
+  "source_pyproject_sha256": "a67e3494530cd9c29817507c67a496bb299a9a81e2edd4df6ffb80cf330dae71",
+  "source_uv_lock_sha256": "8175adbb9ad7ae77d1f048344343a63876e57c333b659314bcc054230b5b3e6c",
+  "exported_requirements_sha256": "7a851dfd852972230e51f512f46a14b3cc76cf32ccfaef22e7e889c678f58fad",
+  "export_options": [
+    "--frozen",
+    "--no-dev",
+    "--no-emit-project",
+    "--no-header",
+    "--no-annotate"
+  ],
+  "model_loaded": false,
+  "compatibility_verified": false,
+  "dependency_declarations_checked": true,
+  "offline_tokenizer_checked": true,
+  "worker_tests_passed": 25,
+  "compatibility_note": "TTS model load/synthesis pending; Python 3.10.19 with locked SciPy 1.15.3 fails Mach-O import on this host."
+}

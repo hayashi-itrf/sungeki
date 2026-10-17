@@ -1,0 +1,108 @@
+{
+  "preset_id": "narration-wide-v1",
+  "title": "一人ナレーションの制作検証",
+  "roles": [
+    {
+      "role": "role0",
+      "preset_id": "fixture-0",
+      "character": {
+        "id": "00000000-0000-4000-8000-00000000000a",
+        "name": "Fixture",
+        "credit": "Fixture only",
+        "voice": {
+          "type": "voicevox",
+          "engine_id": "074fc39e-678b-4c13-8916-ffca8d505d1d",
+          "core_version": "0.16.1",
+          "settings": {
+            "style_id": 3,
+            "speed_scale": 1,
+            "pitch_scale": 0,
+            "intonation_scale": 1,
+            "volume_scale": 1,
+            "pre_phoneme_length": 0.1,
+            "post_phoneme_length": 0.1,
+            "pause_length": null,
+            "pause_length_scale": 1,
+            "output_sampling_rate": 24000,
+            "output_stereo": false,
+            "enable_interrogative_upspeak": true
+          }
+        },
+        "subtitle_style": {
+          "font_size": 54,
+          "color": "#205b30",
+          "outline": null,
+          "layout": null
+        }
+      },
+      "standing": {
+        "type": "image",
+        "asset_id": "00000000-0000-4000-8000-000000000032",
+        "flip_x": false
+      }
+    }
+  ],
+  "assets": [
+    {
+      "id": "00000000-0000-4000-8000-000000000032",
+      "name": "test image",
+      "source": null,
+      "credit": "Test image credit",
+      "locator": {
+        "type": "absolute",
+        "path": "/unused.png"
+      },
+      "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "probe": {
+        "type": "image",
+        "info": {
+          "format": "png",
+          "width": 1920,
+          "height": 1080,
+          "orientation": 1,
+          "has_alpha": false,
+          "byte_length": 100,
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "name": "説明",
+      "background_asset_id": "00000000-0000-4000-8000-000000000032",
+      "gap_us": 350000,
+      "lines": [
+        {
+          "role": "role0",
+          "subtitle_text": " 前後空白と\n改行を保持。 ",
+          "spoken_text": "実際に読む文章。",
+          "pose": null
+        },
+        {
+          "role": "role0",
+          "subtitle_text": "二人目のセリフ。",
+          "spoken_text": null,
+          "pose": null
+        }
+      ],
+      "diagrams": [
+        {
+          "asset_id": "00000000-0000-4000-8000-000000000032",
+          "first_line": 0,
+          "last_line": 1
+        }
+      ]
+    }
+  ],
+  "bgm": null,
+  "foreword": {
+    "preset_id": "foreword-wide-v1",
+    "text": "確認用です。",
+    "duration_us": 8000000
+  },
+  "audio_mix": {
+    "normalization": null
+  },
+  "pronunciation_dictionary": []
+}

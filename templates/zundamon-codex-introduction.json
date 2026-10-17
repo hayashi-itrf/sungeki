@@ -1,0 +1,40 @@
+{
+  "template_id": "zundamon-codex-introduction",
+  "preset_id": "zundamon-voice",
+  "title": "ずんだもんのCodex紹介",
+  "gap_us": 350000,
+  "source": "https://developers.openai.com/api/docs/guides/code-generation",
+  "source_checked_at": "2026-09-27",
+  "lines": [
+    {
+      "subtitle": "こんにちは、ずんだもんなのだ。\n今日はCodexを紹介するのだ！",
+      "spoken": "こんにちは、ずんだもんなのだ。今日はコーデックスを紹介するのだ！"
+    },
+    {
+      "subtitle": "Codexは、OpenAIの\nソフトウェア開発を支援するAIエージェントなのだ。",
+      "spoken": "コーデックスは、オープンエーアイの、ソフトウェア開発を支援するエーアイエージェントなのだ。"
+    },
+    {
+      "subtitle": "コードを書くことに加えて、\nレビューや不具合の調査も手伝ってくれるのだ。",
+      "spoken": "コードを書くことに加えて、レビューや不具合の調査も手伝ってくれるのだ。"
+    },
+    {
+      "subtitle": "何を作りたいか、どう動いてほしいか。\n具体的に伝えることから始めるのだ。",
+      "spoken": "何を作りたいか、どう動いてほしいか。具体的に伝えることから始めるのだ。"
+    },
+    {
+      "subtitle": "できた変更は動かして確認。\n一緒に確かめながら開発を進めるのだ！",
+      "spoken": "できた変更は動かして確認。一緒に確かめながら開発を進めるのだ！"
+    }
+  ],
+  "standing_preset_id": "zundamon-sakamoto-2.3-mouth",
+  "credits": [
+    "VOICEVOX:ずんだもん",
+    "立ち絵：坂本アヒル"
+  ],
+  "visual_checks": [
+    "字幕・要点・クレジットの欠けと重なり",
+    "発話内の開閉・発話外の閉口",
+    "音声配置と原本・出力の一致"
+  ]
+}

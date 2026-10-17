@@ -1,0 +1,19 @@
+[package]
+name = "sungeki-storage"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+brotli = "=8.0.4"
+flate2 = { version = "=1.1.10", default-features = false, features = ["rust_backend"] }
+rusqlite.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+sungeki-project.workspace = true
+uuid.workspace = true
+
+
+libc.workspace = true

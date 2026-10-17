@@ -1,0 +1,42 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, realpath, mkdir, writeFile, readFile, chmod, symlink, rm, access } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import path from 'node:path';
+import os from 'node:os';
+import { buildProfile, writeCandidate } from '../../scripts/sbv2/profile.mjs';
+const run = promisify(execFile), binary = process.env.SUNGEKI_HOST_BINARY;
+test('generated offline candidate passes the real host CLI without starting engine or creating host data', { skip: !binary }, async t => {
+  const root = await realpath(await mkdtemp(path.join(os.tmpdir(), 'vvm-preflight-')));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  for (const dir of ['base', 'work', 'engine', 'venv/bin', 'source', 'text', 'models/voice']) await mkdir(path.join(root, dir), { recursive: true });
+  for (const file of ['engine/server_fastapi.py', 'engine/config.py', 'engine/config.yml', 'source/code.py', 'text/encoder', 'models/voice/model.safetensors', 'models/voice/style_vectors.npy']) await writeFile(path.join(root, file), 'fixture');
+  await writeFile(path.join(root, 'models/voice/config.json'), JSON.stringify({ version: '2.7.0-JP-Extra', data: { sampling_rate: 44100, num_styles: 1, spk2id: { Voice: 4 }, style2id: { Neutral: 0 } } }));
+  const marker = path.join(root, 'must-not-start');
+  await writeFile(path.join(root, 'base/interpreter'), `#!/bin/sh\ntouch '${marker}'\nexit 99\n`);
+  await chmod(path.join(root, 'base/interpreter'), 0o700);
+  await symlink(path.join(root, 'base/interpreter'), path.join(root, 'venv/bin/python'));
+  await writeFile(path.join(root, 'venv/pyvenv.cfg'), 'include-system-site-packages = false\n');
+  const candidate = path.join(root, 'candidate.json');
+  await writeCandidate(candidate, await buildProfile({ id: 'test', name: '検査', endpoint: 'http://127.0.0.1:5050', cpu_only: true,
+    engine_root: path.join(root, 'engine'), work_root: path.join(root, 'work'), python: path.join(root, 'venv/bin/python'), model: path.join(root, 'models/voice/model.safetensors'), catalog: null,
+    engine_roots: { source: path.join(root, 'source') }, text_roots: { jp: path.join(root, 'text') } }));
+  const before = await readFile(candidate, 'utf8');
+  const env = { ...process.env, SUNGEKI_DATA_DIR: path.join(root, 'no-host-data') };
+  const { stdout } = await run(binary, ['--check-sbv2-config', candidate], { env, timeout: 30000 });
+  const report = JSON.parse(stdout);
+  assert.equal(report.check, 'declared_originals');
+  assert.equal(report.synthesis_checked, false);
+  assert.equal(report.dependency_completeness_checked, false);
+  assert.equal(report.profiles[0].default_settings.speaker_id, 4);
+  assert.match(report.profiles[0].identity.engine_revision, /^sha256:[a-f0-9]{64}$/);
+  assert.equal(await readFile(candidate, 'utf8'), before);
+  await assert.rejects(access(marker));
+  await assert.rejects(access(env.SUNGEKI_DATA_DIR));
+  await assert.rejects(access(path.join(root, 'sbv2.json')));
+  await rm(path.join(root, 'text/encoder'));
+  await assert.rejects(run(binary, ['--check-sbv2-config', candidate], { env, timeout: 30000 }), error => error.code !== 0 && !error.stdout.includes('declared_originals'));
+  await assert.rejects(access(marker));
+  await assert.rejects(access(env.SUNGEKI_DATA_DIR));
+});

@@ -1,0 +1,22 @@
+/target/
+node_modules/
+dist/
+.DS_Store
+apps/desktop/src-tauri/gen/
+*.log
+apps/desktop/src-tauri/binaries/
+__pycache__/
+apps/desktop/src-tauri/resources/image-worker/
+apps/desktop/src-tauri/resources/native-notices/
+
+# Local credentials and signing material (examples may be committed).
+.env
+.env.*
+!.env.example
+!.env.sample
+*.p12
+*.pfx
+*.key
+*.mobileprovision
+/secrets/
+/publication-staging/

@@ -1,0 +1,15 @@
+[package]
+name = "sungeki-mcp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+rmcp = { version = "=3.4.0", default-features = false, features = ["server", "transport-io"] }
+tokio.workspace = true
+serde_json.workspace = true
+sungeki-protocol.workspace = true
+sungeki-host-client.workspace = true
+serde.workspace = true
+schemars.workspace = true

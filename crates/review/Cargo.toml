@@ -1,0 +1,19 @@
+[package]
+name = "sungeki-review"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+sungeki-project.workspace = true
+sungeki-scene.workspace = true
+sungeki-render.workspace = true
+sungeki-assets.workspace = true
+sungeki-media.workspace = true
+serde.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+uuid.workspace = true

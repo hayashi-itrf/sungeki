@@ -1,0 +1,28 @@
+import { expect, test } from 'vitest';
+import { BuildDrafts } from './drafts.svelte';
+test('reopening the same session retains full form state while another session starts independently', () => {
+  const drafts = new BuildDrafts(() => 'http://127.0.0.1:50021');
+  const first = drafts.forSession('first');
+  first.preset = 'narration-wide-v1';
+  first.title = '制作中'; first.expanded = true;
+  first.scenes[0]!.gapSeconds = 0.75;
+  first.scenes[0]!.script = '左：入力済み';
+  first.scenes[0]!.diagrams.push({ asset: 'figure', first: 1, last: 1 });
+  first.foreword.text = '前書き'; first.foreword.enabled = true;
+  first.people[1]!.profile = { engine: 'irodori', id: 'local' };
+  first.people[1]!.standing = 'metan'; first.baseUrl = 'http://127.0.0.1:50022';
+  const second = drafts.forSession('second');
+  expect(second.scenes[0]!.gapSeconds).toBe(0.15);
+  expect(drafts.forSession('first').scenes[0]!.gapSeconds).toBe(0.75);
+  expect(second.preset).toBe('dialogue-wide-v1');
+  expect(first.preset).toBe('narration-wide-v1');
+  expect(second.people[1]!.profile).toBeUndefined();
+  expect(drafts.forSession('first').people[1]!.profile).toEqual({ engine: 'irodori', id: 'local' });
+  expect(second.title).toBe(''); expect(second.scenes[0]!.diagrams).toEqual([]);
+  expect(second.foreword.enabled).toBe(false); expect(second.baseUrl).toBe('http://127.0.0.1:50021');
+  expect(drafts.forSession('first')).toBe(first);
+  expect(first.scenes[0]!.script).toBe('左：入力済み');
+  expect(first.people[1]!.standing).toBe('metan');
+  expect(first.foreword.text).toBe('前書き'); expect(first.expanded).toBe(true);
+  expect(new BuildDrafts(() => '').forSession('first').title).toBe('');
+});

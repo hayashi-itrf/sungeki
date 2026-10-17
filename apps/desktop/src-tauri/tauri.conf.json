@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Sungeki",
+  "version": "0.1.0",
+  "identifier": "io.github.hayashi-itrf.sungeki",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://127.0.0.1:1424",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Sungeki",
+        "width": 1100,
+        "height": 760
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: blob:; media-src 'self' audiopreview: http://audiopreview.localhost videopreview: http://videopreview.localhost; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost blob: data:"
+    }
+  },
+  "bundle": {
+    "active": false,
+    "externalBin": [
+      "binaries/sungeki-host"
+    ],
+    "resources": {
+      "../../../LICENSE": "LICENSE",
+      "resources/image-worker/": "image-worker/"
+    }
+  }
+}

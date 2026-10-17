@@ -1,0 +1,28 @@
+export const quitEnglish = {
+  quitTitle: 'Quit application',
+  quitUnsaved: 'There are unsaved or unapplied edits. Return to editing to save them. Text that has not been applied will be lost on exit.',
+  quitJobs: 'Work is still running. Continue in the background, or cancel the work and quit after cleanup.',
+  quitOthers: 'Another window or AI connection is using the shared process. You can close this window while their work continues.',
+  quitPending: 'An operation is still finishing. Please wait before quitting.',
+  quitConfirm: 'Quit the application?',
+  quitWaiting: 'Waiting for operations and cleanup to finish…',
+  quitReturn: 'Return to editing',
+  quitBackground: 'Keep work running and close',
+  quitCancelJobs: 'Cancel work and quit',
+  quitExit: 'Quit',
+  quitRetry: 'Check again',
+};
+export const quitJapanese: Record<keyof typeof quitEnglish, string> = {
+  quitTitle: 'アプリを終了',
+  quitUnsaved: '未保存または未適用の編集があります。保存する場合は編集に戻ってください。未適用の入力は終了すると失われます。',
+  quitJobs: 'まだ処理が動いています。バックグラウンドで続けるか、取り消して後始末が終わってから終了するかを選べます。',
+  quitOthers: '別の画面やAIが同じ処理を利用中です。その作業を続けたまま、この画面だけ終了できます。',
+  quitPending: '操作の完了待ちです。終了まで少し時間がかかる場合があります。',
+  quitConfirm: 'アプリを終了しますか？',
+  quitWaiting: '操作の完了と後始末を待っています…',
+  quitReturn: '編集に戻る',
+  quitBackground: '処理を続けて画面だけ終了',
+  quitCancelJobs: '処理を取り消して終了',
+  quitExit: '終了する',
+  quitRetry: 'もう一度確認',
+};

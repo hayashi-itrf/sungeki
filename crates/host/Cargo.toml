@@ -1,0 +1,31 @@
+[package]
+name = "sungeki-host"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+sungeki-protocol.workspace = true
+tokio.workspace = true
+libc.workspace = true
+uuid.workspace = true
+
+sungeki-editor.workspace = true
+sungeki-project.workspace = true
+sungeki-storage.workspace = true
+serde_json.workspace = true
+sungeki-assets.workspace = true
+base64 = "=0.22.1"
+
+serde.workspace = true
+sha2.workspace = true
+sungeki-jobs.workspace = true
+sungeki-review.workspace = true
+sungeki-speech.workspace = true
+sungeki-media.workspace = true
+sungeki-render.workspace = true
+sungeki-scene.workspace = true
+
+[dev-dependencies]
+rusqlite.workspace = true

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "settings": {"window_us": 20000, "floor_ppm": 10000, "peak_ratio_ppm": 150000, "min_open_us": 60000, "min_close_us": 80000},
+  "sample_rate": 24000,
+  "source_frames": 24000,
+  "peak_rms": 0.5,
+  "threshold_rms": 0.075,
+  "open": [{"start_frame": 2400, "end_frame": 7200}]
+}

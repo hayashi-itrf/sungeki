@@ -1,0 +1,15 @@
+[package]
+name = "sungeki-media"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+hound = "=3.5.1"
+sha2.workspace = true
+uuid.workspace = true
+libc.workspace = true
+sungeki-project = { path = "../project" }

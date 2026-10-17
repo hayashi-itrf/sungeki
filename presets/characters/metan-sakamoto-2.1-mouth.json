@@ -1,0 +1,20 @@
+{
+  "native_facing": "left",
+  "preset_id": "metan-sakamoto-2.1-mouth",
+  "credit": "立ち絵：坂本アヒル",
+  "source_sha256": "0b52d59cd125da75cb4ad05006a0eed34d44051bce65c8027fc645670924e13b",
+  "source_name": "四国めたん立ち絵素材2.1.psd",
+  "selections": [
+    {
+      "group": "/6",
+      "option": "/6/4"
+    }
+  ],
+  "pose_name": "通常・音量由来の口パク",
+  "guideline_url": "https://zunko.jp/guideline.html",
+  "speech": {
+    "group": "/6",
+    "closed_option": "/6/4",
+    "open_option": "/6/12"
+  }
+}

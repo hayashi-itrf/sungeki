@@ -1,0 +1,56 @@
+import { locale } from '../../shared/i18n/locale.svelte';
+
+const english = {
+  "声を調整": "Adjust voice",
+  "閉じる": "Close",
+  "キャラクター": "Character",
+  "変更内容を確認": "Review changes",
+  "同じキャラクターのセリフすべてに適用します。変更した場合は生成済み音声が外れ、音声合成とセリフの再配置が必要です。元の音声素材は残り、「元に戻す」で設定と音声を戻せます。": "Changes apply to every speech clip using this character. Existing audio is detached, so synthesize again and adjust speech placement. Original audio assets remain available; Undo restores the settings and audio.",
+  "作品が更新されました。最新の状態を読み込んでください。": "The project changed. Load its latest state.",
+  "入力を破棄して最新の状態を読む": "Discard input and load latest state",
+  "句読点の間を秒数で指定する": "Set punctuation pauses in seconds",
+  "句読点の間（秒）": "Punctuation pause (seconds)",
+  "疑問文の語尾を上げる": "Raise the pitch at the end of questions",
+  "話速は0より大きい値が必要です。句読点の秒数を指定しない場合はエンジンの値を使います。音量だけを変えたい場合は、セリフの音量調整なら再合成せず変更できます。": "Speed must be greater than zero. Unspecified punctuation pauses use the engine value. To change only loudness without synthesizing again, adjust the speech clip gain.",
+  "文ごとに分割して合成する": "Synthesize sentences separately",
+  "文の間隔は分割を有効にした場合に使います。話す長さの倍率は1が標準です。設定の効果はモデルによって異なるため、再生成後に確認再生してください。": "The sentence gap applies when splitting is enabled. The normal duration multiplier is 1. Effects vary by model; listen after synthesizing again.",
+  "話速（1が標準）": "Speed (normal: 1)",
+  "話し方の指示": "Speaking instructions",
+  "指示の効果は使用するモデルによって異なります。": "The effect of instructions depends on the model.",
+  "声の説明": "Voice description",
+  "空欄では登録音声の説明を使用します。説明への対応はモデルによって異なり、未対応の場合は合成開始時にお知らせします。": "Leave blank to use the registered voice description. Support depends on the model; unsupported descriptions are reported when synthesis starts.",
+  "条件への追従度（CFG）": "Condition guidance (CFG)",
+  "生成ステップ数": "Generation steps",
+  "生成シード": "Random seed",
+  "シードは生成時の乱数を指定する整数です。同じ条件での再生成に使用しますが、環境をまたぐ完全一致は保証しません。": "The seed is an integer controlling generation randomness. It helps repeat generation under the same conditions, but does not guarantee identical output across environments.",
+  "話速（1が標準、大きいほど速い）": "Speed (normal: 1; higher is faster)",
+  "声の高さ（0が標準）": "Pitch (normal: 0)",
+  "抑揚（1が標準）": "Intonation (normal: 1)",
+  "合成時の音量（1が標準）": "Synthesis volume (normal: 1)",
+  "開始前の無音（秒）": "Leading silence (seconds)",
+  "終了後の無音（秒）": "Trailing silence (seconds)",
+  "句読点の間の倍率（1が標準）": "Punctuation pause multiplier (normal: 1)",
+  "話す長さの倍率（大きいほどゆっくり）": "Duration multiplier (higher is slower)",
+  "スタイルの強さ": "Style strength",
+  "分割した文の間隔（秒）": "Gap between split sentences (seconds)",
+  "発話リズムの揺らぎ（SDP）": "Rhythm variation (SDP)",
+  "声の揺らぎ（noise）": "Voice variation (noise)",
+  "音の長さの揺らぎ（noise_w）": "Duration variation (noise_w)",
+  "VOICEVOXのキャラクターを選んでください。": "Select a VOICEVOX character.",
+  "SBV2のキャラクターを選んでください。": "Select an SBV2 character.",
+  "Irodoriのキャラクターを選んでください。": "Select an Irodori character.",
+  "句読点の間は0以上の秒数で指定してください。": "Punctuation pauses must be zero or more seconds.",
+  "疑問文の語尾設定を確認してください。": "Check the question ending setting.",
+  "文ごとの分割を指定してください。": "Specify whether to split sentences.",
+  "条件への追従度は0〜30で指定してください。": "Condition guidance must be between 0 and 30.",
+  "生成ステップ数は1〜200の整数で指定してください。": "Generation steps must be an integer from 1 to 200.",
+  "生成シードは0〜4294967295の整数で指定してください。": "The seed must be an integer from 0 to 4294967295.",
+  "声の説明は空欄、または4096バイト以内の文章で指定してください。": "Leave the voice description blank, or enter text up to 4096 bytes.",
+  "{field}の値を確認してください。": "Check the value for {field}.",
+  "{field}は{min}〜{max}で指定してください。": "Set {field} between {min} and {max}."
+} as const;
+
+export function tuningText(message: keyof typeof english, values: Record<string, string | number> = {}, language = locale.current): string {
+  const text = language === 'en' ? english[message] : message;
+  return text.replace(/\{(\w+)\}/g, (placeholder, key: string) => key in values ? String(values[key]) : placeholder);
+}

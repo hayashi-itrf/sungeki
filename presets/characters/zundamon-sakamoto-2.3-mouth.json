@@ -1,0 +1,25 @@
+{
+  "native_facing": "left",
+  "preset_id": "zundamon-sakamoto-2.3-mouth",
+  "voice_preset_id": "zundamon-voice",
+  "credit": "立ち絵：坂本アヒル",
+  "source_sha256": "98350cd7537d84b41da57c6b83453ddeb9ec29eb96165751908b66aae61932cb",
+  "source_name": "ずんだもん立ち絵素材2.3.psd",
+  "selections": [
+    {
+      "group": "/4",
+      "option": "/4/3"
+    },
+    {
+      "group": "/7",
+      "option": "/7/4"
+    }
+  ],
+  "pose_name": "通常・音量由来の口パク",
+  "guideline_url": "https://zunko.jp/guideline.html",
+  "speech": {
+    "group": "/4",
+    "closed_option": "/4/3",
+    "open_option": "/4/0"
+  }
+}

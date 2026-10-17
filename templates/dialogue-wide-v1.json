@@ -1,0 +1,40 @@
+{
+  "preset_id": "dialogue-wide-v1",
+  "name": "二人の掛け合い・横動画",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "input": "生成済み発話、背景画像、2人の話者と立ち絵、BGMの既存クリップを選択",
+  "intro_us": 3000000,
+  "credits_us": 3500000,
+  "bgm": {
+    "gain_db": -18,
+    "looped": true,
+    "fade_in_us": 1000000,
+    "fade_out_us": 1000000,
+    "ducking": "入力を維持"
+  },
+  "credits": "選択した話者・背景・立ち絵・BGMの登録creditを重複除去して収集。空欄は拒否",
+  "standing_presets": {
+    "zundamon": "zundamon-sakamoto-2.3-mouth",
+    "second": "metan-sakamoto-2.1-mouth"
+  },
+  "visual_checks": [
+    "背景の全画面表示と縦横比",
+    "左右の人物欠落と字幕との重なり",
+    "左右の人物が内側へ向き合っていること（表情差分も確認）",
+    "字幕の全行とはみ出し",
+    "発話と口形",
+    "冒頭タイトルと末尾credit",
+    "全編のBGMと発話の試聴"
+  ],
+  "limitations": [
+    "映像フェードの自動設定なし（個別設定は対応）",
+    "向き未登録の画像・sprite・VRMは入力の反転設定を維持（視線の自動推定なし）",
+    "合成と素材取込は別工程",
+    "新規シーンのみ。既存シーンの再テンプレート化は未対応"
+  ],
+  "standing_facing": "登録済みずんだもん・めたんのPSDは原本の向きを照合し、左枠を右向き、右枠を左向きに配置。配置後の手動反転は可能。"
+}

@@ -1,0 +1,74 @@
+{
+  "format": "vvm-project",
+  "schema_version": 1,
+  "id": "00000000-0000-4000-8000-000000000001",
+  "title": "VRM素材登録",
+  "canvas": {
+    "width": 320,
+    "height": 180,
+    "fps": {
+      "numerator": 30,
+      "denominator": 1
+    },
+    "background": "#ffffff"
+  },
+  "tracks": [],
+  "scenes": [],
+  "clips": [],
+  "groups": [],
+  "characters": [],
+  "pronunciation_dictionary": [],
+  "audio_mix": {
+    "normalization": null
+  },
+  "assets": [
+    {
+      "id": "00000000-0000-4000-8000-00000000000a",
+      "name": "model",
+      "source": null,
+      "credit": "検査用",
+      "locator": {
+        "type": "absolute",
+        "path": "/fixture/model"
+      },
+      "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "probe": {
+        "type": "vrm",
+        "info": {
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "byte_length": 100,
+          "inspection": {
+            "kind": "model",
+            "version": "1.0",
+            "expressions": [
+              "aa"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-00000000000b",
+      "name": "motion",
+      "source": null,
+      "credit": "検査用",
+      "locator": {
+        "type": "absolute",
+        "path": "/fixture/motion"
+      },
+      "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "probe": {
+        "type": "vrm",
+        "info": {
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "byte_length": 100,
+          "inspection": {
+            "kind": "motion",
+            "version": "1.0",
+            "expressions": []
+          }
+        }
+      }
+    }
+  ]
+}

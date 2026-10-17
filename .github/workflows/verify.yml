@@ -1,0 +1,49 @@
+name: Verify
+on: [push, pull_request]
+jobs:
+  desktop:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: rustup show active-toolchain
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run test:setup
+      - run: node --experimental-strip-types --test scripts/frontend-dependencies.test.mjs
+      - run: python3 -m unittest discover -s scripts/voicevox-dev -p test_runtime.py -v
+      - run: npm run check:examples
+      - run: npm run check:vrm
+      - run: npm run test:vrm
+      - run: npm run build:vrm
+      - run: npm run check:negative-types
+      - run: npm run build
+      - run: cargo fmt --all -- --check
+      - run: npm run prepare:host
+      - run: npm run check:api
+      - run: cargo check --release --locked
+      - run: cargo test --release --locked
+      - run: cargo build --release --locked -p sungeki-mcp
+      - run: npm run check:mcp
+      - run: npm run test:host
+      - run: npm run check:structure
+      - run: npm run desktop:build
+      - run: test ! -d target/debug
+
+  host-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: rustup show active-toolchain
+      - run: cargo build --release --locked -p sungeki-host -p sungeki-mcp
+      - run: cargo test --release --locked -p sungeki-storage -p sungeki-project -p sungeki-editor -p sungeki-protocol -p sungeki-host-client -p sungeki-host -p sungeki-mcp
+      - run: node scripts/check-mcp.mjs
+      - run: python3 -m unittest discover -s tests/host -v
+      - run: test ! -d target/debug

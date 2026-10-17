@@ -1,0 +1,269 @@
+{
+  "format": "vvm-project",
+  "schema_version": 1,
+  "id": "00000000-0000-4000-8000-000000000001",
+  "title": "PSD pose fixture",
+  "canvas": {
+    "width": 320,
+    "height": 180,
+    "fps": {
+      "numerator": 30,
+      "denominator": 1
+    },
+    "background": "#ffffff"
+  },
+  "tracks": [
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "PSD",
+      "kind": "visual",
+      "visible": true,
+      "muted": false
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "name": "speech",
+      "kind": "audio",
+      "visible": false,
+      "muted": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "scene",
+      "start_us": 0,
+      "duration_us": 1000000
+    }
+  ],
+  "clips": [
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "track_id": "00000000-0000-4000-8000-000000000002",
+      "scene_id": "00000000-0000-4000-8000-000000000003",
+      "start_us": 0,
+      "duration_us": 1000000,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100,
+        "opacity": 1
+      },
+      "content": {
+        "type": "sprite",
+        "sprites": {
+          "default_pose": "通常",
+          "poses": [
+            {
+              "name": "通常",
+              "closed_asset_id": "00000000-0000-4000-8000-000000000020",
+              "open_asset_id": "00000000-0000-4000-8000-000000000021"
+            },
+            {
+              "name": "笑顔",
+              "closed_asset_id": "00000000-0000-4000-8000-000000000021",
+              "open_asset_id": null
+            }
+          ]
+        },
+        "pose": null,
+        "character_id": "00000000-0000-4000-8000-000000000006"
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000009",
+      "track_id": "00000000-0000-4000-8000-000000000007",
+      "scene_id": null,
+      "start_us": 0,
+      "duration_us": 1000000,
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 100,
+        "opacity": 1
+      },
+      "content": {
+        "type": "speech",
+        "character_id": "00000000-0000-4000-8000-000000000006",
+        "subtitle_text": "speech",
+        "spoken_text": null,
+        "audio": {
+          "asset_id": "00000000-0000-4000-8000-000000000008",
+          "input_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "engine_version": "test",
+          "lip_sync": {
+            "version": 1,
+            "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "settings": {
+              "window_us": 20000,
+              "floor_ppm": 10000,
+              "peak_ratio_ppm": 150000,
+              "min_open_us": 60000,
+              "min_close_us": 80000
+            },
+            "sample_rate": 24000,
+            "source_frames": 24000,
+            "peak_rms": 0.5,
+            "threshold_rms": 0.075,
+            "open": [
+              {
+                "start_frame": 2400,
+                "end_frame": 7200
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "groups": [],
+  "characters": [
+    {
+      "id": "00000000-0000-4000-8000-000000000006",
+      "name": "Fixture",
+      "credit": "Fixture only",
+      "voice": {
+        "type": "voicevox",
+        "engine_id": "074fc39e-678b-4c13-8916-ffca8d505d1d",
+        "core_version": "0.16.1",
+        "settings": {
+          "style_id": 3,
+          "speed_scale": 1,
+          "pitch_scale": 0,
+          "intonation_scale": 1,
+          "volume_scale": 1,
+          "pre_phoneme_length": 0.1,
+          "post_phoneme_length": 0.1,
+          "pause_length": null,
+          "pause_length_scale": 1,
+          "output_sampling_rate": 24000,
+          "output_stereo": false,
+          "enable_interrogative_upspeak": true
+        }
+      },
+      "subtitle_style": {
+        "font_size": 54,
+        "color": "#205b30",
+        "outline": null,
+        "layout": null
+      }
+    }
+  ],
+  "pronunciation_dictionary": [],
+  "audio_mix": {
+    "normalization": null
+  },
+  "assets": [
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "name": "synthetic PSD",
+      "source": null,
+      "credit": "test",
+      "locator": {
+        "type": "absolute",
+        "path": "/fixture.psd"
+      },
+      "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "probe": {
+        "type": "psd",
+        "info": {
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "width": 100,
+          "height": 100,
+          "byte_length": 4096,
+          "layer_layout_version": 1,
+          "layers": [
+            {
+              "path": "/0",
+              "name": "!choice",
+              "kind": "group",
+              "visible": true
+            },
+            {
+              "path": "/0/0",
+              "name": "*red",
+              "kind": "pixel",
+              "visible": true
+            },
+            {
+              "path": "/0/1",
+              "name": "*blue",
+              "kind": "pixel",
+              "visible": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000008",
+      "name": "voice",
+      "source": null,
+      "credit": "test",
+      "locator": {
+        "type": "absolute",
+        "path": "/audio.wav"
+      },
+      "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "probe": {
+        "type": "audio",
+        "info": {
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "sample_rate": 24000,
+          "channels": 1,
+          "frames": 24000,
+          "duration_us": 1000000,
+          "byte_length": 48044
+        }
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000020",
+      "name": "mouth20",
+      "locator": {
+        "type": "absolute",
+        "path": "/fixture/mouth20.png"
+      },
+      "source": null,
+      "credit": "sprite fixture",
+      "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "probe": {
+        "type": "image",
+        "info": {
+          "format": "png",
+          "width": 320,
+          "height": 640,
+          "orientation": 1,
+          "has_alpha": true,
+          "byte_length": 100,
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000021",
+      "name": "mouth21",
+      "locator": {
+        "type": "absolute",
+        "path": "/fixture/mouth21.png"
+      },
+      "source": null,
+      "credit": "sprite fixture",
+      "content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "probe": {
+        "type": "image",
+        "info": {
+          "format": "png",
+          "width": 320,
+          "height": 640,
+          "orientation": 1,
+          "has_alpha": true,
+          "byte_length": 100,
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    }
+  ]
+}
