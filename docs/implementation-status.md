@@ -1,3 +1,10 @@
+## 2026-10-18: CIにアプリ同梱物検査を追加
+
+- macOS CIの最終工程をdesktop:buildからdesktop:bundleへ変更。コンパイルだけでなく、本体LICENSE、frontend通知、native通知manifestと各hash、MPL対象ソース、アドホック署名の整合性を完成.app上で確認する。配布用署名・公証とは区別する。
+- 公開候補ソースでREADME通りnpm run desktop:bundleを実行し成功。通知286依存/収集上のneeds_review=0、MPL5パッケージ65ファイル、bundle生成とcodesign検証が合格。
+- 旧run39095140663のmacOSはcheck:mcpで失敗。これは734eaeaで修正済みの一覧不足であり、最新run39096159579の完了は未確認。新しいCI設定でも再検証する。
+- アプリ一般配布・別Macの導入検証・実エンジン全組合せの合格は未宣言。
+
 ## 2026-10-18: CIのMCP一覧更新漏れを修正
 
 - GitHub run 39094505294のLinuxジョブはRustビルド・テストを通過し、check-mcpで失敗。追加済みのget_local_speech_catalog / get_local_speech_policy / synthesize_local_speechの3件が検査用一覧から欠けていたため、一覧を更新。完全一致・重複・schema検査は維持。

@@ -32,7 +32,7 @@ jobs:
       - run: npm run check:mcp
       - run: npm run test:host
       - run: npm run check:structure
-      - run: npm run desktop:build
+      - run: npm run desktop:bundle
       - run: test ! -d target/debug
 
   host-linux:
