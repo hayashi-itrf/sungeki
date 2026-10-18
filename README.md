@@ -18,11 +18,14 @@ Sungekiの読み方は「すんげき」です。
 
 初期表示はライトテーマです。設定でダークテーマへ切り替えられます。試聴音量はアプリ再起動後も保持します。設定画面のビルド日時・識別番号で起動している版を確認できます。
 
+初めての方は、ツールの準備から説明する[初回導入ガイド](docs/INSTALLATION.md)を参照してください。
+
 ## 導入と開発
 
 固定環境はNode.js 22.22.3、npm 10.9.8、Rust 1.98.1です。Rustの指定はこのリポジトリの`rust-toolchain.toml`に従います。macOSではXcode Command Line Toolsが必要です。
 
 ```sh
+node scripts/check-toolchain.mjs
 npm ci
 npm run check
 npm test

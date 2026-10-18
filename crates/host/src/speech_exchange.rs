@@ -22,7 +22,13 @@ pub(crate) async fn run(
 ) -> Result<VoicevoxResponse, ApiError> {
     let reserved = Reservation::acquire(&mut *shared.lock().map_err(invalid)?, job_id)?;
     let input = reserved.input().voicevox()?.clone();
-    crate::http_engine::ensure(shared, crate::http_engine::Engine::Voicevox, input.endpoint(), cancelled).await?;
+    crate::http_engine::ensure(
+        shared,
+        crate::http_engine::Engine::Voicevox,
+        input.endpoint(),
+        cancelled,
+    )
+    .await?;
     let prepared = input.prepared().map_err(invalid)?;
     let preflight = async {
         let client =

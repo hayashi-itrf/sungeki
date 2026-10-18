@@ -8,13 +8,17 @@ static REQUESTS: Semaphore = Semaphore::const_new(2);
 pub fn handles(request: &SessionRequest) -> bool {
     matches!(
         request,
-        SessionRequest::GetLocalSpeechPolicy { .. } | SessionRequest::GetLocalSpeechCatalog { .. }
+        SessionRequest::GetLocalSpeechPolicy { .. }
+            | SessionRequest::GetLocalSpeechCatalog { .. }
             | SessionRequest::GetVoicevoxSpeaker { .. }
             | SessionRequest::DiscoverVoicevox { .. }
             | SessionRequest::GetVoicevoxCatalog { .. }
     )
 }
-pub async fn execute(shared: &std::sync::Arc<std::sync::Mutex<crate::sessions::Sessions>>, request: SessionRequest) -> Result<SessionResponse, ApiError> {
+pub async fn execute(
+    shared: &std::sync::Arc<std::sync::Mutex<crate::sessions::Sessions>>,
+    request: SessionRequest,
+) -> Result<SessionResponse, ApiError> {
     let _permit = REQUESTS.try_acquire().map_err(|_| {
         let mut error = ApiError::new(
             ErrorCode::EngineUnavailable,
@@ -24,12 +28,21 @@ pub async fn execute(shared: &std::sync::Arc<std::sync::Mutex<crate::sessions::S
         error
     })?;
     let launch = match &request {
-        SessionRequest::GetLocalSpeechCatalog { args } => Some((crate::http_engine::Engine::local(args.engine), args.base_url.as_str())),
-        SessionRequest::DiscoverVoicevox { args } => Some((crate::http_engine::Engine::Voicevox, args.base_url.as_str())),
-        SessionRequest::GetVoicevoxCatalog { args } => Some((crate::http_engine::Engine::Voicevox, args.base_url.as_str())),
+        SessionRequest::GetLocalSpeechCatalog { args } => Some((
+            crate::http_engine::Engine::local(args.engine),
+            args.base_url.as_str(),
+        )),
+        SessionRequest::DiscoverVoicevox { args } => {
+            Some((crate::http_engine::Engine::Voicevox, args.base_url.as_str()))
+        }
+        SessionRequest::GetVoicevoxCatalog { args } => {
+            Some((crate::http_engine::Engine::Voicevox, args.base_url.as_str()))
+        }
         _ => None,
     };
-    if let Some((engine, endpoint)) = launch {crate::http_engine::ensure(shared, engine, endpoint, &AtomicBool::new(false)).await?;}
+    if let Some((engine, endpoint)) = launch {
+        crate::http_engine::ensure(shared, engine, endpoint, &AtomicBool::new(false)).await?;
+    }
     // Read-only requests may safely be dropped at this whole-operation deadline.
     // This must not be reused as a cancellation strategy for synthesis.
     tokio::time::timeout(Duration::from_secs(15), fetch(request))
@@ -45,8 +58,18 @@ async fn fetch(request: SessionRequest) -> Result<SessionResponse, ApiError> {
     let cancelled = AtomicBool::new(false);
     match request {
         SessionRequest::GetLocalSpeechPolicy { args } => {
-            let client = sungeki_speech::local_http::LocalSpeechClient::new(&args.base_url,args.engine,Duration::from_secs(5)).map_err(error)?;
-            Ok(SessionResponse::LocalSpeechPolicy { policy:client.policy(&args.speaker_uuid,&cancelled).await.map_err(error)? })
+            let client = sungeki_speech::local_http::LocalSpeechClient::new(
+                &args.base_url,
+                args.engine,
+                Duration::from_secs(5),
+            )
+            .map_err(error)?;
+            Ok(SessionResponse::LocalSpeechPolicy {
+                policy: client
+                    .policy(&args.speaker_uuid, &cancelled)
+                    .await
+                    .map_err(error)?,
+            })
         }
 
         SessionRequest::GetLocalSpeechCatalog { args } => {

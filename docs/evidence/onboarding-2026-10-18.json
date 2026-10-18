@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-18",
+  "source_commit": "921045847d7886b4a542ec5b47e5d2e54d97a982",
+  "isolation": [
+    "fresh source archive without node_modules",
+    "fresh Python installation and uv cache",
+    "fresh app settings and database",
+    "no inherited SUNGEKI environment overrides"
+  ],
+  "passed": [
+    "npm ci with pinned Node/npm",
+    "Svelte typecheck",
+    "frontend production build",
+    "image setup and probe",
+    "MCP saved settings and Japanese text video export",
+    "full video decode",
+    "extracted frame visual inspection"
+  ],
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration_seconds": 2,
+    "codecs": [
+      "h264",
+      "aac"
+    ]
+  },
+  "not_tested": [
+    "another Mac or fresh OS account",
+    "fresh Rust native build in this isolated source",
+    "GUI onboarding with new settings",
+    "first macOS permission prompts",
+    "fresh TTS installations"
+  ],
+  "reused": [
+    "installed Node/Rust/uv/FFmpeg/system font",
+    "existing release host/MCP binaries"
+  ],
+  "private": true
+}

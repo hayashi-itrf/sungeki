@@ -17,5 +17,6 @@ pub(crate) async fn cancel_and_wait(shared: &Arc<Mutex<Sessions>>) {
     }
     while speech.active.load(Ordering::SeqCst) != 0 || review.active.load(Ordering::SeqCst) != 0 {
         tokio::time::sleep(Duration::from_millis(50)).await;
-    }    crate::http_engine::shutdown().await;
+    }
+    crate::http_engine::shutdown().await;
 }

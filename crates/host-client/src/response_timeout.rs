@@ -8,7 +8,9 @@ pub(super) fn for_request(body: &RequestBody) -> Duration {
     } = body
     {
         let start = match request {
-            SpeechJobRequest::StartLocal { args } | SpeechJobRequest::Start { args } => args.wait_ms.map(|ms| (ms, 2_000)),
+            SpeechJobRequest::StartLocal { args } | SpeechJobRequest::Start { args } => {
+                args.wait_ms.map(|ms| (ms, 2_000))
+            }
             SpeechJobRequest::StartSbv2 { args } => args.wait_ms.map(|ms| (ms, 600_000)),
             SpeechJobRequest::StartQwen { args } => args.wait_ms.map(|ms| (ms, 600_000)),
             SpeechJobRequest::StartIrodori { args } => args.wait_ms.map(|ms| (ms, 600_000)),
@@ -61,7 +63,9 @@ pub(super) fn for_request(body: &RequestBody) -> Duration {
         } => Duration::from_secs(65),
         RequestBody::Session {
             request:
-                SessionRequest::GetLocalSpeechCatalog { .. } | SessionRequest::GetLocalSpeechPolicy { .. } | SessionRequest::GetVoicevoxSpeaker { .. }
+                SessionRequest::GetLocalSpeechCatalog { .. }
+                | SessionRequest::GetLocalSpeechPolicy { .. }
+                | SessionRequest::GetVoicevoxSpeaker { .. }
                 | SessionRequest::DiscoverVoicevox { .. }
                 | SessionRequest::GetVoicevoxCatalog { .. },
         } => Duration::from_secs(620),
@@ -197,7 +201,13 @@ mod tests {
     use super::*;
     #[test]
     fn speech_wait_preserves_profile_preparation_allowance() {
-        for kind in ["start", "start_local", "start_sbv2", "start_qwen", "start_irodori"] {
+        for kind in [
+            "start",
+            "start_local",
+            "start_sbv2",
+            "start_qwen",
+            "start_irodori",
+        ] {
             for wait in [None, Some(0u32), Some(30_000)] {
                 let mut args = serde_json::json!({"session_id":"s","job_id":"j","clip_id":"c","expected_revision":0});
                 if matches!(kind, "start" | "start_local") {
@@ -214,7 +224,11 @@ mod tests {
                 )
                 .unwrap();
                 let body = RequestBody::Session { request };
-                let preparation = if matches!(kind, "start" | "start_local") { 2_000 } else { 600_000 };
+                let preparation = if matches!(kind, "start" | "start_local") {
+                    2_000
+                } else {
+                    600_000
+                };
                 assert_eq!(
                     for_request(&body),
                     Duration::from_millis(preparation + u64::from(wait.unwrap_or(0)))

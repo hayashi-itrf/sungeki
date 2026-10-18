@@ -94,7 +94,13 @@ pub(crate) async fn run(
     let Input::Local(input) = reserved.input() else {
         return Err(invalid("音声エンジンが一致しません"));
     };
-    crate::http_engine::ensure(shared, crate::http_engine::Engine::local(input.prepared().map_err(invalid)?.settings().engine()), input.endpoint(), cancel).await?;
+    crate::http_engine::ensure(
+        shared,
+        crate::http_engine::Engine::local(input.prepared().map_err(invalid)?.settings().engine()),
+        input.endpoint(),
+        cancel,
+    )
+    .await?;
     let prepared = input.prepared().map_err(invalid)?;
     let client = LocalSpeechClient::new(
         input.endpoint(),

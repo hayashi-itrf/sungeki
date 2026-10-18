@@ -38,7 +38,10 @@ impl std::fmt::Display for TransportError {
             Self::Timeout(stage) => write!(f, "音声エンジン {stage:?}: 待機時間を超過しました"),
             Self::Connection(stage) => write!(f, "音声エンジン {stage:?}: 通信に失敗しました"),
             Self::TooLarge { stage, limit } => {
-                write!(f, "音声エンジン {stage:?}: 応答が{limit}バイトを超えています")
+                write!(
+                    f,
+                    "音声エンジン {stage:?}: 応答が{limit}バイトを超えています"
+                )
             }
         }
     }

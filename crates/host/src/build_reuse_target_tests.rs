@@ -82,7 +82,9 @@ fn all_four_engines_recapture_target_and_preserve_audio_inputs_without_mutating_
         assert!(prepare(&original, 10, &changed, &clip_id, &parent).is_err());
         let mut changed = project.clone();
         match &mut changed.characters[0].voice {
-            Voice::LocalHttp { .. } => unreachable!("this fixture covers the four build-video engines"),
+            Voice::LocalHttp { .. } => {
+                unreachable!("this fixture covers the four build-video engines")
+            }
             Voice::Voicevox { settings, .. } => settings.speed_scale = 1.2,
             Voice::Sbv2 { settings, .. } => settings.length = 1.2,
             Voice::Qwen { settings, .. } => settings.speed = 1.2,

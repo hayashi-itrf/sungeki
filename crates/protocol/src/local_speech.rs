@@ -28,6 +28,10 @@ pub struct LocalSpeechStyle {
     pub name: String,
 }
 
-#[derive(Debug,Serialize,Deserialize,JsonSchema,TS)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(deny_unknown_fields)]
-pub struct LocalSpeechPolicyArgs {pub base_url:String,pub engine:sungeki_project::LocalSpeechEngine,pub speaker_uuid:String}
+pub struct LocalSpeechPolicyArgs {
+    pub base_url: String,
+    pub engine: sungeki_project::LocalSpeechEngine,
+    pub speaker_uuid: String,
+}

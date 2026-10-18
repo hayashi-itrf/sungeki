@@ -13,6 +13,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+      - run: node --test scripts/check-toolchain.test.mjs
       - run: npm run test:setup
       - run: node --experimental-strip-types --test scripts/frontend-dependencies.test.mjs
       - run: python3 -m unittest discover -s scripts/voicevox-dev -p test_runtime.py -v

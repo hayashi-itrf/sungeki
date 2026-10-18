@@ -13,7 +13,9 @@ use ts_rs::TS;
 #[derive(Debug, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum SessionRequest {
-    GetLocalSpeechPolicy { args: crate::LocalSpeechPolicyArgs },
+    GetLocalSpeechPolicy {
+        args: crate::LocalSpeechPolicyArgs,
+    },
     GetLocalSpeechCatalog {
         args: crate::LocalSpeechCatalogArgs,
     },
