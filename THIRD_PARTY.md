@@ -8,7 +8,7 @@
 |---|---|
 | `licenses/frontend/` | Svelte、Tauri API、Three.js、@pixiv/three-vrm関連の固定版の通知原文とmanifest。各原文の著作権表示・許諾条件を保持する。 |
 | `licenses/native-supplements/` | Rust依存について上流の固定版から補完した原文。MIT/Apache/MPL等の本文を本体MITで上書きしない。 |
-| `licenses/external-image/` | 別途導入する画像処理環境の通知。環境バイナリの同梱許可を意味しない。 |
+| `licenses/external-image/` | 開発用の比較基準として残すPython画像処理環境の通知。環境バイナリの同梱許可を意味しない。 |
 | `apps/desktop/src-tauri/icons/` | プロジェクト内の`source.svg`から生成したアイコン。原本・派生物の対応は開発時に確認。 |
 | `tests/fixtures/build-source.png`、`crates/review/tests/data/transparent.png` | 単色の人工テスト画像。 |
 | `tests/fixtures/irodori-float.wav` | 5個の数学的サンプル値のみの人工WAV。人物の収録音声やTTSモデル出力ではない。 |
@@ -17,7 +17,7 @@
 
 ## 別途用意するもの
 
-FFmpeg/FFprobe、Python実行環境、音声合成エンジン・モデル、VRM/VRMA/PSD、キャラクター素材、字幕フォントは各配布元の条件を確認して用意します。エンジンのコード、モデル、生成音声、キャラクターの条件はそれぞれ別です。クレジット要件も使用素材ごとに確認してください。利用者の素材・作品・エンジン設定を公開ソースへ含めないでください。
+FFmpeg/FFprobe、音声合成エンジン・モデル、VRM/VRMA/PSD、キャラクター素材、字幕フォントは各配布元の条件を確認して用意します。エンジンのコード、モデル、生成音声、キャラクターの条件はそれぞれ別です。クレジット要件も使用素材ごとに確認してください。利用者の素材・作品・エンジン設定を公開ソースへ含めないでください。
 
 ## ビルド済みアプリの配布は別確認
 
@@ -35,3 +35,11 @@ MITの本文と著作権表示を保持する条件は[MIT原文](https://choose
 - SungekiはVOICEVOX、Aivis Project、COEIROINKおよび話者権利者の公式製品ではなく、提携・推奨を示しません。
 
 将来エンジンやモデルを同梱する場合は、再配布条件、必要な通知・対象ソースの提供を別途確認します。本体MITでこれらを再許諾しません。
+
+## 内蔵の画像描画
+
+PSDの解析はag-psd（MIT）、色変換はLittle CMS（MIT）、文字描画はFreeTypeを使用します。FreeTypeはFTLを選択し、原文と付属ドライバーの通知をアプリのnative-noticesに収録します。
+
+Portions of this software are copyright © The FreeType Project (www.freetype.org). All rights reserved.
+
+これらはアプリに組み込まれ、利用者がPython・uv・Pillowを導入する必要はありません。音声エンジン固有の実行環境は別です。

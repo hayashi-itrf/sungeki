@@ -3,10 +3,9 @@ mod cache;
 use crate::{render_record::invalid, sessions::Sessions};
 use std::{
     path::Path,
-    sync::{Arc, Mutex, atomic::AtomicBool},
-    time::Duration,
+    sync::{Arc, Mutex},
 };
-use sungeki_project::{AssetLocator, AssetProbe, ClipContent, PsdProbe, TimeUs};
+use sungeki_project::{AssetLocator, AssetProbe, ClipContent, TimeUs};
 use sungeki_protocol::{ApiError, ErrorCode, SessionResponse};
 
 static PREVIEWING: Mutex<()> = Mutex::new(());
@@ -23,7 +22,7 @@ pub(crate) fn execute(
         error.retryable = true;
         error
     })?;
-    let (project, database) = {
+    let (project, _database) = {
         let sessions = shared.lock().map_err(invalid)?;
         let (_, state) = sessions.load(&session_id)?;
         if state.history().revision() != expected_revision {
@@ -64,13 +63,7 @@ pub(crate) fn execute(
             "未対応の素材参照です",
         ));
     };
-    let config = crate::render_runtime::preview::image(&database)?;
-    let worker = config
-        .image_worker
-        .parent()
-        .ok_or_else(|| invalid("画像workerの配置が不正です"))?
-        .join("psd_preview.py");
-    let key = cache::key(Path::new(path), probe, pose, &worker, &config.python)?;
+    let key = cache::key(Path::new(path), probe, pose)?;
     if let Some(cached) = cache::get(&key)? {
         return publish(
             shared,
@@ -85,49 +78,19 @@ pub(crate) fn execute(
             },
         );
     }
-    let args = vec![
-        worker.into_os_string(),
-        "--source".into(),
-        path.into(),
-        "--sha256".into(),
-        probe.sha256.clone().into(),
-        "--pose".into(),
-        serde_json::to_string(pose).map_err(invalid)?.into(),
-    ];
-    let result = sungeki_media::run_process(
-        &sungeki_media::ProcessSpec {
-            program: &config.python,
-            args: &args,
-            directory: Path::new(path)
-                .parent()
-                .ok_or_else(|| invalid("PSD親フォルダーがありません"))?,
-            timeout: Duration::from_secs(60),
-            max_output_bytes: 12 * 1024 * 1024,
-        },
-        &AtomicBool::new(false),
-    )
-    .map_err(invalid)?;
-    if !result.succeeded() {
-        return Err(invalid(format!(
-            "PSD表示の描画に失敗: {:?}: {}",
-            result.stopped,
-            String::from_utf8_lossy(&result.stderr)
-        )));
+    let bytes = sungeki_raster::frame::verified(Path::new(path), &probe.sha256).map_err(invalid)?;
+    let document = sungeki_raster::psd::Document::read(&bytes, &probe.sha256).map_err(invalid)?;
+    if &document.probe != probe {
+        return Err(invalid("PSD原本の検査結果が一致しません"));
     }
-    #[derive(serde::Deserialize)]
-    struct Preview {
-        probe: PsdProbe,
-        width: u32,
-        height: u32,
-        png_base64: String,
-    }
-    let rendered: Preview = serde_json::from_slice(&result.stdout).map_err(invalid)?;
-    if &rendered.probe != probe
-        || !(1..=1024).contains(&rendered.width)
-        || !(1..=1024).contains(&rendered.height)
-    {
-        return Err(invalid("PSD原本の検査結果または表示寸法が一致しません"));
-    }
+    let preview = sungeki_raster::preview::encode(document.render(pose).map_err(invalid)?)
+        .map_err(invalid)?;
+    use base64::Engine;
+    let rendered = cache::Pixels {
+        width: preview.width,
+        height: preview.height,
+        png: base64::engine::general_purpose::STANDARD.encode(preview.png),
+    };
     // Revalidate again after worker completion before publishing/reusing pixels.
     cache::verify(Path::new(path), probe)?;
     cache::insert(
@@ -135,7 +98,7 @@ pub(crate) fn execute(
         cache::Pixels {
             width: rendered.width,
             height: rendered.height,
-            png: rendered.png_base64.clone(),
+            png: rendered.png.clone(),
         },
     )?;
     publish(
@@ -147,7 +110,7 @@ pub(crate) fn execute(
             sha256: probe.sha256.clone(),
             width: rendered.width,
             height: rendered.height,
-            png_base64: rendered.png_base64,
+            png_base64: rendered.png,
         },
     )
 }

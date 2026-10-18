@@ -17,8 +17,7 @@ fn real_batched_video_preserves_boundaries_rates_and_cancel() {
     fs::create_dir(&root).unwrap();
     let runtime = RenderRuntime {
         vrm: None,
-        python: "/unused".into(),
-        image_worker: "/unused".into(),
+
         font: "/unused".into(),
         font_sha256: String::new(),
         ffmpeg: "/opt/homebrew/bin/ffmpeg".into(),

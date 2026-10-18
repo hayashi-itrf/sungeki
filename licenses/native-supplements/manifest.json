@@ -402,6 +402,31 @@
           "sha256": "9dd42ea92cff2ede5cd477cbfcce051b2d0115c0ac7f368ee88cb545055dff1d"
         }
       ]
+    },
+    {
+      "name": "freetype-sys",
+      "version": "0.23.0",
+      "declared_license": "MIT",
+      "selected_license": "MIT (wrapper); FTL (FreeType)",
+      "commit": "9040df60c41b76aeaa19c231d488e79d91e666fe",
+      "manifest_sha256": "5b586f88eeb07c2effb971615a13ebb80165a013c072fe4acde64c9892737cb8",
+      "documents": [
+        {
+          "file": "freetype-sys-0.23.0__freetype2__docs__FTL.TXT",
+          "sha256": "08c135755dd589039470f1fdbb400daaabaaa50d0b366d19cebff4d22986baa1",
+          "url": "https://github.com/PistonDevelopers/freetype-sys/blob/9040df60c41b76aeaa19c231d488e79d91e666fe/freetype2/docs/FTL.TXT"
+        },
+        {
+          "file": "freetype-sys-0.23.0__freetype2__src__bdf__README",
+          "sha256": "7984455e7e5a9faba3797c8bf095fbe10cc846316b7320aff8c58402e22b82fe",
+          "url": "https://github.com/PistonDevelopers/freetype-sys/blob/9040df60c41b76aeaa19c231d488e79d91e666fe/freetype2/src/bdf/README"
+        },
+        {
+          "file": "freetype-sys-0.23.0__freetype2__src__pcf__README",
+          "sha256": "18d9782898d9eac04476e2f744678137b2a889689ed3e923e052fc396a86f86b",
+          "url": "https://github.com/PistonDevelopers/freetype-sys/blob/9040df60c41b76aeaa19c231d488e79d91e666fe/freetype2/src/pcf/README"
+        }
+      ]
     }
   ]
 }

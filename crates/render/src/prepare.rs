@@ -17,15 +17,9 @@ pub(crate) fn runner<'a>(
         || fs::read_dir(directory)?.next().is_some()
         || runtime.deadline.is_zero()
         || runtime.deadline > Duration::from_secs(86400)
-        || [
-            &runtime.python,
-            &runtime.image_worker,
-            &runtime.ffmpeg,
-            &runtime.ffprobe,
-            &runtime.font,
-        ]
-        .iter()
-        .any(|p| !p.is_absolute())
+        || [&runtime.ffmpeg, &runtime.ffprobe, &runtime.font]
+            .iter()
+            .any(|p| !p.is_absolute())
     {
         return Err(error("実行環境または空の専用作業ディレクトリが不正です"));
     }

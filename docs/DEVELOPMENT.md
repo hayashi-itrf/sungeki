@@ -6,7 +6,7 @@ Tauri v2 / Rust / Svelte / TypeScriptで構成しています。確定した作�
 
 - Node.js 22.22.3、npm 10.9.8（`.node-version`と`package.json`）
 - Rust 1.98.1（`rust-toolchain.toml`）
-- 画像処理環境の構築にはuv 0.10.6
+- ビルド時の通知収集・結合試験にはPython 3（利用者の描画には不要）
 
 macOS Apple Siliconを主な検証対象としています。Linuxのhost/MCPはCI対象ですが、Linux/WindowsのGUIを動作保証するものではありません。
 
@@ -33,7 +33,7 @@ npm run desktop:bundle
 
 ## 実行環境
 
-大きな依存とキャッシュは外部ディスクの専用フォルダーへ置きます。画像処理環境は`workers/image/README.md`を参照してください。VRMは`npm run setup:vrm`で専用ブラウザーを準備します。音声モデル・VRM/PSD・フォント・FFmpegはソースに含みません。
+大きな依存とキャッシュは外部ディスクの専用フォルダーへ置きます。描画は`crates/raster`に内蔵しています。`workers/image`と`setup:image`は比較検証専用です。VRMは`npm run setup:vrm`で専用ブラウザーを準備します。音声モデル・VRM/PSD・フォント・FFmpegはソースに含みません。
 
 `target/release/sungeki-mcp`はstdio MCPサーバーです。`get_capabilities`で利用可能な機能を確認してください。例は`examples/mcp/README.md`にあります。実行環境が未設定なら音声・映像の一部機能は利用できません。
 
@@ -42,10 +42,12 @@ npm run desktop:bundle
 - `crates/`: Project、編集、素材、音声、描画、host、MCPなどのRustクレート
 - `apps/desktop/`: GUIとTauriの接続部分
 - `packages/`: API型・クライアントと共通VRM描画
-- `workers/`: 外部実行環境で動かす画像・VRM・音声処理
+- `workers/`: VRM・音声処理と画像描画の比較基準
 - `tests/`: 自動試験と人工fixture
 - `licenses/`: 第三者通知原文と版/hashの対応
 
 固定依存とlockを維持し、`--force`や`--legacy-peer-deps`で互換性確認を回避しないでください。Rust/TSは原則300行、Svelteは250行を目安にし、手書きファイルが400行を超える場合は責務ごとに分割します。
 
 外部エンジン・モデルを使う試験と、モックや人工fixtureの試験は分けて報告します。ビルド済みアプリを配布するときは、実際の同梱物・第三者通知・必要な対象ソース・署名状態を再検査してください。
+
+画像描画の責務と対応範囲は[crates/raster](../crates/raster/README.md)を参照してください。Python描画環境はアプリに同梱せず、比較試験にのみ使用します。

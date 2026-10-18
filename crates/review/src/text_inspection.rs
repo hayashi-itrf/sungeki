@@ -178,8 +178,7 @@ mod tests {
         };
         let runtime = RenderRuntime {
             vrm: None,
-            python: "/usr/bin/false".into(),
-            image_worker: "/unused".into(),
+
             ffmpeg: "/unused".into(),
             ffprobe: "/unused".into(),
             font: root.join("missing"),

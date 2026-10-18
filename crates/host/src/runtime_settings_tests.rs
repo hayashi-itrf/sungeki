@@ -257,3 +257,25 @@ fn storage_setting_roundtrip_and_active_job_guard() {
     changed.runtime_root = Some("/tmp/runtime".into());
     assert!(validate(&changed).is_err());
 }
+
+#[test]
+fn retired_render_paths_do_not_block_current_installation_settings() {
+    let fixture = crate::speech_journal_tests::Fixture::new();
+    let database = fixture.0.join("host.sqlite");
+    let path = fixture.0.join("runtime.json");
+    let settings = Settings {
+        format_version: 1,
+        ffmpeg: Some("/tools/ffmpeg".into()),
+        ..Settings::default()
+    };
+    let mut stored = serde_json::to_value(&settings).unwrap();
+    stored["python"] = serde_json::json!("/removed/environment/bin/python");
+    stored["image_worker"] = serde_json::Value::Null;
+    let raw = serde_json::to_vec(&stored).unwrap();
+    fs::write(&path, &raw).unwrap();
+    assert_eq!(load(&database).unwrap(), settings);
+    assert_eq!(fs::read(&path).unwrap(), raw); // Read never modifies the user's file.
+    stored["unrecognized_setting"] = serde_json::json!(true);
+    fs::write(&path, serde_json::to_vec(&stored).unwrap()).unwrap();
+    assert!(load(&database).is_err()); // Unknown fields remain rejected.
+}

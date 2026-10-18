@@ -118,8 +118,7 @@ fn hidden_video_two_audio_streams_share_original_but_mix_independently() {
     let plan = audio_preview_plan(RenderPlan::new(&p, |_| Ok(())).unwrap());
     let runtime = RenderRuntime {
         vrm: None,
-        python: PathBuf::from("/unused"),
-        image_worker: PathBuf::from("/unused"),
+
         font: PathBuf::from("/unused"),
         font_sha256: "0".repeat(64),
         ffmpeg: ffmpeg.clone(),

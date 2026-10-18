@@ -10,9 +10,9 @@ from test_render_jobs import call
 def environment(root):
     font = root/'font'; font.write_bytes(b'exit fixture font')
     worker = root/'worker.py'
-    worker.write_text("from pathlib import Path\nimport time, os\nPath('frame-999.png').write_bytes(b'partial')\nPath('worker-started').write_text(str(os.getpid()))\ntime.sleep(300)\n")
-    return dict(SUNGEKI_RENDER_PYTHON=sys.executable, SUNGEKI_RENDER_WORKER=str(worker),
-                SUNGEKI_RENDER_FFMPEG='/usr/bin/false', SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
+    worker.write_text("#!" + sys.executable + "\nfrom pathlib import Path\nimport time, os\nPath('frame-999.png').write_bytes(b'partial')\nPath('worker-started').write_text(str(os.getpid()))\ntime.sleep(300)\n")
+    worker.chmod(0o700)
+    return dict(SUNGEKI_RENDER_FFMPEG=str(worker), SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
                 SUNGEKI_RENDER_FONT=str(font), SUNGEKI_RENDER_FONT_SHA256=hashlib.sha256(font.read_bytes()).hexdigest(),
                 SUNGEKI_RENDER_WORK_ROOT=str(root/'render'))
 

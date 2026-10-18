@@ -51,6 +51,10 @@ def main():
         subprocess.run([sys.executable, str(ROOT / 'scripts/prepare-mpl-sources.py'),
             '--cargo-metadata', str(metadata), '--output', str(staged / 'mpl-sources')],
             cwd=ROOT, check=True)
+        (staged / 'FREETYPE_CREDIT.txt').write_text(
+            'FreeType is used under the FreeType License (FTL).\n'
+            'Portions of this software are copyright © The FreeType Project '
+            '(www.freetype.org). All rights reserved.\n', encoding='utf-8')
         hashes = {str(p.relative_to(staged)): hashlib.sha256(p.read_bytes()).hexdigest()
                   for p in sorted(staged.rglob('*')) if p.is_file()}
         (staged / 'manifest.json').write_text(json.dumps(dict(target=args.target,

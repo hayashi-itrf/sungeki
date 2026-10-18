@@ -27,8 +27,7 @@
       "binaries/sungeki-host"
     ],
     "resources": {
-      "../../../LICENSE": "LICENSE",
-      "resources/image-worker/": "image-worker/"
+      "../../../LICENSE": "LICENSE"
     }
   }
 }

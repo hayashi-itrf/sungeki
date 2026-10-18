@@ -43,8 +43,7 @@ pub(super) async fn ready_with_child(
             directory: root.join("must-not-render"),
             runtime: sungeki_render::RenderRuntime {
                 vrm: None,
-                python: "/unavailable/python".into(),
-                image_worker: "/unavailable/worker".into(),
+
                 ffmpeg: "/unavailable/ffmpeg".into(),
                 ffprobe: "/unavailable/ffprobe".into(),
                 font: "/unavailable/font".into(),

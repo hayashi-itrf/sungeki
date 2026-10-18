@@ -101,9 +101,9 @@ class RenderJobs(unittest.TestCase):
             font = root / 'font'
             font.write_bytes(b'font')
             worker = root / 'worker.py'
-            worker.write_text("from pathlib import Path\nimport time, os\nPath('frame-999.png').write_bytes(b'partial')\nPath('worker-started').write_text(str(os.getpid()))\ntime.sleep(30)\n")
-            env = dict(SUNGEKI_RENDER_PYTHON=sys.executable, SUNGEKI_RENDER_WORKER=str(worker),
-                       SUNGEKI_RENDER_FFMPEG='/usr/bin/false', SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
+            worker.write_text("#!" + sys.executable + "\nfrom pathlib import Path\nimport time, os\nPath('frame-999.png').write_bytes(b'partial')\nPath('worker-started').write_text(str(os.getpid()))\ntime.sleep(30)\n")
+            worker.chmod(0o700)
+            env = dict(SUNGEKI_RENDER_FFMPEG=str(worker), SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
                        SUNGEKI_RENDER_FONT=str(font), SUNGEKI_RENDER_FONT_SHA256=hashlib.sha256(b'font').hexdigest(),
                        SUNGEKI_RENDER_WORK_ROOT=str(root / 'render'))
             with patch.dict(os.environ, env):
@@ -153,9 +153,7 @@ class RenderJobs(unittest.TestCase):
             executable.write_text('#!' + str(root / 'missing-interpreter') + '\n')
             executable.chmod(0o700)
             env = dict(
-                SUNGEKI_RENDER_PYTHON=str(executable),
-                SUNGEKI_RENDER_WORKER='/usr/bin/false',
-                SUNGEKI_RENDER_FFMPEG='/usr/bin/false',
+                SUNGEKI_RENDER_FFMPEG=str(executable),
                 SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
                 SUNGEKI_RENDER_FONT=str(font),
                 SUNGEKI_RENDER_FONT_SHA256=hashlib.sha256(font.read_bytes()).hexdigest(),

@@ -33,8 +33,7 @@ fn interrupted_render_keeps_its_work_and_never_claims_a_completed_output() {
         directory: directory.clone(),
         runtime: sungeki_render::RenderRuntime {
             vrm: None,
-            python: "/unavailable/python".into(),
-            image_worker: "/unavailable/worker".into(),
+
             ffmpeg: "/unavailable/ffmpeg".into(),
             ffprobe: "/unavailable/ffprobe".into(),
             font: "/unavailable/font".into(),
@@ -103,8 +102,7 @@ fn publication_requires_success_and_preserves_job_and_project() {
         directory: root.clone(),
         runtime: sungeki_render::RenderRuntime {
             vrm: None,
-            python: "/unused".into(),
-            image_worker: "/unused".into(),
+
             ffmpeg: "/unused".into(),
             ffprobe: "/unused".into(),
             font: "/unused".into(),

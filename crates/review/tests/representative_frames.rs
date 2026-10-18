@@ -17,8 +17,7 @@ fn cancelled_or_nonempty_work_is_protected_and_each_frame_failure_is_reported() 
     });
     let runtime = RenderRuntime {
         vrm: None,
-        python: "/usr/bin/false".into(),
-        image_worker: "/unused".into(),
+
         ffmpeg: "/unused".into(),
         ffprobe: "/unused".into(),
         font: "/missing-font".into(),

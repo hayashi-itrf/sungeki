@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-18",
+  "renderer": "native Rust, layout 10",
+  "video": {
+    "duration_seconds": 115.233,
+    "width": 1920,
+    "height": 1080,
+    "frames": 3457,
+    "decoded_audio_equal": true,
+    "visual_keyframes": 15
+  },
+  "psd": {
+    "assets": 2,
+    "poses": 4,
+    "catalogs_equal": true,
+    "premultiplied_rgba_max_difference": 2.993,
+    "pixel_identical": false
+  },
+  "tests": {
+    "rust_targeted_passed": 572,
+    "rust_ignored": 17,
+    "ui_passed": 610,
+    "native_raster_passed": 4,
+    "real_video_boundary_cancel_passed": 1,
+    "host_mcp_passed": 119,
+    "host_mcp_skipped": 5,
+    "lifecycle_passed": 11,
+    "settings_passed": 7
+  },
+  "native_gui": "settings and PSD preview passed; quit reaped processes",
+  "limitations": [
+    "not all PSD effects supported",
+    "new bundle not tested on second Mac",
+    "no distribution signing/notarization"
+  ],
+  "distribution": "Local validation ZIP, extracted signature and absence of image-worker verified"
+}

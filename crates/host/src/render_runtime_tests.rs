@@ -8,8 +8,7 @@ fn saved_runtime_resolves_without_environment_and_rejects_bad_overrides() {
     let saved = Settings {
         format_version: 1,
         runtime_root: Some("/Volumes/Custom SSD/Sungeki/runtime".into()),
-        python: Some(file.clone()),
-        image_worker: Some(file.clone()),
+
         ffmpeg: Some(file.clone()),
         ffprobe: Some(file.clone()),
         font: Some(file.clone()),
@@ -50,7 +49,7 @@ fn saved_runtime_resolves_without_environment_and_rejects_bad_overrides() {
     )
     .unwrap();
     let reloaded = crate::runtime_settings::load(&fixture.0.join("host.sqlite")).unwrap();
-    assert_eq!(resolve(&reloaded, true, |_| None).unwrap().python, file);
+    assert_eq!(resolve(&reloaded, true, |_| None).unwrap().ffmpeg, file);
     let unset = Settings {
         runtime_root: None,
         ..saved
@@ -67,8 +66,7 @@ fn unfinished_vrm_setup_does_not_block_2d_but_is_rejected_for_visible_vrm() {
     std::fs::write(&file, b"tool").unwrap();
     let saved = Settings {
         format_version: 1,
-        python: Some(file.clone()),
-        image_worker: Some(file.clone()),
+
         ffmpeg: Some(file.clone()),
         ffprobe: Some(file.clone()),
         font: Some(file),

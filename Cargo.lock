@@ -9,6 +9,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
+name = "ag-psd"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6470c6a2f96a00a8d4154504020b34807c2282438c98f90f5069ef3f8cb0e7bf"
+dependencies = [
+ "flate2",
+]
+
+[[package]]
 name = "aho-corasick"
 version = "1.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -285,6 +294,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "54413ede23c2daf518f35156dfde027feb2374004d63bd497f983c8db9c0e313"
 dependencies = [
  "find-msvc-tools",
+ "jobserver",
+ "libc",
  "shlex",
 ]
 
@@ -871,6 +882,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cb4cb245038516f5f85277875cdaa4f7d2c9a0fa0468de06ed190163b1581fcf"
 dependencies = [
  "percent-encoding",
+]
+
+[[package]]
+name = "freetype-rs"
+version = "0.38.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d228d6de56c90dd7585341f341849441b3490180c62d27133e525eb726809b4"
+dependencies = [
+ "bitflags 2.13.2",
+ "freetype-sys",
+ "libc",
+]
+
+[[package]]
+name = "freetype-sys"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eab537ce43cab850c64b4cdc390ce7e4f47f877485ddc323208e268280c308ae"
+dependencies = [
+ "cc",
+ "libz-sys",
+ "pkg-config",
 ]
 
 [[package]]
@@ -1705,6 +1738,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "jobserver"
+version = "0.1.35"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1c00acbd29eabad4a2392fa0e921c874934dbbf4194312ad20f04a0ed67a3cb3"
+dependencies = [
+ "getrandom 0.4.3",
+ "libc",
+]
+
+[[package]]
 name = "js-sys"
 version = "0.3.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1746,6 +1789,29 @@ dependencies = [
  "bitflags 2.13.2",
  "serde",
  "unicode-segmentation",
+]
+
+[[package]]
+name = "lcms2"
+version = "6.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b75877b724685dd49310bdbadbf973fc69b1d01992a6d4a861b928fc3943f87b"
+dependencies = [
+ "bytemuck",
+ "foreign-types",
+ "lcms2-sys",
+]
+
+[[package]]
+name = "lcms2-sys"
+version = "4.0.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "264db0b78119c5a37d78bb41fb355daab29b3b29430b53cd92e3da51f0ab06cc"
+dependencies = [
+ "cc",
+ "dunce",
+ "libc",
+ "pkg-config",
 ]
 
 [[package]]
@@ -1813,6 +1879,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f1d20bef17f513b9b3004532233187769cd072d790971f4e4da0e346eb6401e8"
 dependencies = [
  "cc",
+ "pkg-config",
+ "vcpkg",
+]
+
+[[package]]
+name = "libz-sys"
+version = "1.1.30"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f710a23e6dbf193214fd46ca56a9d6864e550abe86202184532ae7275e46de19"
+dependencies = [
+ "cc",
+ "libc",
  "pkg-config",
  "vcpkg",
 ]
@@ -3189,6 +3267,7 @@ dependencies = [
  "sungeki-media",
  "sungeki-project",
  "sungeki-protocol",
+ "sungeki-raster",
  "sungeki-render",
  "sungeki-review",
  "sungeki-scene",
@@ -3266,9 +3345,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "sungeki-raster"
+version = "0.1.0"
+dependencies = [
+ "ag-psd",
+ "freetype-rs",
+ "image",
+ "lcms2",
+ "libc",
+ "serde",
+ "serde_json",
+ "sha2",
+ "sungeki-project",
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "sungeki-render"
 version = "0.1.0"
 dependencies = [
+ "image",
  "libc",
  "serde",
  "serde_json",
@@ -3276,6 +3372,7 @@ dependencies = [
  "sungeki-assets",
  "sungeki-media",
  "sungeki-project",
+ "sungeki-raster",
  "sungeki-scene",
  "uuid",
 ]
@@ -4189,9 +4286,9 @@ checksum = "d245f478577f809a851594d02313b640fb437e0bb33866753cff937863096954"
 
 [[package]]
 name = "unicode-segmentation"
-version = "1.13.3"
+version = "1.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6f5d3c3b1bf09027a88a6bc961fc00497d651009560b5463668dc81b0fa87a8"
+checksum = "f6ccf251212114b54433ec949fd6a7841275f9ada20dddd2f29e9ceea4501493"
 
 [[package]]
 name = "url"

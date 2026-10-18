@@ -13,5 +13,3 @@ const directory = resolve(root, 'apps/desktop/src-tauri/binaries');
 mkdirSync(directory, { recursive: true });
 copyFileSync(resolve(root, `target/${profile}/sungeki-host`), resolve(directory, `sungeki-host-${triple}`));
 console.log(`Sungeki host sidecarを配置しました (${profile}, ${triple})`);
-
-await import('./prepare-image-worker.mjs');

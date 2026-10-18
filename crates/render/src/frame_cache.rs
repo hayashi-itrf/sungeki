@@ -18,6 +18,7 @@ pub struct FrameCacheStats {
 }
 #[derive(Default)]
 pub(crate) struct FrameCache {
+    raster: sungeki_raster::frame::Rasterizer,
     frames: HashMap<[u8; 32], usize>,
     pub stats: FrameCacheStats,
     deferred: bool,
@@ -106,31 +107,21 @@ impl FrameCache {
             return Ok(png);
         }
 
-        let args = vec![
-            runner
-                .runtime
-                .visual()?
-                .image_worker
-                .clone()
-                .into_os_string(),
-            "--input".into(),
-            input.into_os_string(),
-            "--resources".into(),
-            resources.as_os_str().to_owned(),
-            "--font".into(),
-            runner.directory.join("font.ttc").into_os_string(),
-            "--font-sha256".into(),
-            runner.runtime.visual()?.font_sha256.clone().into(),
-            "--pose-cache".into(),
-            runner.directory.join("psd-cache").into_os_string(),
-            "--output".into(),
-            png.clone().into_os_string(),
-        ];
-        let report = runner.run(&runner.runtime.visual()?.python, args)?;
-        let value: Value = serde_json::from_slice(&report)?;
+        runner.check_active()?;
+        let value = sungeki_raster::files::render(
+            &mut self.raster,
+            &input,
+            resources,
+            &runner.directory.join("font.ttc"),
+            &runner.runtime.visual()?.font_sha256,
+            &png,
+            runner.flag,
+        )
+        .map_err(|failure| runner.raster_error(failure))?;
+        runner.check_active()?;
         write_new(
             &runner.directory.join(format!("report-{index}.json")),
-            &report,
+            &serde_json::to_vec(&value)?,
         )?;
         validate_report(&value, runner, canvas, layers, index, frame_index)?;
         self.frames.insert(key, index);
@@ -210,7 +201,7 @@ mod tests {
         assert_ne!(key(&background, &[&layers[0]], "font-a").unwrap(), original);
     }
     #[test]
-    fn overflow_and_wrong_frame_reports_are_never_reused() {
+    fn invalid_native_inputs_never_enter_cache() {
         use crate::RenderRuntime;
         use std::{
             fs,
@@ -220,11 +211,9 @@ mod tests {
         let directory =
             std::env::temp_dir().join(format!("vvm-frame-cache-{}", uuid::Uuid::new_v4()));
         fs::create_dir(&directory).unwrap();
-        let script = directory.join("report.sh");
         let runtime = RenderRuntime {
             vrm: None,
-            python: "/bin/sh".into(),
-            image_worker: script.clone(),
+
             ffmpeg: "/unused".into(),
             ffprobe: "/unused".into(),
             font: "/unused".into(),
@@ -240,15 +229,7 @@ mod tests {
         };
         let (canvas, layers) = fixture();
         let mut cache = FrameCache::default();
-        for (index, issues) in [
-            serde_json::json!([{"code":"TEXT_OVERFLOW"}]),
-            serde_json::json!([]),
-        ]
-        .iter()
-        .enumerate()
-        {
-            let report = serde_json::json!({"frame_index":0,"time_us":0,"font_sha256":"font-a","layout_version":crate::CURRENT_LAYOUT_VERSION,"issues":issues});
-            fs::write(&script, format!("printf '%s' '{}'", report)).unwrap();
+        for index in 0..2 {
             assert!(
                 cache
                     .frame(&runner, &canvas, &[&layers[0]], index, index as u64)

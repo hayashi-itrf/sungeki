@@ -16,8 +16,6 @@
     { key: 'aivis_engine', label: 'runtimeAivisEngine' },
     { key: 'coeiroink_engine', label: 'runtimeCoeiroinkEngine' },
     { key: 'runtime_root', label: 'runtimeStorage' },
-    { key: 'python', label: 'runtimePython' },
-    { key: 'image_worker', label: 'runtimeImageWorker' },
     { key: 'ffmpeg', label: 'runtimeFfmpeg' },
     { key: 'ffprobe', label: 'runtimeFfprobe' },
     { key: 'font', label: 'runtimeFont' },
@@ -30,11 +28,9 @@
     if (field.key === 'font_sha256' || busy || !draft) return;
     busy = true; errorMessage = '';
     try {
-      // Native file pickers may resolve the venv's Python symlink to the base
-      // interpreter, losing its installed packages. Select the venv root instead.
-      const path = await open({ title: locale.text(field.key === 'python' ? 'runtimeChoosePythonEnvironment' : field.label), multiple: false, directory: field.key === 'python' || field.key === 'runtime_root' });
+      const path = await open({ title: locale.text(field.label), multiple: false, directory: field.key === 'runtime_root' });
       if (typeof path === 'string' && draft) {
-        draft[field.key] = field.key === 'python' ? `${path.replace(/\/$/, '')}/bin/python` : path;
+        draft[field.key] = path;
         if (field.key === 'font') draft.font_sha256 = null;
       }
     } catch (error) { errorMessage = error instanceof Error ? error.message : String(error); }
@@ -85,11 +81,10 @@
           }} spellcheck="false" />
         </label>
         {#if field.key !== 'font_sha256'}
-          <button class="choose" type="button" aria-label={`${locale.text(field.key === 'python' ? 'runtimeChoosePythonEnvironment' : field.key === 'runtime_root' ? 'runtimeChooseStorageFolder' : 'runtimeChooseToolFile')}: ${locale.text(field.label)}`} onclick={() => chooseFile(field)}>{locale.text(field.key === 'python' ? 'runtimeChoosePythonEnvironment' : field.key === 'runtime_root' ? 'runtimeChooseStorageFolder' : field.key === 'font' ? 'runtimeChooseFontFile' : 'runtimeChooseToolFile')}</button>
+          <button class="choose" type="button" aria-label={`${locale.text(field.key === 'runtime_root' ? 'runtimeChooseStorageFolder' : 'runtimeChooseToolFile')}: ${locale.text(field.label)}`} onclick={() => chooseFile(field)}>{locale.text(field.key === 'runtime_root' ? 'runtimeChooseStorageFolder' : field.key === 'font' ? 'runtimeChooseFontFile' : 'runtimeChooseToolFile')}</button>
         {/if}
         {#if field.key === 'font'}<small>{locale.text('runtimeFontHint')}</small>{/if}
         {#if field.key === 'runtime_root'}<small>{locale.text('runtimeStorageHint')}</small>{/if}
-        {#if field.key === 'python'}<small>{locale.text('runtimePythonHint')}</small>{/if}
       {/each}
     </fieldset>
     <button disabled={busy || !modified} onclick={() => run(true)}>{locale.text('runtimeSave')}</button>

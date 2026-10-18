@@ -58,8 +58,7 @@ fn real_loop_trim_gain_fade_delay_and_mix_match_every_sample() {
         fs::create_dir(&work).unwrap();
         let runtime = crate::RenderRuntime {
             vrm: None,
-            python: "/unused".into(),
-            image_worker: "/unused".into(),
+
             ffmpeg: binary.clone().into(),
             ffprobe: std::env::var("VVM_TEST_FFPROBE")
                 .expect("explicit ffprobe path")

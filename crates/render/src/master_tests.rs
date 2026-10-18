@@ -75,8 +75,7 @@ fn real_master_pcm_and_encoded_aac_meet_target_or_fail_explicitly() {
         vrm: None,
         ffmpeg: std::env::var_os("VVM_TEST_FFMPEG").unwrap().into(),
         ffprobe: std::env::var_os("VVM_TEST_FFPROBE").unwrap().into(),
-        python: "/unused".into(),
-        image_worker: "/unused".into(),
+
         font: "/unused".into(),
         font_sha256: String::new(),
         deadline: Duration::from_secs(60),

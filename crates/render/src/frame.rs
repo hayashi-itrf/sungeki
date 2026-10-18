@@ -11,7 +11,7 @@ use std::{
 use sungeki_project::{Project, TimeUs};
 
 /// Version of newly produced visual artifacts. Stored older artifacts retain their version.
-pub const CURRENT_LAYOUT_VERSION: u32 = 9;
+pub const CURRENT_LAYOUT_VERSION: u32 = sungeki_raster::frame::LAYOUT_VERSION;
 
 #[derive(Debug)]
 pub struct FramePlan {

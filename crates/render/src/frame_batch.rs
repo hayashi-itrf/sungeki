@@ -35,24 +35,25 @@ impl FrameCache {
             &manifest,
             &serde_json::to_vec(&json!({"version":1, "frames":frames}))?,
         )?;
-        let bytes = runner.run(
-            &runner.runtime.visual()?.python,
-            vec![
-                runner.runtime.visual()?.image_worker.as_os_str().to_owned(),
-                "--batch".into(),
-                "--manifest".into(),
-                manifest.into_os_string(),
-                "--directory".into(),
-                runner.directory.as_os_str().to_owned(),
-                "--font".into(),
-                runner.directory.join("font.ttc").into_os_string(),
-                "--font-sha256".into(),
-                runner.runtime.visual()?.font_sha256.clone().into(),
-                "--pose-cache".into(),
-                runner.directory.join("psd-cache").into_os_string(),
-            ],
-        )?;
-        let receipt: Value = serde_json::from_slice(&bytes)?;
+        let mut results = Vec::new();
+        for pending in &self.pending {
+            crate::originals::cancelled(runner.flag)?;
+            let name = format!("frame-{}.png", pending.index);
+            runner.check_active()?;
+            let report = sungeki_raster::files::render(
+                &mut self.raster,
+                &pending.input,
+                &pending.resources,
+                &runner.directory.join("font.ttc"),
+                &runner.runtime.visual()?.font_sha256,
+                &runner.directory.join(&name),
+                runner.flag,
+            )
+            .map_err(|failure| runner.raster_error(failure))?;
+            runner.check_active()?;
+            results.push(json!({"output":name,"report":report}));
+        }
+        let receipt = json!({"version":1,"frames":results});
         let reports = receipt["frames"]
             .as_array()
             .ok_or_else(|| error("画像合成結果が不正です"))?;

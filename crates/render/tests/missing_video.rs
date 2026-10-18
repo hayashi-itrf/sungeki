@@ -24,8 +24,7 @@ fn missing_video_reports_the_asset_and_original_without_producing_output() {
     fs::create_dir(&work).unwrap();
     let runtime = RenderRuntime {
         vrm: None,
-        python: "/unused-python".into(),
-        image_worker: "/unused-worker".into(),
+
         ffmpeg: "/unused-ffmpeg".into(),
         ffprobe: "/unused-ffprobe".into(),
         font,

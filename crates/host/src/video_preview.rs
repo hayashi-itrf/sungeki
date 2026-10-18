@@ -12,7 +12,7 @@ use crate::{
 };
 use std::{
     fs,
-    os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt},
+    os::unix::fs::{DirBuilderExt, MetadataExt},
     path::{Path, PathBuf},
     sync::{Arc, Mutex},
     time::{Duration, Instant},
@@ -178,55 +178,15 @@ pub(crate) fn execute(
         .map(|frame| sungeki_render::stage_video_frame(frame, &work.path.join("frame.rgba"), flag))
         .transpose()
         .map_err(|e| guard::render_error(e, flag, end))?;
-    let resource_path = work.path.join("resource.json");
-    use std::io::Write;
-    fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .mode(0o600)
-        .open(&resource_path)
-        .map_err(invalid)?
-        .write_all(&serde_json::to_vec(&resource).map_err(invalid)?)
-        .map_err(invalid)?;
-    let worker = config
-        .image
-        .image_worker
-        .parent()
-        .ok_or_else(|| invalid("画像workerの配置が不正です"))?
-        .join("video_preview.py");
-    let output = sungeki_media::run_process(
-        &sungeki_media::ProcessSpec {
-            program: &config.image.python,
-            args: &[worker.into_os_string(), resource_path.into_os_string()],
-            directory: &work.path,
-            timeout: remaining(end)?,
-            max_output_bytes: 8 * 1024 * 1024,
-        },
-        flag,
-    )
-    .map_err(|e| {
-        guard::check(flag, end)
-            .err()
-            .unwrap_or_else(|| ApiError::io(e))
-    })?;
-    if let Some(reason) = output.stopped {
-        return Err(error(sungeki_media::video_probe::ProbeError::Stopped(
-            reason,
-        )));
-    }
-    if !output.succeeded() {
-        return Err(invalid("動画表示用の画像生成に失敗しました"));
-    }
-    #[derive(serde::Deserialize)]
-    struct Pixels {
-        width: u32,
-        height: u32,
-        png_base64: String,
-    }
-    let pixels: Pixels = serde_json::from_slice(&output.stdout).map_err(invalid)?;
-    if !(1..=1024).contains(&pixels.width) || !(1..=1024).contains(&pixels.height) {
-        return Err(invalid("動画表示の寸法が不正です"));
-    }
+    let preview =
+        sungeki_raster::preview::video(&serde_json::to_value(&resource).map_err(invalid)?)
+            .map_err(invalid)?;
+    use base64::Engine;
+    let (width, height, png_base64) = (
+        preview.width,
+        preview.height,
+        base64::engine::general_purpose::STANDARD.encode(preview.png),
+    );
     guard::check(flag, end)?;
     prepared.verify()?;
     let sessions = shared.lock().map_err(invalid)?;
@@ -243,8 +203,8 @@ pub(crate) fn execute(
     Ok(SessionResponse::ImagePreview {
         asset_id: asset_id.clone(),
         sha256: probe.sha256.clone(),
-        width: pixels.width,
-        height: pixels.height,
-        png_base64: pixels.png_base64,
+        width,
+        height,
+        png_base64,
     })
 }

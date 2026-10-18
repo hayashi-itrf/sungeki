@@ -16136,18 +16136,6 @@
             "minimum": 0,
             "type": "integer"
           },
-          "image_worker": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "python": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
           "runtime_root": {
             "type": [
               "string",
@@ -26135,18 +26123,6 @@
             "maximum": 65535,
             "minimum": 0,
             "type": "integer"
-          },
-          "image_worker": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "python": {
-            "type": [
-              "string",
-              "null"
-            ]
           },
           "runtime_root": {
             "type": [

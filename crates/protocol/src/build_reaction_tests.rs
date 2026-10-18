@@ -99,17 +99,17 @@ fn runtime_settings_with_or_without_font_hash_require_current_schema() {
             settings,
         },
     };
-    assert_eq!(request(settings.clone()).minimum_protocol_minor(), 145);
+    assert_eq!(request(settings.clone()).minimum_protocol_minor(), 151);
     assert_eq!(
         request(crate::RuntimeSettings {
             font_sha256: Some("a".repeat(64)),
             ..settings
         })
         .minimum_protocol_minor(),
-        145
+        151
     );
     assert_eq!(
         crate::SessionRequest::GetRuntimeSettings.minimum_protocol_minor(),
-        145
+        151
     );
 }

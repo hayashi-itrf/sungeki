@@ -182,7 +182,7 @@ pub(crate) fn validate(
             || output.byte_length > 512 * 1024 * 1024
             || output.font_sha256 != visual.runtime.font_sha256
             || !hash_ok(&output.font_sha256)
-            || !matches!(output.layout_version, 7 | 8 | 9)
+            || !matches!(output.layout_version, 7 | 8 | 9 | 10)
         {
             return Err(invalid("代表画像の成果物記録が不正です"));
         }

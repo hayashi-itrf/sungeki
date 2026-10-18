@@ -5,10 +5,11 @@ const allowed = {
   protocol: ['project', 'editor'], 'host-client': ['protocol'],
   storage: ['project'], assets: ['project'], media: ['project'],
   speech: ['project', 'assets', 'media'],
-  render: ['project', 'scene', 'assets', 'media'],
+  raster: ['project'],
+  render: ['project', 'scene', 'assets', 'media', 'raster'],
   review: ['project', 'scene', 'assets', 'render', 'media'],
   jobs: ['project'],
-  host: ['project', 'editor', 'protocol', 'storage', 'assets', 'scene', 'media', 'speech', 'render', 'review', 'jobs'],
+  host: ['project', 'editor', 'protocol', 'storage', 'assets', 'scene', 'media', 'speech', 'render', 'review', 'jobs', 'raster'],
   mcp: ['protocol', 'host-client'], desktop: ['protocol', 'host-client'],
 };
 const metadata = JSON.parse(execFileSync('cargo', ['metadata', '--no-deps', '--format-version', '1', '--locked'], { encoding: 'utf8' }));

@@ -6,6 +6,7 @@ rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
+sungeki-raster.workspace = true
 sungeki-protocol.workspace = true
 tokio.workspace = true
 libc.workspace = true

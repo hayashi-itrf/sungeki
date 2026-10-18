@@ -5,7 +5,7 @@ use sungeki_project::{Project, Scene, TimeUs};
 use sungeki_render::{RenderPlan, RenderRuntime, render_staged};
 
 #[test]
-fn failed_worker_cancel_and_nonempty_staging_never_return_an_artifact() {
+fn failed_encoder_cancel_and_nonempty_staging_never_return_an_artifact() {
     let root = std::env::temp_dir().join(format!("vvm-render-failure-{}", uuid::Uuid::new_v4()));
     fs::create_dir(&root).unwrap();
     let font = root.join("font");
@@ -13,8 +13,7 @@ fn failed_worker_cancel_and_nonempty_staging_never_return_an_artifact() {
     let font_sha256 = format!("{:x}", Sha256::digest(b"captured-font-test"));
     let runtime = RenderRuntime {
         vrm: None,
-        python: "/usr/bin/false".into(),
-        image_worker: "/unused.py".into(),
+
         ffmpeg: PathBuf::from("/unused-ffmpeg"),
         ffprobe: "/unused-ffprobe".into(),
         font,
@@ -53,7 +52,10 @@ fn failed_worker_cancel_and_nonempty_staging_never_return_an_artifact() {
         &mut |event| observations.push(event),
     )
     .unwrap_err();
-    assert!(failure.to_string().contains("外部描画処理"), "{failure}");
+    assert!(
+        matches!(failure, sungeki_render::RenderError::Message(_)),
+        "{failure}"
+    );
     assert!(!work.join("output.mp4").exists());
     assert!(
         observations.contains(&sungeki_render::RenderProgress::Drawing {

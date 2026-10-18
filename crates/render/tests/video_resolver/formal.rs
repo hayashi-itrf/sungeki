@@ -30,12 +30,9 @@ pub fn check(
     p.clips[0].transform.width = 32.0;
     p.clips[0].transform.height = 24.0;
     let font = PathBuf::from("/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc");
-    let python = PathBuf::from(std::env::var_os("VVM_TEST_IMAGE_PYTHON").unwrap());
     let runtime = RenderRuntime {
         vrm: None,
-        python: python.clone(),
-        image_worker: PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../workers/image/render_frame.py"),
+
         ffmpeg: ffmpeg.to_owned(),
         ffprobe: ffprobe.to_owned(),
         font: font.clone(),
@@ -59,26 +56,13 @@ pub fn check(
             serde_json::from_slice(&fs::read(dir.join("video-resources-0.json")).unwrap()).unwrap();
         let resource = resources.as_object().unwrap().values().next().unwrap();
         let raw = resource["path"].as_str().unwrap();
-        let result = std::process::Command::new(&python)
-            .args([
-                "-c",
-                r#"
-from PIL import Image
-import sys
-png=Image.open(sys.argv[1]).convert('RGBA')
-raw=Image.frombytes('RGBA',(32,24),open(sys.argv[2],'rb').read())
-assert png.crop((4,6,36,30)).tobytes()==raw.tobytes()
-assert png.size==(64,48)
-"#,
-            ])
-            .arg(&artifact.path)
-            .arg(raw)
-            .output()
-            .unwrap();
-        assert!(
-            result.status.success(),
-            "{}",
-            String::from_utf8_lossy(&result.stderr)
+        let pixels = image::open(&artifact.path).unwrap().to_rgba8();
+        assert_eq!(pixels.dimensions(), (64, 48));
+        assert_eq!(
+            image::imageops::crop_imm(&pixels, 4, 6, 32, 24)
+                .to_image()
+                .into_raw(),
+            fs::read(raw).unwrap()
         );
         if let Some(evidence) = std::env::var_os("VVM_TEST_VIDEO_PNG_EVIDENCE") {
             if index == 0 {

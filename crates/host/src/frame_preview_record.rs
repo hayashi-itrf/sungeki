@@ -84,7 +84,7 @@ pub(crate) fn decode(job: &StoredJob) -> Result<(Input, State), ApiError> {
             || output.frame_index != input.frame_index
             || Some(output.time_us) != input.project.canvas.fps.frame_time(input.frame_index)
             || output.font_sha256 != input.runtime.font_sha256
-            || !matches!(output.layout_version, 7 | 8 | 9)
+            || !matches!(output.layout_version, 7 | 8 | 9 | 10)
             || input.directory.join("frame-0.png").to_str() != Some(output.path.as_str())
             || !hash_ok(&output.sha256)
             || !hash_ok(&output.font_sha256)

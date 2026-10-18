@@ -42,7 +42,20 @@ pub fn load(database: &Path) -> Result<Settings, ApiError> {
     if raw.len() as u64 > LIMIT {
         return Err(invalid("実行環境設定が大きすぎます"));
     }
-    let value: Settings = serde_json::from_slice(&raw).map_err(invalid)?;
+    // Retire two fields of this application's installation settings. This does
+    // not read the predecessor application's settings or accept old MCP APIs.
+    // Reading is side-effect free; the next explicit save writes current fields.
+    let mut stored: serde_json::Value = serde_json::from_slice(&raw).map_err(invalid)?;
+    if let Some(object) = stored.as_object_mut() {
+        for key in ["python", "image_worker"] {
+            if let Some(value) = object.remove(key) {
+                if !value.is_null() && !value.is_string() {
+                    return Err(invalid("廃止された描画設定の値が不正です"));
+                }
+            }
+        }
+    }
+    let value: Settings = serde_json::from_value(stored).map_err(invalid)?;
     validate(&value)?;
     Ok(value)
 }
@@ -57,8 +70,6 @@ pub fn validate(settings: &Settings) -> Result<(), ApiError> {
         &settings.voicevox_engine,
         &settings.aivis_engine,
         &settings.coeiroink_engine,
-        &settings.python,
-        &settings.image_worker,
         &settings.ffmpeg,
         &settings.ffprobe,
         &settings.font,
@@ -136,10 +147,6 @@ pub(crate) fn execute(
     };
     Ok(sungeki_protocol::SessionResponse::RuntimeSettings { settings })
 }
-
-#[path = "bundled_image_worker.rs"]
-mod bundled_image_worker;
-pub(crate) use bundled_image_worker::resolve as image_worker;
 
 fn ensure_storage_idle(
     sessions: &crate::sessions::Sessions,

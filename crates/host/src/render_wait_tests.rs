@@ -26,8 +26,7 @@ fn fixture() -> (PathBuf, Arc<Mutex<Sessions>>, String) {
         directory: root.join("output"),
         runtime: sungeki_render::RenderRuntime {
             vrm: None,
-            python: "/unused".into(),
-            image_worker: "/unused".into(),
+
             ffmpeg: "/unused".into(),
             ffprobe: "/unused".into(),
             font: "/unused".into(),

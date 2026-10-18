@@ -1,5 +1,5 @@
 [workspace]
-members = ["apps/desktop/src-tauri", "crates/mcp", "crates/protocol", "crates/host-client", "crates/host", "crates/project", "crates/editor", "crates/storage", "crates/assets", "crates/review", "crates/jobs", "crates/speech", "crates/media", "crates/scene", "crates/render"]
+members = ["apps/desktop/src-tauri", "crates/mcp", "crates/protocol", "crates/host-client", "crates/host", "crates/project", "crates/editor", "crates/storage", "crates/assets", "crates/review", "crates/jobs", "crates/speech", "crates/media", "crates/scene", "crates/render", "crates/raster"]
 resolver = "3"
 
 [workspace.package]
@@ -43,3 +43,4 @@ sungeki-speech = { path = "crates/speech" }
 sungeki-media = { path = "crates/media" }
 sungeki-scene = { path = "crates/scene" }
 sungeki-render = { path = "crates/render" }
+sungeki-raster = { path = "crates/raster" }

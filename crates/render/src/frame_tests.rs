@@ -78,8 +78,7 @@ fn cancellation_and_nonempty_directory_never_replace_files() {
     fs::create_dir(&directory).unwrap();
     let runtime = RenderRuntime {
         vrm: None,
-        python: "/usr/bin/false".into(),
-        image_worker: "/unused.py".into(),
+
         ffmpeg: "/unused".into(),
         ffprobe: "/unused".into(),
         font: "/unused".into(),
@@ -101,41 +100,32 @@ fn cancellation_and_nonempty_directory_never_replace_files() {
 }
 
 #[test]
-fn invalid_png_is_rejected_even_when_worker_reports_success() {
+fn native_frame_is_a_valid_png_without_an_external_image_worker() {
     use sha2::{Digest, Sha256};
-    let root = std::env::temp_dir().join(format!("vvm-frame-invalid-{}", uuid::Uuid::new_v4()));
+    let root = std::env::temp_dir().join(format!("sungeki-native-frame-{}", uuid::Uuid::new_v4()));
     fs::create_dir(&root).unwrap();
     let work = root.join("work");
     fs::create_dir(&work).unwrap();
     let font = root.join("font");
-    fs::write(&font, b"fixture-font").unwrap();
-    let hash = format!("{:x}", Sha256::digest(b"fixture-font"));
-    let worker = root.join("worker.sh");
-    let report = serde_json::json!({"issues":[],"layout_version":9,
-        "font_sha256":hash,"frame_index":0,"time_us":0});
-    fs::write(
-        &worker,
-        format!("printf 'not a PNG' > frame-0.png\nprintf '%s' '{report}'\n"),
-    )
-    .unwrap();
+    fs::write(&font, b"unused for empty canvas").unwrap();
     let runtime = RenderRuntime {
         vrm: None,
-        python: "/bin/sh".into(),
-        image_worker: worker,
         ffmpeg: "/unused".into(),
         ffprobe: "/unused".into(),
         font,
-        font_sha256: hash,
+        font_sha256: format!("{:x}", Sha256::digest(b"unused for empty canvas")),
         deadline: Duration::from_secs(5),
     };
-    let error = render_frame_staged(
-        &FramePlan::new(&empty_scene(), 0).unwrap(),
-        &runtime,
-        &work,
-        &AtomicBool::new(false),
-    )
-    .unwrap_err();
-    assert!(!error.to_string().contains("外部描画処理"), "{error}");
-    assert_eq!(fs::read(work.join("frame-0.png")).unwrap(), b"not a PNG");
+    let plan = FramePlan::new(&empty_scene(), 0).unwrap();
+    let artifact = render_frame_staged(&plan, &runtime, &work, &AtomicBool::new(false)).unwrap();
+    let png = image::open(&artifact.path).unwrap();
+    assert_eq!(
+        (png.width(), png.height()),
+        (
+            plan.render.scene.canvas.width,
+            plan.render.scene.canvas.height
+        )
+    );
+    assert_eq!(artifact.layout_version, CURRENT_LAYOUT_VERSION);
     fs::remove_dir_all(root).unwrap();
 }

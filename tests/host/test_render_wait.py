@@ -32,9 +32,9 @@ class RenderWait(unittest.TestCase):
             font = root / 'font'
             font.write_bytes(b'wait fixture')
             worker = root / 'worker.py'
-            worker.write_text("from pathlib import Path\nimport time\nPath('ready').touch()\ntime.sleep(30)\n")
-            env = dict(SUNGEKI_RENDER_PYTHON=sys.executable, SUNGEKI_RENDER_WORKER=str(worker),
-                       SUNGEKI_RENDER_FFMPEG='/usr/bin/false', SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
+            worker.write_text("#!" + sys.executable + "\nfrom pathlib import Path\nimport time\nPath('ready').touch()\ntime.sleep(30)\n")
+            worker.chmod(0o700)
+            env = dict(SUNGEKI_RENDER_FFMPEG=str(worker), SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
                        SUNGEKI_RENDER_FONT=str(font), SUNGEKI_RENDER_FONT_SHA256=hashlib.sha256(font.read_bytes()).hexdigest(),
                        SUNGEKI_RENDER_WORK_ROOT=str(root / 'render'))
             with patch.dict(os.environ, env):

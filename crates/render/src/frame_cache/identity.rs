@@ -12,13 +12,13 @@ pub(super) fn validate(
         Some(actual) if actual == u64::from(crate::CURRENT_LAYOUT_VERSION) => {}
         Some(actual) => {
             return Err(error(format!(
-                "アプリと画像描画処理の版が一致しません（必要な版: {expected}、応答した版: {actual}）。生成中の処理が終わってから、アプリと接続中の制作ツールを閉じて約1分待ち、起動し直してください。解消しない場合は、設定の画像描画処理がこのアプリに対応するものか確認してください。",
+                "アプリと画像描画処理の版が一致しません（必要な版: {expected}、応答した版: {actual}）。処理を終了してアプリを再起動してください。解消しない場合はアプリを更新してください。",
                 expected = crate::CURRENT_LAYOUT_VERSION
             )));
         }
         None => {
             return Err(error(
-                "画像描画処理から正しい版情報が返されませんでした。設定の画像描画処理を確認してください。",
+                "画像描画処理から正しい版情報が返されませんでした。アプリを再起動してください。",
             ));
         }
     }
@@ -42,13 +42,7 @@ mod tests {
         let message = validate(&report, "font", 0, &json!(0), 0)
             .unwrap_err()
             .to_string();
-        for text in [
-            "必要な版: 9",
-            "応答した版: 7",
-            "生成中の処理が終わってから",
-            "約1分",
-            "設定",
-        ] {
+        for text in ["必要な版: 10", "応答した版: 7", "再起動", "更新"] {
             assert!(message.contains(text), "{message}");
         }
     }
@@ -61,7 +55,7 @@ mod tests {
                 .to_string();
             assert!(message.contains("正しい版情報"));
         }
-        let report = json!({"layout_version":9,"font_sha256":"font","frame_index":0,"time_us":0});
+        let report = json!({"layout_version":crate::CURRENT_LAYOUT_VERSION,"font_sha256":"font","frame_index":0,"time_us":0});
         validate(&report, "font", 0, &json!(0), 0).unwrap();
         for (field, value) in [
             ("font_sha256", json!("other")),

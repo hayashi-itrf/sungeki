@@ -69,15 +69,24 @@ impl<'a> VideoSegments<'a> {
             cancelled(runner.flag)?;
             fs::hard_link(png, dir.join(format!("{i:03}.png")))?;
         }
-        self.encode(
+        let encoded = self.encode(
             runner,
             &dir.join("%03d.png"),
             true,
             self.first,
             self.first + self.pending.len() as u64,
-        )?;
-        // Never remove source PNGs; links are expendable after successful encode.
-        fs::remove_dir_all(dir)?;
+        );
+        // Reaped encoders cannot use these links any longer. Release them on
+        // cancellation/failure too so the source PNG has one link for cleanup.
+        if encoded.is_ok()
+            || matches!(
+                &encoded,
+                Err(RenderError::Settled(_) | RenderError::Cancelled)
+            )
+        {
+            fs::remove_dir_all(dir)?;
+        }
+        encoded?;
         self.pending.clear();
         Ok(())
     }

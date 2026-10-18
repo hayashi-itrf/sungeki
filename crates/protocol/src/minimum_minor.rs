@@ -7,16 +7,11 @@ mod relink;
 use crate::SessionRequest;
 impl SessionRequest {
     pub fn minimum_protocol_minor(&self) -> u16 {
-        if let Self::SaveRuntimeSettings { args } = self {
-            if args.settings.voicevox_engine.is_some()
-                || args.settings.aivis_engine.is_some()
-                || args.settings.coeiroink_engine.is_some()
-                || args.expected.voicevox_engine.is_some()
-                || args.expected.aivis_engine.is_some()
-                || args.expected.coeiroink_engine.is_some()
-            {
-                return 150;
-            }
+        if matches!(
+            self,
+            Self::GetRuntimeSettings | Self::SaveRuntimeSettings { .. }
+        ) {
+            return 151;
         }
         if edits::minimum(self) == 149 {
             return 149;
@@ -34,12 +29,6 @@ impl SessionRequest {
         }
         if matches!(self, Self::ReadEditingAudio { .. }) {
             return 146;
-        }
-        if matches!(
-            self,
-            Self::GetRuntimeSettings | Self::SaveRuntimeSettings { .. }
-        ) {
-            return 145;
         }
         if matches!(self, Self::ParseMarkdownScript { .. }) {
             return 144;

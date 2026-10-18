@@ -28,8 +28,7 @@ fn report_preserves_partial_failures_and_rejects_foreign_paths_or_false_coverage
             directory: root.join(format!("{id}.frames")),
             runtime: sungeki_render::RenderRuntime {
                 vrm: None,
-                python: "/usr/bin/false".into(),
-                image_worker: "/unused".into(),
+
                 ffmpeg: "/unused".into(),
                 ffprobe: "/unused".into(),
                 font: "/missing-font".into(),
@@ -113,8 +112,15 @@ fn report_preserves_partial_failures_and_rejects_foreign_paths_or_false_coverage
     });
     job.state = serde_json::to_vec(&state).unwrap();
     decode(&job).unwrap();
-    // Stored images keep their recorded layout; new renders use version 9.
-    for (version, accepted) in [(7, true), (8, true), (9, true), (0, false), (10, false)] {
+    // Stored images keep their recorded layout; new renders use version 10.
+    for (version, accepted) in [
+        (7, true),
+        (8, true),
+        (9, true),
+        (10, true),
+        (0, false),
+        (11, false),
+    ] {
         state
             .report
             .as_mut()

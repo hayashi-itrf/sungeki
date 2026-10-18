@@ -26,7 +26,7 @@ fn resolve(
         None => saved.font_sha256.clone().ok_or_else(|| {
             ApiError::new(
                 ErrorCode::CapabilityUnavailable,
-                "字幕フォントの準備が必要です。「設定」→「動画制作の実行環境」で保存済み設定を読み込み、字幕フォントを選んで保存してください。検査値は保存時に自動取得します。初回は画像処理用Python・FFmpeg・FFprobeも設定してください。",
+                "字幕フォントの準備が必要です。「設定」→「動画制作の実行環境」で保存済み設定を読み込み、字幕フォントを選んで保存してください。検査値は保存時に自動取得します。初回はFFmpeg・FFprobeも設定してください。",
             )
         })?,
     };
@@ -55,12 +55,6 @@ fn resolve(
         } else {
             None
         },
-        python: path("SUNGEKI_RENDER_PYTHON", saved.python.as_deref())?,
-        image_worker: crate::runtime_settings::image_worker(
-            env("SUNGEKI_RENDER_WORKER").map(PathBuf::from),
-            saved.image_worker.as_deref(),
-            std::env::current_exe().ok().as_deref(),
-        )?,
         ffmpeg: path("SUNGEKI_RENDER_FFMPEG", saved.ffmpeg.as_deref())?,
         ffprobe: path("SUNGEKI_RENDER_FFPROBE", saved.ffprobe.as_deref())?,
         font: path("SUNGEKI_RENDER_FONT", saved.font.as_deref())?,

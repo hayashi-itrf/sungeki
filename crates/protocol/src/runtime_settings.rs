@@ -16,8 +16,6 @@ pub struct RuntimeSettings {
     #[ts(optional)]
     pub coeiroink_engine: Option<PathBuf>,
     pub runtime_root: Option<PathBuf>,
-    pub python: Option<PathBuf>,
-    pub image_worker: Option<PathBuf>,
     pub ffmpeg: Option<PathBuf>,
     pub ffprobe: Option<PathBuf>,
     pub font: Option<PathBuf>,
@@ -38,10 +36,10 @@ mod tests {
     use super::*;
     use crate::SessionRequest;
     #[test]
-    fn runtime_settings_requests_require_protocol_145() {
+    fn runtime_settings_requests_require_protocol_151() {
         assert_eq!(
             SessionRequest::GetRuntimeSettings.minimum_protocol_minor(),
-            145
+            151
         );
         assert_eq!(
             SessionRequest::SaveRuntimeSettings {
@@ -51,7 +49,7 @@ mod tests {
                 }
             }
             .minimum_protocol_minor(),
-            145
+            151
         );
     }
 }

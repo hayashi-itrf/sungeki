@@ -45,8 +45,12 @@ class FramePreviewJobs(unittest.TestCase):
                     client = McpClient(root)
                     snap = call(client, 'create_project', title='MCP出力失敗と再送検証')['snapshot']
                     scene = dict(id=str(uuid.uuid4()), name='blank', start_us=0, duration_us=100000)
+                    track = str(uuid.uuid4())
+                    text = dict(id=str(uuid.uuid4()), track_id=track, scene_id=None, start_us=0, duration_us=100000,
+                        transform=dict(x=0,y=0,width=100,height=100,opacity=1),
+                        content=dict(type='text',text='font validation',font_size=20,color='#000000'))
                     snap = call(client, 'apply_commands', operation_id=str(uuid.uuid4()),
-                                commands=[dict(type='add_scene', scene=scene)])['snapshot']
+                                commands=[dict(type='add_scene', scene=scene), dict(type='add_track', track=dict(id=track,name='text',kind='visual',visible=True,muted=False)),dict(type='add_clip',clip=text)])['snapshot']
                     request = dict(session_id=snap['session_id'], expected_revision=snap['revision'], job_id=str(uuid.uuid4()), frame_index=0)
                     call(client, 'preview_frame', **request)
                     job = finish(client, request['job_id'])
@@ -55,7 +59,7 @@ class FramePreviewJobs(unittest.TestCase):
                     self.assertTrue(call(client, 'read_frame_preview', job_id=request['job_id'], offset=0, length=1).get('isError'))
                     self.assertTrue(call(client, 'publish_frame_preview', job_id=request['job_id'], path=str(root / 'failed.png')).get('isError'))
                     self.assertFalse((root / 'failed.png').exists())
-                    self.assertIn('外部描画処理', job['error']['message'])
+                    self.assertIn('字幕フォント', job['error']['message'])
                     self.assertEqual(call(client, 'preview_frame', **request)['job'], job)
                     self.assertTrue(call(client, 'preview_frame', **dict(request, frame_index=1)).get('isError'))
                     rejected = call(client, 'preview_frame', **dict(request, job_id=str(uuid.uuid4()), frame_index=3))
@@ -86,17 +90,13 @@ class FramePreviewJobs(unittest.TestCase):
                         client.close()
                     host.close()
 
-    def test_running_cancel_and_host_shutdown_wait_for_worker_cleanup(self):
+    def test_running_native_cancel_and_host_shutdown_wait_for_completion(self):
         import sys
         with tempfile.TemporaryDirectory(prefix='vvm-rc-', dir='/tmp') as tmp:
             root = Path(tmp)
             font = root / 'font'
             font.write_bytes(b'font')
-            worker = root / 'worker.sh'
-            worker.write_text("#!/bin/sh\ntouch worker-started\nsleep 30\n")
-            worker.chmod(0o700)
-            env = dict(SUNGEKI_RENDER_PYTHON='/bin/sh', SUNGEKI_RENDER_WORKER=str(worker),
-                       SUNGEKI_RENDER_FFMPEG=str(worker), SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
+            env = dict(SUNGEKI_RENDER_FFMPEG='/usr/bin/false', SUNGEKI_RENDER_FFPROBE='/usr/bin/false',
                        SUNGEKI_RENDER_FONT=str(font), SUNGEKI_RENDER_FONT_SHA256=hashlib.sha256(b'font').hexdigest(),
                        SUNGEKI_RENDER_WORK_ROOT=str(root / 'render'))
             with patch.dict(os.environ, env):
@@ -107,14 +107,21 @@ class FramePreviewJobs(unittest.TestCase):
                     snap = call(client, 'create_project', title='稼働中の出力停止検証')['snapshot']
                     snap = call(client, 'apply_commands', operation_id=str(uuid.uuid4()), commands=[dict(type='add_scene',
                         scene=dict(id=str(uuid.uuid4()), name='blank', start_us=0, duration_us=100000))])['snapshot']
+                    commands=[]
+                    for index in range(24):
+                        track=str(uuid.uuid4())
+                        commands.extend([dict(type='add_track',track=dict(id=track,name='shape',kind='visual',visible=True,muted=False)),
+                            dict(type='add_clip',clip=dict(id=str(uuid.uuid4()),track_id=track,scene_id=None,start_us=0,duration_us=100000,
+                                transform=dict(x=0,y=0,width=1920,height=1080,opacity=.5),content=dict(type='shape',shape='rectangle',fill='#123456')))])
+                    snap=call(client,'apply_commands',operation_id=str(uuid.uuid4()),commands=commands)['snapshot']
                     for shutdown in [False, True]:
                         job_id = str(uuid.uuid4())
-                        call(client, 'preview_frame', job_id=job_id, session_id=snap['session_id'], expected_revision=1, frame_index=0)
-                        marker = root / 'render' / job_id / 'worker-started'
+                        call(client, 'preview_frame', job_id=job_id, session_id=snap['session_id'], expected_revision=snap['revision'], frame_index=0)
                         deadline = time.monotonic() + 5
-                        while not marker.exists() and time.monotonic() < deadline:
-                            time.sleep(.02)
-                        self.assertTrue(marker.exists())
+                        while call(client,'get_frame_preview_job',job_id=job_id)['job']['phase']=='queued':
+                            self.assertLess(time.monotonic(),deadline)
+                            time.sleep(.01)
+                        self.assertEqual(call(client,'get_frame_preview_job',job_id=job_id)['job']['phase'],'running')
                         if shutdown:
                             client.close(); client = None
                             host.close(); host = HostProcess(root)
@@ -124,7 +131,7 @@ class FramePreviewJobs(unittest.TestCase):
                         job = finish(client, job_id)
                         self.assertEqual(job['phase'], 'cancelled')
                         self.assertIsNone(job['output'])
-                        self.assertFalse((marker.parent / 'output.mp4').exists())
+                        self.assertFalse((root / 'render' / job_id / 'output.mp4').exists())
                 finally:
                     if client:
                         client.close()

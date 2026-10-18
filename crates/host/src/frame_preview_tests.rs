@@ -32,8 +32,7 @@ fn interrupted_frame_preview_keeps_its_work_and_never_claims_a_completed_output(
         directory: directory.clone(),
         runtime: sungeki_render::RenderRuntime {
             vrm: None,
-            python: "/unavailable/python".into(),
-            image_worker: "/unavailable/worker".into(),
+
             ffmpeg: "/unavailable/ffmpeg".into(),
             ffprobe: "/unavailable/ffprobe".into(),
             font: "/unavailable/font".into(),

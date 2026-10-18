@@ -6,6 +6,7 @@ rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
+sungeki-raster.workspace = true
 sungeki-project.workspace = true
 sungeki-scene.workspace = true
 sungeki-assets.workspace = true
@@ -16,4 +17,5 @@ sha2.workspace = true
 libc.workspace = true
 
 [dev-dependencies]
+image = { version = "=0.25.10", default-features = false, features = ["png"] }
 uuid.workspace = true

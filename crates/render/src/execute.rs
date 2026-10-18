@@ -28,8 +28,6 @@ pub enum RenderProgress {
 pub struct RenderRuntime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vrm: Option<crate::vrm_worker::VrmRuntime>,
-    pub python: PathBuf,
-    pub image_worker: PathBuf,
     pub ffmpeg: PathBuf,
     pub ffprobe: PathBuf,
     pub font: PathBuf,
@@ -55,6 +53,22 @@ pub(crate) struct Runner<'a> {
     pub end: Instant,
 }
 impl Runner<'_> {
+    pub fn raster_error(&self, failure: impl ToString) -> RenderError {
+        if self.flag.load(std::sync::atomic::Ordering::SeqCst) {
+            RenderError::Cancelled
+        } else {
+            // Native rasterization has returned; no child process can still use
+            // its intermediates, even when the input/font was invalid.
+            RenderError::Settled(failure.to_string())
+        }
+    }
+    pub fn check_active(&self) -> Result<(), RenderError> {
+        cancelled(self.flag)?;
+        if Instant::now() >= self.end {
+            return Err(error("描画の実行期限を超えました"));
+        }
+        Ok(())
+    }
     pub fn run(&self, program: &Path, args: Vec<OsString>) -> Result<Vec<u8>, RenderError> {
         cancelled(self.flag)?;
         let remaining = self

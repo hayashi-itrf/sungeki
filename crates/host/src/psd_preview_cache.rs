@@ -54,22 +54,13 @@ impl Cache {
         self.entries.push_back((key, value));
     }
 }
-pub(super) fn key(
-    path: &Path,
-    probe: &PsdProbe,
-    pose: &PsdPose,
-    worker: &Path,
-    python: &Path,
-) -> Result<[u8; 32], ApiError> {
+pub(super) fn key(path: &Path, probe: &PsdProbe, pose: &PsdPose) -> Result<[u8; 32], ApiError> {
     verify(path, probe)?;
     let mut hash = Sha256::new();
-    hash.update(serde_json::to_vec(&(probe, pose, python)).map_err(invalid)?);
-    let parent = worker
-        .parent()
-        .ok_or_else(|| invalid("PSD workerの配置が不正です"))?;
-    for name in ["psd_preview.py", "psd_pose.py", "original_bytes.py"] {
-        hash.update(fs::read(parent.join(name)).map_err(invalid)?);
-    }
+    hash.update(
+        serde_json::to_vec(&(probe, pose, sungeki_raster::frame::LAYOUT_VERSION))
+            .map_err(invalid)?,
+    );
     Ok(hash.finalize().into())
 }
 pub(super) fn get(key: &[u8; 32]) -> Result<Option<Pixels>, ApiError> {
