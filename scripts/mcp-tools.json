@@ -28,6 +28,8 @@
   "get_frame_preview_job",
   "get_irodori_profile",
   "get_job",
+  "get_local_speech_catalog",
+  "get_local_speech_policy",
   "get_loudness_job",
   "get_preset",
   "get_project",
@@ -93,5 +95,6 @@
   "start_render_job",
   "start_sbv2_speech_job",
   "start_speech_job",
+  "synthesize_local_speech",
   "undo"
 ]
