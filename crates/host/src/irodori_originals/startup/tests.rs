@@ -267,17 +267,30 @@ async fn cancellation_after_spawn_reaps_child() {
     let flag = cancel.clone();
     let path = pid.clone();
     let trigger = std::thread::spawn(move || {
-        let deadline = std::time::Instant::now() + Duration::from_secs(3);
-        while !path.exists() && std::time::Instant::now() < deadline {
+        // CI may spend several seconds scheduling preflight. Cancel only after
+        // the child has published its PID, never merely because time elapsed.
+        let deadline = std::time::Instant::now() + Duration::from_secs(30);
+        while std::time::Instant::now() < deadline {
+            if fs::read_to_string(&path)
+                .ok()
+                .and_then(|value| value.trim().parse::<u32>().ok())
+                .is_some_and(|pid| pid > 0)
+            {
+                flag.store(true, Ordering::Release);
+                return true;
+            }
             std::thread::sleep(Duration::from_millis(10));
         }
-        flag.store(true, Ordering::Release);
+        false
     });
-    let failure = start(request, cancel, Duration::from_secs(5))
+    let failure = start(request, cancel, Duration::from_secs(35))
         .await
         .err()
         .unwrap();
-    trigger.join().unwrap();
+    assert!(
+        trigger.join().unwrap(),
+        "fixture child did not publish its PID"
+    );
     assert_eq!(failure.error.code, ErrorCode::Cancelled);
     assert!(failure.cleanup_confirmed);
     assert!(pid.exists());
