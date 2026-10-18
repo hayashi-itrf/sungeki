@@ -70,6 +70,7 @@ pub(super) fn validate_parent_mode(
     }
     use crate::{build_record::profiles::Kind, speech_journal::Input};
     let managed = match input {
+        Input::Local(_) => return Err(invalid("ローカルHTTP音声の制作親は未対応です")),
         Input::Voicevox(i) => {
             if plan
                 .engine

@@ -7,6 +7,10 @@ use sungeki_media::{VerifiedWav, WavError};
 
 pub struct SpeechResponse(Received);
 enum Received {
+    Local {
+        input: Box<crate::local_http::PreparedLocalInput>,
+        bytes: Vec<u8>,
+    },
     Irodori {
         input: Box<PreparedIrodoriInput>,
         bytes: Vec<u8>,
@@ -27,6 +31,19 @@ impl From<VoicevoxResponse> for SpeechResponse {
     }
 }
 impl SpeechResponse {
+    pub fn local_input_fingerprint(&self) -> Option<&str> {
+        match &self.0 {
+            Received::Local { input, .. } => Some(input.fingerprint()),
+            _ => None,
+        }
+    }
+    pub fn local(input: &crate::local_http::PreparedLocalInput, bytes: Vec<u8>) -> Self {
+        Self(Received::Local {
+            input: Box::new(input.clone()),
+            bytes,
+        })
+    }
+
     pub fn irodori_input_fingerprint(&self) -> Option<&str> {
         match &self.0 {
             Received::Irodori { input, .. } => Some(input.fingerprint()),
@@ -65,7 +82,10 @@ impl SpeechResponse {
 
     pub fn sbv2_input_fingerprint(&self) -> Option<&str> {
         match &self.0 {
-            Received::Voicevox(_) | Received::Qwen { .. } | Received::Irodori { .. } => None,
+            Received::Local { .. }
+            | Received::Voicevox(_)
+            | Received::Qwen { .. }
+            | Received::Irodori { .. } => None,
             Received::Sbv2 { input, .. } => Some(input.fingerprint()),
         }
     }
@@ -85,6 +105,7 @@ impl SpeechResponse {
     /// Must run on a blocking/media worker. Success is not a Project edit or job success.
     pub fn verify(self) -> Result<VerifiedWav, WavError> {
         match self.0 {
+            Received::Local { input, bytes } => input.verify_audio(bytes),
             Received::Irodori { input, bytes } => input.verify_audio(bytes),
             Received::Voicevox(response) => response.verify().map(|verified| verified.audio),
             Received::Sbv2 { input, bytes } => input.verify_audio(bytes),

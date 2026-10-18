@@ -13,6 +13,7 @@ use sungeki_speech::{
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub(crate) enum Input {
+    Local(sungeki_speech::local_http::LocalSpeechJobInput),
     Voicevox(SpeechJobInput),
     Sbv2(Sbv2JobInput),
     Qwen(QwenJobInput),
@@ -36,8 +37,13 @@ impl Input {
         response: &sungeki_speech::SpeechResponse,
     ) -> Result<bool, ApiError> {
         Ok(match self {
+            Self::Local(i) => {
+                response.local_input_fingerprint()
+                    == Some(i.prepared().map_err(invalid)?.fingerprint())
+            }
             Self::Voicevox(_) => {
-                response.irodori_input_fingerprint().is_none()
+                response.local_input_fingerprint().is_none()
+                    && response.irodori_input_fingerprint().is_none()
                     && response.sbv2_input_fingerprint().is_none()
                     && response.qwen_input_fingerprint().is_none()
             }
@@ -57,6 +63,7 @@ impl Input {
     }
     pub fn clip_id(&self) -> &str {
         match self {
+            Self::Local(i) => i.clip_id(),
             Self::Voicevox(i) => i.clip_id(),
             Self::Sbv2(i) => i.clip_id(),
             Self::Qwen(i) => i.clip_id(),
@@ -65,6 +72,7 @@ impl Input {
     }
     pub fn parent_job_id(&self) -> Option<&str> {
         match self {
+            Self::Local(i) => i.parent_job_id(),
             Self::Voicevox(i) => i.parent_job_id(),
             Self::Sbv2(i) => i.parent_job_id(),
             Self::Qwen(i) => i.parent_job_id(),
@@ -73,6 +81,18 @@ impl Input {
     }
     pub fn application(&self, current: &Project) -> Result<ApplicationInput, ApiError> {
         Ok(match self {
+            Self::Local(i) => {
+                let p = i.prepared().map_err(invalid)?;
+                ApplicationInput {
+                    irodori_source: None,
+                    qwen_source: None,
+                    sbv2_source: None,
+                    matches: p.matches(current),
+                    credit: p.character().credit.clone(),
+                    fingerprint: p.fingerprint().into(),
+                    engine_version: i.engine_version().into(),
+                }
+            }
             Self::Voicevox(i) => {
                 let prepared = i.prepared().map_err(invalid)?;
                 ApplicationInput {
@@ -126,14 +146,17 @@ impl Input {
     pub fn voicevox(&self) -> Result<&SpeechJobInput, ApiError> {
         match self {
             Self::Voicevox(input) => Ok(input),
-            Self::Sbv2(_) | Self::Qwen(_) | Self::Irodori(_) => Err(ApiError::new(
-                ErrorCode::CapabilityUnavailable,
-                "この操作はVOICEVOX専用です",
-            )),
+            Self::Local(_) | Self::Sbv2(_) | Self::Qwen(_) | Self::Irodori(_) => {
+                Err(ApiError::new(
+                    ErrorCode::CapabilityUnavailable,
+                    "この操作はVOICEVOX専用です",
+                ))
+            }
         }
     }
     pub fn project(&self) -> &Project {
         match self {
+            Self::Local(i) => i.project(),
             Self::Voicevox(i) => i.project(),
             Self::Sbv2(i) => i.project(),
             Self::Qwen(i) => i.project(),
@@ -142,6 +165,7 @@ impl Input {
     }
     pub fn source_revision(&self) -> u32 {
         match self {
+            Self::Local(i) => i.source_revision(),
             Self::Voicevox(i) => i.source_revision(),
             Self::Sbv2(i) => i.source_revision(),
             Self::Qwen(i) => i.source_revision(),
@@ -150,6 +174,7 @@ impl Input {
     }
     pub fn input_hash(&self) -> &str {
         match self {
+            Self::Local(i) => i.input_hash(),
             Self::Voicevox(i) => i.input_hash(),
             Self::Sbv2(i) => i.input_hash(),
             Self::Qwen(i) => i.input_hash(),
@@ -158,6 +183,7 @@ impl Input {
     }
     pub fn lip_sync_settings(&self) -> LipSyncSettings {
         match self {
+            Self::Local(i) => i.lip_sync_settings(),
             Self::Voicevox(i) => i.lip_sync_settings(),
             Self::Sbv2(i) => i.lip_sync_settings(),
             Self::Qwen(i) => i.lip_sync_settings(),
@@ -166,6 +192,7 @@ impl Input {
     }
     pub fn resources(&self) -> Vec<Resource> {
         let key = match self {
+            Self::Local(_) => "local-http-speech".into(),
             Self::Voicevox(i) => i.identity().engine_id.clone(),
             // Serialize every SBV2 endpoint/model until owned process bindings exist.
             // A changed URL or model hash must never bypass unsettled synthesis.

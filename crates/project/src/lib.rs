@@ -13,7 +13,6 @@ pub use checkpoint::{Checkpoint, CheckpointAsset, CheckpointSummary};
 mod image_probe;
 pub use image_probe::{ImageFormat, ImageProbe};
 mod asset_validation;
-
 mod review;
 pub use review::*;
 mod job;
@@ -36,30 +35,23 @@ mod character;
 pub use character::{
     Character, SubtitleLayout, SubtitleOutline, SubtitleStyle, TextAlignment, Voice,
 };
-
 mod audio_probe;
 pub use audio_probe::{AudioProbe, CompressedAudioEncoding};
-
 mod speech_audio;
 pub use speech_audio::SpeechAudio;
-
 mod audio_relocation;
 pub use audio_relocation::AudioRelocation;
 mod psd;
 pub use psd::{PsdLayer, PsdLayerKind, PsdPose, PsdProbe, PsdSelection};
-
 mod lipsync;
 pub use lipsync::{
     LIPSYNC_ANALYSIS_VERSION, LipSyncAnalysis, LipSyncSettings, MAX_LIPSYNC_WINDOWS, MouthInterval,
 };
-
 mod psd_speech;
 pub use psd_speech::PsdSpeechBinding;
-
 // Shared bounds for stored speech gain and source-relative gain proposals.
 pub const MIN_SPEECH_GAIN_DB: f64 = -60.0;
 pub const MAX_SPEECH_GAIN_DB: f64 = 24.0;
-
 mod audio_playback;
 pub use audio_playback::AudioPlayback;
 mod ducking;
@@ -103,3 +95,6 @@ pub use vrm::{VrmAssetProbe, VrmInspection, VrmKind};
 
 mod vrm_standing;
 pub use vrm_standing::{VrmStanding, validate_pose};
+
+mod local_voice;
+pub use local_voice::{LocalSpeechEngine, LocalVoiceSettings};

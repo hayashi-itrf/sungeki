@@ -6,6 +6,10 @@ use ts_rs::TS;
 #[derive(Debug, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum SessionResponse {
+    LocalSpeechPolicy { policy: String },
+    LocalSpeechCatalog {
+        catalog: crate::LocalSpeechCatalog,
+    },
     EditingAudioBytes {
         offset: u32,
         total: u32,

@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-18",
+  "engines": {
+    "aivis_speech": {
+      "job_phase": "succeeded",
+      "application": "applied",
+      "saved_reopened": true,
+      "speaker": "まお",
+      "duration_seconds": "5.145828",
+      "format": {
+        "codec_name": "pcm_s16le",
+        "sample_rate": "44100",
+        "channels": 1
+      },
+      "text": "こんにちは。すんげきで、日本語の音声合成を確認しています。",
+      "video_duration_seconds": "5.166667"
+    },
+    "coeiroink": {
+      "job_phase": "succeeded",
+      "application": "applied",
+      "saved_reopened": true,
+      "speaker": "つくよみちゃん",
+      "duration_seconds": "4.391202",
+      "format": {
+        "codec_name": "pcm_s16le",
+        "sample_rate": "44100",
+        "channels": 1
+      },
+      "text": "こんにちは。すんげきで、日本語の音声合成を確認しています。",
+      "video_duration_seconds": "4.400000"
+    }
+  },
+  "checks": {
+    "frontend_tests": 610,
+    "svelte_check": "0 errors / 0 warnings",
+    "local_http_unit_tests": 4,
+    "local_http_integration_tests": 5,
+    "gui": "両エンジンの実話者取得・声選択・利用条件表示・キャラクター登録・UndoをネイティブGUIで確認。AivisSpeech保存音声の末尾までの再生進行、COEIROINK調整欄を確認。登録試験はUndoし保存済み状態と再生位置0に復帰。",
+    "video_export": "新MCPから両音声入りMP4出力成功。ffprobe、全尺デコード、1秒地点抽出画像を目視。1920x1080 H.264/AAC 48kHz。字幕・クレジット表示確認。",
+    "subjective_audio_quality": "未確認"
+  },
+  "lifecycle": "両エンジンSTOPPED確認済み"
+}

@@ -13,6 +13,10 @@ pub(crate) fn prepare(
     parent_id: &str,
 ) -> Result<Input, ApiError> {
     let target = match source {
+        Input::Local(i) => Input::Local(
+            i.recapture_for_reuse(revision, project, clip_id, parent_id)
+                .map_err(invalid)?,
+        ),
         Input::Voicevox(i) => Input::Voicevox(
             i.recapture_for_reuse(revision, project, clip_id, parent_id)
                 .map_err(invalid)?,

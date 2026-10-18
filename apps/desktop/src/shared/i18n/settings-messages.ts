@@ -1,4 +1,5 @@
 export const settingsEnglish = {
+  runtimeVoicevoxEngine: "VOICEVOX engine executable", runtimeAivisEngine: "AivisSpeech engine executable", runtimeCoeiroinkEngine: "COEIROINK engine executable",
   "runtimeTitle": "Video production tools",
   "runtimeNeedsTitle": "Set up the tools for what you want to do",
   "runtimeNeedsEditing": "Start editing: creating, saving and arranging text and shapes does not require the tools below.",
@@ -89,6 +90,7 @@ export const settingsEnglish = {
   "startupNoEvent": "Not received"
 };
 export const settingsJapanese: Record<keyof typeof settingsEnglish, string> = {
+  runtimeVoicevoxEngine: "VOICEVOX 実行ファイル（自動起動）", runtimeAivisEngine: "AivisSpeech 実行ファイル（自動起動）", runtimeCoeiroinkEngine: "COEIROINK 実行ファイル（自動起動）",
   "runtimeTitle": "動画制作の実行環境",
   "runtimeNeedsTitle": "使いたい機能に合わせて準備",
   "runtimeNeedsEditing": "編集を始める：作品の作成・保存や、文字・図形の配置には、以下の実行環境の設定は不要です。",

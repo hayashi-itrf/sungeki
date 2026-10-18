@@ -2,17 +2,14 @@ mod error;
 pub mod framing;
 mod handshake;
 mod message;
-
 pub use error::{ApiError, ErrorCode};
 pub use handshake::{Capabilities, ClientHello, HostInfo};
 pub use message::{Request, RequestBody, Response, ResponseBody};
-
 pub const PROTOCOL_MAJOR: u16 = 1;
-pub const PROTOCOL_MINOR: u16 = 148;
+pub const PROTOCOL_MINOR: u16 = 150;
 pub const APPLICATION: &str = "sungeki-host";
-pub const BUILD_ID: &str = concat!(env!("CARGO_PKG_VERSION"), "-vrm-editor-148");
+pub const BUILD_ID: &str = concat!(env!("CARGO_PKG_VERSION"), "-managed-http-speech-150");
 pub const SOCKET_NAME: &str = "host.sock";
-
 mod session;
 pub use session::*;
 mod markdown_script;
@@ -20,36 +17,28 @@ pub use markdown_script::*;
 mod mcp_args;
 pub use mcp_args::*;
 pub use sungeki_editor::{EditAction, EditRequest};
-
 mod events;
 pub use events::*;
-
 mod checkpoints;
 pub use checkpoints::*;
-
 mod blur_minor;
 mod compressed_audio_minor;
 mod minimum_minor;
 mod motion_minor;
 mod psd_minor;
 mod scene_fade_minor;
-
 mod edit_preview;
 pub use edit_preview::EditPreview;
-
 mod project_read;
 pub use project_read::*;
-
 mod review_frames;
 pub use review_frames::*;
 mod review_job;
 pub use review_job::*;
-
 mod job_args;
 pub use job_args::*;
 mod pronunciation;
 pub use pronunciation::*;
-
 mod voice_catalog;
 pub use voice_catalog::*;
 
@@ -106,3 +95,6 @@ mod ripple_minor_tests;
 
 mod lifecycle;
 pub use lifecycle::*;
+
+mod local_speech;
+pub use local_speech::*;

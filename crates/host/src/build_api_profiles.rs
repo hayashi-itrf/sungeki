@@ -41,6 +41,11 @@ pub(super) fn capture(
     let flag = AtomicBool::new(false);
     for role in &args.recipe.roles {
         let kind = match role.character.voice {
+            Voice::LocalHttp { .. } => {
+                return Err(invalid(
+                    "AivisSpeech・COEIROINKは音声クリップから合成してください。一括制作への接続は未対応です",
+                ));
+            }
             Voice::Voicevox { .. } => continue,
             Voice::Sbv2 { .. } => Kind::Sbv2,
             Voice::Qwen { .. } => Kind::Qwen,

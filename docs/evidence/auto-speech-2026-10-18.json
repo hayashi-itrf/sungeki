@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-18",
+  "protocol_minor": 150,
+  "automatic_start": [
+    "voicevox",
+    "aivis_speech",
+    "coeiroink"
+  ],
+  "existing_managed": [
+    "sbv2",
+    "qwen",
+    "irodori"
+  ],
+  "checks": {
+    "frontend": "610 tests passed; typecheck 0 errors/0 warnings",
+    "host": "3 startup policy tests, 7 runtime settings tests, 1 build-reuse test passed",
+    "external_server": "Existing VOICEVOX on 55021 remained listening after host exit. It was not started or stopped by this test.",
+    "startup_cancellation": {
+      "startup_cancelled": true,
+      "process_absent": true,
+      "host_exit": 0
+    },
+    "native_gui": "更新版releaseアプリの実行環境画面で3実行ファイル欄と説明を確認。接続専用MCPで既存runtime設定を保ったまま3パスを保存し、GUI再読込で一致確認。"
+  },
+  "engines": {
+    "voicevox": {
+      "phase": "succeeded",
+      "application": "applied",
+      "owned_engine_stopped_after_host_exit": true,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s16le",
+            "sample_rate": "24000",
+            "channels": 1
+          }
+        ],
+        "format": {
+          "duration": "5.546667"
+        }
+      }
+    },
+    "aivis_speech": {
+      "phase": "succeeded",
+      "application": "applied",
+      "owned_engine_stopped_after_host_exit": true,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s16le",
+            "sample_rate": "44100",
+            "channels": 1
+          }
+        ],
+        "format": {
+          "duration": "5.181043"
+        }
+      }
+    },
+    "coeiroink": {
+      "phase": "succeeded",
+      "application": "applied",
+      "owned_engine_stopped_after_host_exit": true,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s16le",
+            "sample_rate": "44100",
+            "channels": 1
+          }
+        ],
+        "format": {
+          "duration": "4.391202"
+        }
+      }
+    }
+  }
+}

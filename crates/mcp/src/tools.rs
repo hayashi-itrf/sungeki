@@ -230,6 +230,9 @@ pub fn definitions() -> Vec<Tool> {
             "get_irodori_profile",
             "Irodori設定の原本を照合して登録済み話者・対応能力を取得。実合成の成功を保証しません。",
         ),
+        tool::<LocalSpeechPolicyArgs>("get_local_speech_policy", "Read the selected local voice policy before use."),
+        tool::<LocalSpeechCatalogArgs>("get_local_speech_catalog", "List voices from a running local AivisSpeech or COEIROINK v2 engine."),
+        tool::<StartSpeechArgs>("synthesize_local_speech", "Synthesize a local_http speech clip using AivisSpeech or COEIROINK v2; uses shared durable jobs."),
         tool::<StartIrodoriSpeechArgs>(
             "start_irodori_speech_job",
             "wait_msは0〜30000、省略0。開始後の終了または期限まで待ち、同じjob_idを返す。待機量を変えた再送は再合成しない。設定済みのSungeki用Irodoriプロファイルで音声合成ジョブを開始します。",

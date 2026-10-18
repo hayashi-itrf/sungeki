@@ -54,6 +54,9 @@ pub fn validate(settings: &Settings) -> Result<(), ApiError> {
         crate::runtime_root::mount_for(root).map_err(invalid)?;
     }
     for path in [
+        &settings.voicevox_engine,
+        &settings.aivis_engine,
+        &settings.coeiroink_engine,
         &settings.python,
         &settings.image_worker,
         &settings.ffmpeg,

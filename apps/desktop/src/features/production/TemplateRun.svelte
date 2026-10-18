@@ -52,7 +52,7 @@
   {/each}
   {#each recipe.roles as role, i}
     <p>{role.character.name} · {role.character.credit}</p>
-    {#if role.character.voice.type !== 'voicevox'}<BuildProfilePicker engine={role.character.voice.type} person={people[i]!} disabled={disabled || busy} />{/if}
+    {#if role.character.voice.type !== 'voicevox' && role.character.voice.type !== 'local_http'}<BuildProfilePicker engine={role.character.voice.type} person={people[i]!} disabled={disabled || busy} />{/if}
   {/each}
   {#if !savedConnection && recipe.roles.some(r => r.character.voice.type === 'voicevox')}<label>VOICEVOX URL<input type="url" bind:value={url} /></label>{/if}
   <BuildReusePicker selection={reuse} {recipe} history={jobs.jobs} disabled={locked} />

@@ -9,6 +9,20 @@ pub(super) fn minimum(request: &SessionRequest) -> u16 {
         },
         _ => None,
     };
+    if commands.is_some_and(|commands| {
+        commands.iter().any(|c| match c {
+            sungeki_editor::Command::SetCharacter { character } => {
+                matches!(character.voice, sungeki_project::Voice::LocalHttp { .. })
+            }
+            sungeki_editor::Command::ReplaceProject { project, .. } => project
+                .characters
+                .iter()
+                .any(|c| matches!(c.voice, sungeki_project::Voice::LocalHttp { .. })),
+            _ => false,
+        })
+    }) {
+        return 149;
+    }
     if commands.is_some_and(|commands| commands.iter().any(crate::sbv2_audio_minor::command)) {
         return 67;
     }

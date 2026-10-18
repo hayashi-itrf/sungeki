@@ -6,7 +6,7 @@ use std::{
     time::Duration,
 };
 
-pub(super) fn connection(base: &str, timeout: Duration) -> Result<(Client, Url), TransportError> {
+pub(crate) fn connection(base: &str, timeout: Duration) -> Result<(Client, Url), TransportError> {
     let base = endpoint(base)?;
     if timeout.is_zero() || timeout > Duration::from_secs(300) {
         return Err(config(
@@ -24,17 +24,17 @@ pub(super) fn connection(base: &str, timeout: Duration) -> Result<(Client, Url),
     Ok((client, base))
 }
 
-pub(super) fn config(message: &str) -> TransportError {
+pub(crate) fn config(message: &str) -> TransportError {
     TransportError::Configuration(message.into())
 }
-pub(super) fn check_cancel(cancelled: &AtomicBool) -> Result<(), TransportError> {
+pub(crate) fn check_cancel(cancelled: &AtomicBool) -> Result<(), TransportError> {
     if cancelled.load(Ordering::Acquire) {
         Err(TransportError::Cancelled)
     } else {
         Ok(())
     }
 }
-pub(super) fn failure(stage: Stage, error: reqwest::Error) -> TransportError {
+pub(crate) fn failure(stage: Stage, error: reqwest::Error) -> TransportError {
     // Do not include the URL (which contains the full speech text) in errors.
     if error.is_timeout() {
         TransportError::Timeout(stage)
@@ -42,7 +42,7 @@ pub(super) fn failure(stage: Stage, error: reqwest::Error) -> TransportError {
         TransportError::Connection(stage)
     }
 }
-pub(super) async fn read(
+pub(crate) async fn read(
     mut response: reqwest::Response,
     stage: Stage,
     limit: usize,
@@ -69,7 +69,7 @@ pub(super) async fn read(
     Ok(bytes)
 }
 
-pub(super) fn endpoint(base: &str) -> Result<Url, TransportError> {
+pub(crate) fn endpoint(base: &str) -> Result<Url, TransportError> {
     let base = Url::parse(base).map_err(|_| config("VOICEVOXのURLが不正です"))?;
     let local = base
         .host_str()

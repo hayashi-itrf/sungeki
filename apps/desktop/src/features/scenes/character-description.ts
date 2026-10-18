@@ -2,7 +2,7 @@ import { locale } from '../../shared/i18n/locale.svelte';
 import { englishFields } from '../editor/difference-english';
 import type { Character, Project } from '@sungeki/api-client';
 export const voiceSettingLabels: Record<string, string> = {
-  speed_scale: '話速', pitch_scale: '声の高さ', intonation_scale: '抑揚', volume_scale: '合成時の音量',
+  emotion_scale: '感情表現の強さ', tempo_dynamics_scale: 'テンポの緩急', speaker_uuid: '話者', engine: '音声エンジン', speed_scale: '話速', pitch_scale: '声の高さ', intonation_scale: '抑揚', volume_scale: '合成時の音量',
   pre_phoneme_length: '開始前の無音', post_phoneme_length: '終了後の無音', pause_length: '句読点の間',
   pause_length_scale: '句読点の間の倍率', enable_interrogative_upspeak: '疑問文の語尾上昇',
   output_sampling_rate: '音声のサンプリングレート', output_stereo: 'ステレオ出力', style_id: '話者スタイル',
@@ -31,8 +31,8 @@ function subtitle(style: Character['subtitle_style']): string {
 }
 export function describeCharacter(after: Character, project: Project): string {
   const before = project.characters.find(c => c.id === after.id);
-  if (!before && locale.current === 'en') return `Register speaker “${after.name}”. Speech engine: ${{ voicevox: 'VOICEVOX', sbv2: 'SBV2', qwen: 'Qwen', irodori: 'Irodori' }[after.voice.type]}`;
-  if (!before) return `話者「${after.name}」を登録。音声エンジン：${{ voicevox: 'VOICEVOX', sbv2: 'SBV2', qwen: 'Qwen', irodori: 'Irodori' }[after.voice.type]}`;
+  if (!before && locale.current === 'en') return `Register speaker “${after.name}”. Speech engine: ${{ voicevox: 'VOICEVOX', sbv2: 'SBV2', qwen: 'Qwen', irodori: 'Irodori', local_http: after.voice.type === 'local_http' ? (after.voice.settings.engine === 'aivis_speech' ? 'AivisSpeech' : 'COEIROINK') : '' }[after.voice.type]}`;
+  if (!before) return `話者「${after.name}」を登録。音声エンジン：${{ voicevox: 'VOICEVOX', sbv2: 'SBV2', qwen: 'Qwen', irodori: 'Irodori', local_http: after.voice.type === 'local_http' ? (after.voice.settings.engine === 'aivis_speech' ? 'AivisSpeech' : 'COEIROINK') : '' }[after.voice.type]}`;
   const changes: string[] = [];
   if (before.name !== after.name) changes.push(`${text('名前：', 'Name: ')}${before.name} → ${after.name}`);
   if (before.credit !== after.credit) changes.push(text('クレジットを変更', 'Credits changed'));
@@ -45,7 +45,7 @@ export function describeCharacter(after: Character, project: Project): string {
         if (!same(previous[key], next)) changes.push(`${locale.current === 'en' ? (key === 'voice' ? 'Speaker' : englishFields[key] ?? 'Voice settings') : voiceSettingLabels[key] ?? '音声設定'}${text('：', ': ')}${value(previous[key])} → ${value(next)}`);
       }
       if (before.voice.type === 'voicevox' && after.voice.type === 'voicevox' && (before.voice.engine_id !== after.voice.engine_id || before.voice.core_version !== after.voice.core_version)) changes.push(text('音声エンジンの識別情報を変更', 'Speech engine identity changed'));
-      if (before.voice.type !== 'voicevox' && after.voice.type !== 'voicevox' && !same(before.voice.identity, after.voice.identity)) changes.push(text('モデル原本の識別情報を変更', 'Model original identity changed'));
+      if ('identity' in before.voice && 'identity' in after.voice && !same(before.voice.identity, after.voice.identity)) changes.push(text('モデル原本の識別情報を変更', 'Model original identity changed'));
     }
     const speech = project.clips.filter(c => c.content.type === 'speech' && c.content.character_id === after.id);
     const generated = speech.filter(c => c.content.type === 'speech' && c.content.audio !== null).length;

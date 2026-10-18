@@ -78,7 +78,7 @@
       <h4>{narration ? locale.text('productionNarrator') : index === 0 ? locale.text('productionLeftSpeaker') : locale.text('productionRightSpeaker')}{locale.text('productionStandingHeading')}</h4>
       <label>{locale.text('productionSpeaker')}<select required bind:value={person.character} onchange={() => { person.standing = ''; person.profile = undefined; }}><option value="">{locale.text('productionChoose')}</option>{#each project.characters as c}<option value={c.id}>{c.name}</option>{/each}</select></label>
       {@const selectedCharacter = project.characters.find(c => c.id === person.character)}
-      {#if selectedCharacter && selectedCharacter.voice.type !== 'voicevox'}
+      {#if selectedCharacter && selectedCharacter.voice.type !== 'voicevox' && selectedCharacter.voice.type !== 'local_http'}
         {#key `${selectedCharacter.id}:${selectedCharacter.voice.type}`}
           <BuildProfilePicker engine={selectedCharacter.voice.type} {person} {disabled} />
         {/key}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import LocalTuningFields from "./LocalTuningFields.svelte";
   import { containDialogFocus } from '../../shared/components/dialog-focus';
   import { tuningText as t } from './tuning-messages';
   import { onDestroy } from 'svelte';
@@ -40,7 +41,7 @@
     event.preventDefault(); error = '';
     const character = characters.find(c => c.id === characterId);
     if (disabled || plan.busy || !observed || !character || !voice) return;
-    try { await plan.prepare(observed, [voice.type === 'irodori' ? tuneIrodori(character, voice.settings) : voice.type === 'qwen' ? { type: 'set_character', character: structuredClone({ ...character, voice }) } : voice.type === 'sbv2' ? tuneSbv2(character, voice.settings) : tuneVoicevox(character, voice.settings)]); }
+    try { await plan.prepare(observed, [voice.type === 'irodori' ? tuneIrodori(character, voice.settings) : (voice.type === 'qwen' || voice.type === 'local_http') ? { type: 'set_character', character: structuredClone({ ...character, voice }) } : voice.type === 'sbv2' ? tuneSbv2(character, voice.settings) : tuneVoicevox(character, voice.settings)]); }
     catch (e) { error = e instanceof Error ? e.message : String(e); }
   }
   async function confirm() {
@@ -60,8 +61,8 @@
     <EditReview {plan} project={observed.project} stale={stale || plan.stale(editor.snapshot)} {disabled} {confirm} />
   {:else}
     <form onsubmit={preview}><fieldset disabled={disabled || plan.busy}>
-      <label>{t("キャラクター")}<select bind:value={characterId} onchange={choose}>{#each characters as character}<option value={character.id}>{character.name}（{{ voicevox: 'VOICEVOX', sbv2: 'SBV2', qwen: 'Qwen', irodori: 'Irodori' }[character.voice.type]}）</option>{/each}</select></label>
-      {#if voice?.type === 'irodori'}<IrodoriTuningFields bind:tuning={voice.settings} />{:else if voice?.type === 'qwen'}<QwenTuningFields bind:tuning={voice.settings} />{:else if voice?.type === 'sbv2'}<Sbv2TuningFields bind:tuning={voice.settings} />{:else if voice?.type === 'voicevox'}<VoicevoxTuningFields bind:tuning={voice.settings} />{/if}
+      <label>{t("キャラクター")}<select bind:value={characterId} onchange={choose}>{#each characters as character}<option value={character.id}>{character.name}（{{ voicevox: 'VOICEVOX', sbv2: 'SBV2', qwen: 'Qwen', irodori: 'Irodori', local_http: character.voice.type === 'local_http' ? (character.voice.settings.engine === 'aivis_speech' ? 'AivisSpeech' : 'COEIROINK') : '' }[character.voice.type]}）</option>{/each}</select></label>
+      {#if voice?.type === 'local_http'}<LocalTuningFields bind:tuning={voice.settings} />{:else if voice?.type === 'irodori'}<IrodoriTuningFields bind:tuning={voice.settings} />{:else if voice?.type === 'qwen'}<QwenTuningFields bind:tuning={voice.settings} />{:else if voice?.type === 'sbv2'}<Sbv2TuningFields bind:tuning={voice.settings} />{:else if voice?.type === 'voicevox'}<VoicevoxTuningFields bind:tuning={voice.settings} />{/if}
       <button disabled={!voice}>{t("変更内容を確認")}</button>
     </fieldset></form>
   {/if}

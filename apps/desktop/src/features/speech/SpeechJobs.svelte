@@ -1,4 +1,5 @@
 <script lang="ts">
+  import LocalConnections from "./LocalConnections.svelte";
   import { containDialogFocus } from '../../shared/components/dialog-focus';
   import { locale } from '../../shared/i18n/locale.svelte';
   import { onDestroy, tick } from 'svelte';
@@ -91,7 +92,7 @@
       {#if usesSbv2 || sbv2Waiting}<Sbv2ProfilePicker {profiles} {disabled} />{/if}
       {#if usesQwen || qwenWaiting}<QwenProfilePicker profiles={qwenProfiles} {disabled} />{/if}
       {#if usesIrodori || irodoriWaiting}<IrodoriProfilePicker profiles={irodoriProfiles} {disabled} />{/if}
-      <details><summary>{locale.text('speechConnection')}</summary><label>{locale.text('speechUrl')}<input type="url" bind:value={baseUrl} /></label></details>
+      <details><summary>{locale.text('speechConnection')}</summary><label>{locale.text('speechUrl')}<input type="url" bind:value={baseUrl} /></label><LocalConnections /></details>
       <button disabled={!clips.some(c => c.id === clipId) || (usesSbv2 && !validProfile) || (usesQwen && !qwenProfiles.ready) || (usesIrodori && !irodoriProfiles.ready)} onclick={() => jobs.start(editor.snapshot!, clipId, baseUrl, profiles.selectedId, qwenProfiles.selectedId, irodoriProfiles.selectedId)}>{locale.text('speechGenerate')}</button>
       <button disabled={(sbv2Waiting && !validProfile) || (qwenWaiting && !qwenProfiles.ready) || (irodoriWaiting && !irodoriProfiles.ready) || (jobs.selected !== null && speechActive(jobs.selected)) || !clips.some(c => c.content.type === 'speech' && c.content.audio === null)}
         onclick={() => batch.start(editor.snapshot!, baseUrl, profiles.selectedId, qwenProfiles.selectedId, irodoriProfiles.selectedId)}>{locale.text('speechGenerateMissing')}</button>

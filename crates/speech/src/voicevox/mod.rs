@@ -2,7 +2,7 @@
 mod catalog;
 mod speaker_details;
 pub use speaker_details::SpeakerDetails;
-mod http;
+pub(crate) mod http;
 mod query;
 pub use catalog::{EngineInfo, Speaker, SpeakerStyle, VoiceCatalog, VoicevoxDiscovery};
 mod verified;

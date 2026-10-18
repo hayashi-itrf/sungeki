@@ -60,7 +60,7 @@
   }
 </script>
 <fieldset disabled={disabled || busy}>
-  <p>{t("起動済みのVOICEVOXに接続して声を選びます。登録後にセリフを追加し、「音声合成」から生成できます。エンジンは先に起動してください。")}</p>
+  <p>{t("起動済みのVOICEVOXに接続して声を選びます。登録後にセリフを追加し、「音声合成」から生成できます。自動起動が未設定の場合は先にエンジンを起動してください。")}</p>
   <details><summary>{t("エンジンの接続先")}</summary><label>{t("接続先")}<input bind:value={baseUrl} oninput={() => reset('engine')} /></label></details>
   <button type="button" onclick={discover}>{t("声の一覧を取得")}</button>
   {#if engine}

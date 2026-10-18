@@ -11,6 +11,7 @@ fn invalid(message: impl ToString) -> ApiError {
 }
 
 pub(crate) enum Worker {
+    Local,
     Voicevox,
     Irodori {
         binding: crate::irodori_originals::binding::Binding,
@@ -30,6 +31,7 @@ impl Worker {
     /// files are inspected later under the execution lease, off the IPC thread.
     pub fn validate(&self, input: &Input) -> Result<(), ApiError> {
         match (self, input) {
+            (Self::Local, Input::Local(_)) => Ok(()),
             (Self::Voicevox, Input::Voicevox(_)) => Ok(()),
             (Self::Irodori { port, .. }, Input::Irodori(_)) => {
                 if *port < 1024 {
@@ -62,6 +64,7 @@ impl Worker {
         cancel: Arc<AtomicBool>,
     ) -> Result<(), ApiError> {
         match self {
+            Self::Local => crate::local_speech::run(shared, id, &cancel).await,
             Self::Irodori { binding, port } => {
                 crate::irodori_originals::job::run(
                     shared,

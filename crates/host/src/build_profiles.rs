@@ -123,11 +123,19 @@ fn freeze(kind: Kind, id: &str, profile: &impl Serialize) -> Result<FrozenProfil
     })
 }
 pub(crate) fn validate(bindings: &Bindings, recipe: &BuildRecipe) -> Result<(), ApiError> {
+    if recipe
+        .roles
+        .iter()
+        .any(|r| matches!(r.character.voice, Voice::LocalHttp { .. }))
+    {
+        return Err(invalid("ローカルHTTP音声の一括制作は未対応です"));
+    }
     let expected: BTreeMap<_, _> = recipe
         .roles
         .iter()
         .filter_map(|role| {
             let kind = match role.character.voice {
+                Voice::LocalHttp { .. } => return None,
                 Voice::Voicevox { .. } => return None,
                 Voice::Sbv2 { .. } => Kind::Sbv2,
                 Voice::Qwen { .. } => Kind::Qwen,

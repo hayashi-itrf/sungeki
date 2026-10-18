@@ -86,6 +86,7 @@ pub async fn run(listener: &UnixListener, sessions: Sessions) -> Result<(), ApiE
     }
     // Stop accepting the next request, but let active responses be delivered.
     profile_inspection_cancel.store(true, std::sync::atomic::Ordering::Release);
+    crate::http_engine::begin_shutdown();
     let _ = closing.send(true);
     if let Err(error) = crate::build_record::shutdown(&sessions, Duration::from_secs(60)).await {
         eprintln!("build shutdown: {error}");
@@ -176,7 +177,7 @@ async fn serve(
                 if ready && crate::voice_catalog::handles(&request) =>
             {
                 (
-                    match crate::voice_catalog::execute(request).await {
+                    match crate::voice_catalog::execute(&sessions, request).await {
                         Ok(result) => ResponseBody::Session { result },
                         Err(error) => ResponseBody::Error { error },
                     },

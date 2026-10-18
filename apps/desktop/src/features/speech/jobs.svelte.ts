@@ -1,3 +1,4 @@
+import { localEndpoint } from './local-connection';
 import { locale } from '../../shared/i18n/locale.svelte';
 import type { HostApi, SessionRequest, SessionSnapshot, SpeechJob, StartSpeechArgs, StartSbv2SpeechArgs } from '@sungeki/api-client';
 export const speechActive = (job: SpeechJob) => ['queued', 'running', 'cancelling'].includes(job.phase);
@@ -18,6 +19,7 @@ export class SpeechJobsController {
   error = $state('');
   errorCode = $state('');
   more = $state(false);
+  private pendingLocal = false;
   private pendingEngine: 'start_sbv2' | 'start_qwen' | 'start_irodori' = 'start_sbv2';
   private after: string | null = null;
   private alive = true;
@@ -54,6 +56,16 @@ export class SpeechJobsController {
     if (!character) return;
     const voice = character.voice;
     await this.run(async () => {
+      this.pendingLocal = false;
+      if (voice.type === 'local_http') {
+        const base_url = localEndpoint(voice.settings.engine);
+        const response = await this.api.session({ type: 'get_local_speech_catalog', args: { base_url, engine: voice.settings.engine } });
+        if (!this.alive) return;
+        if (response.type !== 'local_speech_catalog' || response.catalog.engine !== voice.settings.engine || !response.catalog.speakers.some(s => s.speaker_uuid === voice.settings.speaker_uuid && s.styles.some(s => s.id === voice.settings.style_id))) throw new Error(locale.text('speechEngineMismatch'));
+        this.pendingLocal = true;
+        this.pending = { session_id: this.sessionId, job_id: crypto.randomUUID(), expected_revision: snapshot.revision, clip_id: clipId, base_url, engine_version: response.catalog.version };
+        await this.submit(); return;
+      }
       if (voice.type === 'sbv2' || voice.type === 'qwen' || voice.type === 'irodori') {
         const profile = (voice.type === 'irodori' ? irodoriProfileId : voice.type === 'qwen' ? qwenProfileId : profileId).trim();
         this.pendingEngine = voice.type === 'irodori' ? 'start_irodori' : voice.type === 'qwen' ? 'start_qwen' : 'start_sbv2';
@@ -74,7 +86,7 @@ export class SpeechJobsController {
     const args = this.pending;
     if (!args) return;
     try {
-      const request: SessionRequest = { type: 'speech_job', request: 'profile_id' in args ? { type: this.pendingEngine, args } : { type: 'start', args } };
+      const request: SessionRequest = { type: 'speech_job', request: 'profile_id' in args ? { type: this.pendingEngine, args } : { type: this.pendingLocal ? 'start_local' : 'start', args } };
       const job = await this.job(request, args.job_id);
       if (!this.alive) return;
       if (job.source_revision !== args.expected_revision || job.clip_id !== args.clip_id) throw new Error(locale.text('speechResponseMismatch'));

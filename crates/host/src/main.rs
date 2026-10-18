@@ -24,6 +24,8 @@ mod frame_preview_worker;
 mod gain_proposal;
 mod image_probe;
 mod irodori_originals;
+mod local_speech;
+mod http_engine;
 mod loudness_api;
 mod loudness_record;
 mod loudness_worker;

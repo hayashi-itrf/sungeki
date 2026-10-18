@@ -33,12 +33,12 @@ impl std::fmt::Display for TransportError {
         match self {
             Self::Configuration(message) | Self::Metadata(message) => f.write_str(message),
             Self::Input(error) => error.fmt(f),
-            Self::Cancelled => f.write_str("VOICEVOXの処理をキャンセルしました"),
-            Self::Http { stage, status } => write!(f, "VOICEVOX {stage:?}: HTTP {status}"),
-            Self::Timeout(stage) => write!(f, "VOICEVOX {stage:?}: 待機時間を超過しました"),
-            Self::Connection(stage) => write!(f, "VOICEVOX {stage:?}: 通信に失敗しました"),
+            Self::Cancelled => f.write_str("音声エンジンの処理をキャンセルしました"),
+            Self::Http { stage, status } => write!(f, "音声エンジン {stage:?}: HTTP {status}"),
+            Self::Timeout(stage) => write!(f, "音声エンジン {stage:?}: 待機時間を超過しました"),
+            Self::Connection(stage) => write!(f, "音声エンジン {stage:?}: 通信に失敗しました"),
             Self::TooLarge { stage, limit } => {
-                write!(f, "VOICEVOX {stage:?}: 応答が{limit}バイトを超えています")
+                write!(f, "音声エンジン {stage:?}: 応答が{limit}バイトを超えています")
             }
         }
     }

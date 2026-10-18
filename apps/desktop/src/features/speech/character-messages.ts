@@ -13,7 +13,7 @@ const english = {
   "標準の話速・音量で登録します。字幕は現在の背景色に合わせて黒か白を選びます。背景画像や後からの背景変更には自動追従しません。登録だけでは音声は生成されません。": "Registers with default speed and volume. Subtitle text uses black or white based on the current background color. It does not automatically adapt to background images or later background changes. Registration does not generate audio.",
   "声の情報を再確認中…": "Rechecking voice details…",
   "声の情報または利用条件が変わりました。一覧から選び直してください。": "Voice details or usage terms have changed. Select the voice again from the list.",
-  "起動済みのVOICEVOXに接続して声を選びます。登録後にセリフを追加し、「音声合成」から生成できます。エンジンは先に起動してください。": "Connect to a running VOICEVOX engine to select a voice. After registration, add dialogue and use “Speech synthesis” to generate audio. Start the engine first.",
+  "起動済みのVOICEVOXに接続して声を選びます。登録後にセリフを追加し、「音声合成」から生成できます。自動起動が未設定の場合は先にエンジンを起動してください。": "Connect to a running VOICEVOX engine to select a voice. After registration, add dialogue and use “Speech synthesis” to generate audio. Start the engine first unless automatic startup is configured.",
   "エンジンの接続先": "Engine connection",
   "接続先": "Address",
   "声の一覧を取得": "Load voices",

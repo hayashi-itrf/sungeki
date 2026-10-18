@@ -24,3 +24,14 @@ FFmpeg/FFprobe、Python実行環境、音声合成エンジン・モデル、VRM
 ソース公開の確認だけで.app/ZIPの配布条件が満たされるわけではありません。実際の同梱物、第三者通知、必要な対象ソースの入手方法、署名・公証、別環境での動作確認を配布物ごとに確認します。
 
 MITの本文と著作権表示を保持する条件は[MIT原文](https://choosealicense.com/licenses/mit/)を参照してください。MPL対象の実行形式を配布する場合の対象ソース入手案内は[MPL 2.0第3.2条](https://www.mozilla.org/en-US/MPL/2.0/)と[Mozilla FAQ](https://www.mozilla.org/en-US/MPL/2.0/FAQ/)を参照してください。本体全体をMPLへ変更するという意味ではありません。
+
+## AivisSpeech / COEIROINK連携（2026-10-18確認）
+
+今回追加した連携は、利用者が別途導入するエンジンを別プロセスで起動し、ローカルHTTP APIへ接続します。この変更でエンジン本体、モデル、キャラクター素材、生成した試験音声・動画をソースやアプリへ同梱していません。新たなライブラリ依存の追加もありません。
+
+- AivisSpeech Engine 1.2.0は[LGPL v3のライセンス本文](https://github.com/Aivis-Project/AivisSpeech-Engine/blob/1.2.0/LICENSE)を持ちます。エンジンのライセンスと音声モデルの条件は別です。[公式規約](https://hub.aivis-project.com/terms-of-service)と選択したモデルのライセンス・追加条件を確認してください。
+- COEIROINKは[ソフトウェアの利用規約](https://coeiroink.com/terms)と各音声ライブラリの規約を確認してください。生成音声を利用する作品には所定のクレジットが必要です。[つくよみちゃん](https://coeiroink.com/character/audio-character/tsukuyomi-chan)の例は `COEIROINK:つくよみちゃん` です。
+- GUIで取得・表示する話者の利用条件は確認補助です。作品へのクレジット記載や用途ごとの条件遵守を自動的に完了する機能ではありません。音声の利用許諾とキャラクター画像の利用許諾も別です。
+- SungekiはVOICEVOX、Aivis Project、COEIROINKおよび話者権利者の公式製品ではなく、提携・推奨を示しません。
+
+将来エンジンやモデルを同梱する場合は、再配布条件、必要な通知・対象ソースの提供を別途確認します。本体MITでこれらを再許諾しません。

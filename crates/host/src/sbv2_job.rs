@@ -35,7 +35,7 @@ pub(crate) async fn start(
     let reservation = Reservation::acquire(&mut *shared.lock().map_err(invalid)?, job_id)?;
     let input = match reservation.input() {
         Input::Sbv2(input) => input.clone(),
-        Input::Voicevox(_) | Input::Qwen(_) | Input::Irodori(_) => {
+        Input::Local(_) | Input::Voicevox(_) | Input::Qwen(_) | Input::Irodori(_) => {
             return Err(invalid("SBV2専用の起動経路です"));
         }
     };

@@ -18,6 +18,7 @@ fn all_four_engines_recapture_target_and_preserve_audio_inputs_without_mutating_
     for original in originals {
         let old_parent = id();
         let original = match original {
+            Input::Local(_) => unreachable!("this fixture covers the four build-video engines"),
             Input::Voicevox(i) => Input::Voicevox(i.for_parent(&old_parent).unwrap()),
             Input::Sbv2(i) => Input::Sbv2(
                 i.for_profile("reuse-test")
@@ -66,6 +67,7 @@ fn all_four_engines_recapture_target_and_preserve_audio_inputs_without_mutating_
                 .fingerprint
         );
         match &target {
+            Input::Local(_) => unreachable!("this fixture covers the four build-video engines"),
             Input::Voicevox(_) => {}
             Input::Sbv2(i) => assert_eq!(i.profile_id(), Some("reuse-test")),
             Input::Qwen(i) => assert_eq!(i.profile_id(), Some("reuse-test")),
@@ -80,6 +82,7 @@ fn all_four_engines_recapture_target_and_preserve_audio_inputs_without_mutating_
         assert!(prepare(&original, 10, &changed, &clip_id, &parent).is_err());
         let mut changed = project.clone();
         match &mut changed.characters[0].voice {
+            Voice::LocalHttp { .. } => unreachable!("this fixture covers the four build-video engines"),
             Voice::Voicevox { settings, .. } => settings.speed_scale = 1.2,
             Voice::Sbv2 { settings, .. } => settings.length = 1.2,
             Voice::Qwen { settings, .. } => settings.speed = 1.2,

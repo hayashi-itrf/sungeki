@@ -12,6 +12,9 @@
   let messageKey = $state<MessageKey>('runtimeLoadHint');
   let errorMessage = $state('');
   const fields: { key: Exclude<keyof RuntimeSettings, 'format_version'>; label: MessageKey }[] = [
+    { key: 'voicevox_engine', label: 'runtimeVoicevoxEngine' },
+    { key: 'aivis_engine', label: 'runtimeAivisEngine' },
+    { key: 'coeiroink_engine', label: 'runtimeCoeiroinkEngine' },
     { key: 'runtime_root', label: 'runtimeStorage' },
     { key: 'python', label: 'runtimePython' },
     { key: 'image_worker', label: 'runtimeImageWorker' },
@@ -66,6 +69,7 @@
     </ul>
   </section>
   <p>{locale.text('runtimeOverrides')}</p>
+  <p>{locale.current === 'ja' ? 'VOICEVOX・AivisSpeech・COEIROINKの実行ファイルを指定すると、話者取得・合成時に自動起動します。空欄なら手動起動です。Sungekiが起動したエンジンはホスト終了時に停止します。起動済みの他アプリは停止しません。変更は次回起動から反映します。' : 'Configure engine executables for automatic startup on voice discovery or synthesis. Leave blank for manual startup. Engines launched here stop when the host exits; external engines are never stopped. Changes apply on the next engine launch.'}</p>
   <button disabled={busy} onclick={() => run(false)}>{locale.text(modified ? 'runtimeDiscardAndLoad' : 'runtimeLoad')}</button>
   {#if draft}
     <fieldset disabled={busy}>
@@ -73,7 +77,11 @@
       {#each fields as field}
         <label>{locale.text(field.label)}
           <input value={draft[field.key] ?? ''} oninput={(event) => {
-            if (draft) { draft[field.key] = event.currentTarget.value || null; if (field.key === 'font') draft.font_sha256 = null; }
+            if (draft) {
+              if (field.key === 'voicevox_engine' || field.key === 'aivis_engine' || field.key === 'coeiroink_engine') draft[field.key] = event.currentTarget.value || undefined;
+              else draft[field.key] = event.currentTarget.value || null;
+              if (field.key === 'font') draft.font_sha256 = null;
+            }
           }} spellcheck="false" />
         </label>
         {#if field.key !== 'font_sha256'}

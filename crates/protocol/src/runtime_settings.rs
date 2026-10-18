@@ -6,6 +6,15 @@ use std::path::PathBuf;
 #[serde(deny_unknown_fields)]
 pub struct RuntimeSettings {
     pub format_version: u16,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub voicevox_engine: Option<PathBuf>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub aivis_engine: Option<PathBuf>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub coeiroink_engine: Option<PathBuf>,
     pub runtime_root: Option<PathBuf>,
     pub python: Option<PathBuf>,
     pub image_worker: Option<PathBuf>,

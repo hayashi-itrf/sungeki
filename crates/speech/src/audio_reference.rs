@@ -23,6 +23,17 @@ pub fn audio_reference_matches(project: &Project, clip_id: &str) -> Result<bool,
         .iter()
         .find(|c| c.id == *character_id)
         .ok_or_else(|| InputError::Invalid("キャラクターが見つかりません".into()))?;
+    if matches!(character.voice, Voice::LocalHttp { .. }) {
+        if audio.sbv2_source.is_some()
+            || audio.qwen_source.is_some()
+            || audio.irodori_source.is_some()
+        {
+            return Ok(false);
+        }
+        let input =
+            crate::local_http::PreparedLocalInput::new(project, clip_id, &audio.engine_version)?;
+        return Ok(input.fingerprint() == audio.input_fingerprint);
+    }
     if matches!(character.voice, Voice::Irodori { .. }) {
         return crate::irodori::reference_matches(project, clip_id);
     }

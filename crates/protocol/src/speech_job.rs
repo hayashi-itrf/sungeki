@@ -60,6 +60,9 @@ pub struct StartIrodoriSpeechArgs {
 #[derive(Debug, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum SpeechJobRequest {
+    StartLocal {
+        args: StartSpeechArgs,
+    },
     ListIrodoriProfiles,
     GetIrodoriProfile {
         args: crate::GetIrodoriProfileArgs,
@@ -155,6 +158,7 @@ pub struct Sbv2ProfileSummary {
 impl SpeechJobRequest {
     pub(crate) fn minimum_protocol_minor(&self) -> u16 {
         match self {
+            Self::StartLocal { .. } => 149,
             Self::Start { args } if args.wait_ms.is_some() => 139,
             Self::StartSbv2 { args } if args.wait_ms.is_some() => 139,
             Self::StartQwen { args } if args.wait_ms.is_some() => 139,

@@ -19,6 +19,7 @@ pub(crate) fn execute(
 ) -> Result<SessionResponse, ApiError> {
     // Waiting affects the response, never preparation identity or synthesis input.
     let wait_ms = match &mut request {
+        SpeechJobRequest::StartLocal { args } => args.wait_ms.take(),
         SpeechJobRequest::Start { args } => args.wait_ms.take(),
         SpeechJobRequest::StartSbv2 { args } => args.wait_ms.take(),
         SpeechJobRequest::StartQwen { args } => args.wait_ms.take(),
@@ -39,6 +40,7 @@ fn dispatch(
     request: SpeechJobRequest,
 ) -> Result<SessionResponse, ApiError> {
     match request {
+        SpeechJobRequest::StartLocal { args } => crate::local_speech::start(shared, args),
         SpeechJobRequest::ListIrodoriProfiles => crate::irodori_originals::profiles::list(shared),
         SpeechJobRequest::GetIrodoriProfile { args } => {
             crate::irodori_originals::profiles::get(shared, &args.profile_id)

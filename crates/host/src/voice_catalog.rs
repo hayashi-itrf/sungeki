@@ -1,4 +1,4 @@
-//! Read-only async I/O; never holds the project/editor mutex or starts engines.
+//! Catalog I/O with optional configured engine startup.
 use std::{sync::atomic::AtomicBool, time::Duration};
 use sungeki_protocol::*;
 use sungeki_speech::voicevox::{EngineInfo, TransportError, VoicevoxDiscovery};
@@ -8,12 +8,13 @@ static REQUESTS: Semaphore = Semaphore::const_new(2);
 pub fn handles(request: &SessionRequest) -> bool {
     matches!(
         request,
-        SessionRequest::GetVoicevoxSpeaker { .. }
+        SessionRequest::GetLocalSpeechPolicy { .. } | SessionRequest::GetLocalSpeechCatalog { .. }
+            | SessionRequest::GetVoicevoxSpeaker { .. }
             | SessionRequest::DiscoverVoicevox { .. }
             | SessionRequest::GetVoicevoxCatalog { .. }
     )
 }
-pub async fn execute(request: SessionRequest) -> Result<SessionResponse, ApiError> {
+pub async fn execute(shared: &std::sync::Arc<std::sync::Mutex<crate::sessions::Sessions>>, request: SessionRequest) -> Result<SessionResponse, ApiError> {
     let _permit = REQUESTS.try_acquire().map_err(|_| {
         let mut error = ApiError::new(
             ErrorCode::EngineUnavailable,
@@ -22,6 +23,13 @@ pub async fn execute(request: SessionRequest) -> Result<SessionResponse, ApiErro
         error.retryable = true;
         error
     })?;
+    let launch = match &request {
+        SessionRequest::GetLocalSpeechCatalog { args } => Some((crate::http_engine::Engine::local(args.engine), args.base_url.as_str())),
+        SessionRequest::DiscoverVoicevox { args } => Some((crate::http_engine::Engine::Voicevox, args.base_url.as_str())),
+        SessionRequest::GetVoicevoxCatalog { args } => Some((crate::http_engine::Engine::Voicevox, args.base_url.as_str())),
+        _ => None,
+    };
+    if let Some((engine, endpoint)) = launch {crate::http_engine::ensure(shared, engine, endpoint, &AtomicBool::new(false)).await?;}
     // Read-only requests may safely be dropped at this whole-operation deadline.
     // This must not be reused as a cancellation strategy for synthesis.
     tokio::time::timeout(Duration::from_secs(15), fetch(request))
@@ -36,6 +44,43 @@ pub async fn execute(request: SessionRequest) -> Result<SessionResponse, ApiErro
 async fn fetch(request: SessionRequest) -> Result<SessionResponse, ApiError> {
     let cancelled = AtomicBool::new(false);
     match request {
+        SessionRequest::GetLocalSpeechPolicy { args } => {
+            let client = sungeki_speech::local_http::LocalSpeechClient::new(&args.base_url,args.engine,Duration::from_secs(5)).map_err(error)?;
+            Ok(SessionResponse::LocalSpeechPolicy { policy:client.policy(&args.speaker_uuid,&cancelled).await.map_err(error)? })
+        }
+
+        SessionRequest::GetLocalSpeechCatalog { args } => {
+            let client = sungeki_speech::local_http::LocalSpeechClient::new(
+                &args.base_url,
+                args.engine,
+                Duration::from_secs(5),
+            )
+            .map_err(error)?;
+            let result = client.catalog(&cancelled).await.map_err(error)?;
+            Ok(SessionResponse::LocalSpeechCatalog {
+                catalog: LocalSpeechCatalog {
+                    engine: args.engine,
+                    version: result.version,
+                    speakers: result
+                        .speakers
+                        .into_iter()
+                        .map(|s| LocalSpeechSpeaker {
+                            speaker_uuid: s.speaker_uuid,
+                            name: s.name,
+                            styles: s
+                                .styles
+                                .into_iter()
+                                .map(|s| LocalSpeechStyle {
+                                    id: s.id,
+                                    name: s.name,
+                                })
+                                .collect(),
+                        })
+                        .collect(),
+                },
+            })
+        }
+
         SessionRequest::GetVoicevoxSpeaker { args } => {
             let result = client(&args.base_url)?
                 .speaker_details(

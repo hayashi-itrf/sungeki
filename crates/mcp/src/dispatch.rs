@@ -100,6 +100,11 @@ pub fn request(
             }
         }
         "get_voicevox_speaker" => SessionRequest::GetVoicevoxSpeaker { args: parse(args)? },
+        "get_local_speech_policy" => SessionRequest::GetLocalSpeechPolicy { args: parse(args)? },
+        "get_local_speech_catalog" => SessionRequest::GetLocalSpeechCatalog { args: parse(args)? },
+        "synthesize_local_speech" => SessionRequest::SpeechJob {
+            request: SpeechJobRequest::StartLocal { args: parse(args)? },
+        },
         "discover_voicevox" => SessionRequest::DiscoverVoicevox { args: parse(args)? },
         "get_voicevox_catalog" => SessionRequest::GetVoicevoxCatalog { args: parse(args)? },
         "preview_pronunciation" => {

@@ -15,6 +15,9 @@ pub struct Character {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Voice {
+    LocalHttp {
+        settings: crate::LocalVoiceSettings,
+    },
     Irodori {
         settings: crate::IrodoriSettings,
         identity: crate::IrodoriIdentity,
@@ -65,6 +68,7 @@ pub(crate) fn validate_characters(project: &Project) -> Result<(), ValidationErr
         text(&character.name, 1024, false)?;
         text(&character.credit, 64 * 1024, true)?;
         match &character.voice {
+            Voice::LocalHttp { settings } => settings.validate()?,
             Voice::Irodori { settings, identity } => {
                 settings.validate()?;
                 identity.validate()?;

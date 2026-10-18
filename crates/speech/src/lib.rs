@@ -22,3 +22,5 @@ pub use response::SpeechResponse;
 
 pub mod irodori;
 pub mod qwen;
+
+pub mod local_http;

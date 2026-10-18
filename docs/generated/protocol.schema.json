@@ -1617,6 +1617,119 @@
         ],
         "type": "object"
       },
+      "LocalVoiceSettings": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "emotion_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "engine": {
+                "const": "aivis_speech",
+                "type": "string"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "tempo_dynamics_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "emotion_scale",
+              "tempo_dynamics_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "engine": {
+                "const": "coeiroink",
+                "type": "string"
+              },
+              "intonation_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "intonation_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          }
+        ]
+      },
       "MediaRatio": {
         "additionalProperties": false,
         "description": "Exact ratio; rates alone do not establish constant frame timing.",
@@ -3056,6 +3169,23 @@
       },
       "Voice": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "settings": {
+                "$ref": "#/$defs/LocalVoiceSettings"
+              },
+              "type": {
+                "const": "local_http",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "settings"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {
@@ -5987,6 +6117,119 @@
         ],
         "type": "object"
       },
+      "LocalVoiceSettings": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "emotion_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "engine": {
+                "const": "aivis_speech",
+                "type": "string"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "tempo_dynamics_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "emotion_scale",
+              "tempo_dynamics_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "engine": {
+                "const": "coeiroink",
+                "type": "string"
+              },
+              "intonation_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "intonation_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          }
+        ]
+      },
       "MediaRatio": {
         "additionalProperties": false,
         "description": "Exact ratio; rates alone do not establish constant frame timing.",
@@ -6855,6 +7098,23 @@
       },
       "Voice": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "settings": {
+                "$ref": "#/$defs/LocalVoiceSettings"
+              },
+              "type": {
+                "const": "local_http",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "settings"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {
@@ -8206,6 +8466,119 @@
         ],
         "type": "object"
       },
+      "LocalVoiceSettings": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "emotion_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "engine": {
+                "const": "aivis_speech",
+                "type": "string"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "tempo_dynamics_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "emotion_scale",
+              "tempo_dynamics_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "engine": {
+                "const": "coeiroink",
+                "type": "string"
+              },
+              "intonation_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "intonation_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          }
+        ]
+      },
       "MediaRatio": {
         "additionalProperties": false,
         "description": "Exact ratio; rates alone do not establish constant frame timing.",
@@ -9333,6 +9706,23 @@
       },
       "Voice": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "settings": {
+                "$ref": "#/$defs/LocalVoiceSettings"
+              },
+              "type": {
+                "const": "local_http",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "settings"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {
@@ -13988,6 +14378,162 @@
         ],
         "type": "object"
       },
+      "LocalSpeechCatalogArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "base_url": {
+            "type": "string"
+          },
+          "engine": {
+            "$ref": "#/$defs/LocalSpeechEngine"
+          }
+        },
+        "required": [
+          "base_url",
+          "engine"
+        ],
+        "type": "object"
+      },
+      "LocalSpeechEngine": {
+        "enum": [
+          "aivis_speech",
+          "coeiroink"
+        ],
+        "type": "string"
+      },
+      "LocalSpeechPolicyArgs": {
+        "additionalProperties": false,
+        "properties": {
+          "base_url": {
+            "type": "string"
+          },
+          "engine": {
+            "$ref": "#/$defs/LocalSpeechEngine"
+          },
+          "speaker_uuid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_url",
+          "engine",
+          "speaker_uuid"
+        ],
+        "type": "object"
+      },
+      "LocalVoiceSettings": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "emotion_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "engine": {
+                "const": "aivis_speech",
+                "type": "string"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "tempo_dynamics_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "emotion_scale",
+              "tempo_dynamics_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "engine": {
+                "const": "coeiroink",
+                "type": "string"
+              },
+              "intonation_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "intonation_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          }
+        ]
+      },
       "LoudnessJobRequest": {
         "oneOf": [
           {
@@ -15548,6 +16094,18 @@
       "RuntimeSettings": {
         "additionalProperties": false,
         "properties": {
+          "aivis_engine": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coeiroink_engine": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "ffmpeg": {
             "type": [
               "string",
@@ -15591,6 +16149,12 @@
             ]
           },
           "runtime_root": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "voicevox_engine": {
             "type": [
               "string",
               "null"
@@ -15845,6 +16409,40 @@
       },
       "SessionRequest": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "args": {
+                "$ref": "#/$defs/LocalSpeechPolicyArgs"
+              },
+              "type": {
+                "const": "get_local_speech_policy",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "args"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "args": {
+                "$ref": "#/$defs/LocalSpeechCatalogArgs"
+              },
+              "type": {
+                "const": "get_local_speech_catalog",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "args"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {
@@ -16872,6 +17470,23 @@
       },
       "SpeechJobRequest": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "args": {
+                "$ref": "#/$defs/StartSpeechArgs"
+              },
+              "type": {
+                "const": "start_local",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "args"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {
@@ -18041,6 +18656,23 @@
       },
       "Voice": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "settings": {
+                "$ref": "#/$defs/LocalVoiceSettings"
+              },
+              "type": {
+                "const": "local_http",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "settings"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {
@@ -23201,6 +23833,189 @@
         ],
         "type": "object"
       },
+      "LocalSpeechCatalog": {
+        "additionalProperties": false,
+        "properties": {
+          "engine": {
+            "$ref": "#/$defs/LocalSpeechEngine"
+          },
+          "speakers": {
+            "items": {
+              "$ref": "#/$defs/LocalSpeechSpeaker"
+            },
+            "type": "array"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "engine",
+          "version",
+          "speakers"
+        ],
+        "type": "object"
+      },
+      "LocalSpeechEngine": {
+        "enum": [
+          "aivis_speech",
+          "coeiroink"
+        ],
+        "type": "string"
+      },
+      "LocalSpeechSpeaker": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "speaker_uuid": {
+            "type": "string"
+          },
+          "styles": {
+            "items": {
+              "$ref": "#/$defs/LocalSpeechStyle"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "speaker_uuid",
+          "name",
+          "styles"
+        ],
+        "type": "object"
+      },
+      "LocalSpeechStyle": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
+      },
+      "LocalVoiceSettings": {
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "emotion_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "engine": {
+                "const": "aivis_speech",
+                "type": "string"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "tempo_dynamics_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "emotion_scale",
+              "tempo_dynamics_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "engine": {
+                "const": "coeiroink",
+                "type": "string"
+              },
+              "intonation_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "pitch_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "post_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "pre_phoneme_length": {
+                "format": "double",
+                "type": "number"
+              },
+              "speaker_uuid": {
+                "type": "string"
+              },
+              "speed_scale": {
+                "format": "double",
+                "type": "number"
+              },
+              "style_id": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "volume_scale": {
+                "format": "double",
+                "type": "number"
+              }
+            },
+            "required": [
+              "engine",
+              "speaker_uuid",
+              "style_id",
+              "speed_scale",
+              "pitch_scale",
+              "intonation_scale",
+              "volume_scale",
+              "pre_phoneme_length",
+              "post_phoneme_length"
+            ],
+            "type": "object"
+          }
+        ]
+      },
       "LoudnessJob": {
         "additionalProperties": false,
         "properties": {
@@ -25279,6 +26094,18 @@
       "RuntimeSettings": {
         "additionalProperties": false,
         "properties": {
+          "aivis_engine": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "coeiroink_engine": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "ffmpeg": {
             "type": [
               "string",
@@ -25322,6 +26149,12 @@
             ]
           },
           "runtime_root": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "voicevox_engine": {
             "type": [
               "string",
               "null"
@@ -25709,6 +26542,40 @@
       },
       "SessionResponse": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "policy": {
+                "type": "string"
+              },
+              "type": {
+                "const": "local_speech_policy",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "policy"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "catalog": {
+                "$ref": "#/$defs/LocalSpeechCatalog"
+              },
+              "type": {
+                "const": "local_speech_catalog",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "catalog"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {
@@ -28066,6 +28933,23 @@
       },
       "Voice": {
         "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "settings": {
+                "$ref": "#/$defs/LocalVoiceSettings"
+              },
+              "type": {
+                "const": "local_http",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "settings"
+            ],
+            "type": "object"
+          },
           {
             "additionalProperties": false,
             "properties": {

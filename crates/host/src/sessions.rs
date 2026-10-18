@@ -230,6 +230,8 @@ impl Sessions {
             | SessionRequest::SpeechJob { .. }
             | SessionRequest::GetVoicevoxSpeaker { .. }
             | SessionRequest::DiscoverVoicevox { .. }
+            | SessionRequest::GetLocalSpeechPolicy { .. }
+            | SessionRequest::GetLocalSpeechCatalog { .. }
             | SessionRequest::GetVoicevoxCatalog { .. }
             | SessionRequest::StartReview { .. }
             | SessionRequest::GetReviewJob { .. }
