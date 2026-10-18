@@ -1,3 +1,9 @@
+## 2026-10-18: ローカル音声のエラー表示言語
+
+- AivisSpeech/COEIROINKの声選択で、応答種別の不一致を示す2つのメッセージを日本語/英語の選択に追従させた。エンジンから返る利用条件本文は原文のまま保持する。
+- TypeScript/Svelte検査0 errors/0 warnings、diff検査合格。異常応答を実エンジンで発生させた検証ではない。
+- 既存の検証用dist ZIPは424e045からのビルドで、この表示修正はまだ含まない。
+
 ## 2026-10-18: CIにアプリ同梱物検査を追加
 
 - macOS CIの最終工程をdesktop:buildからdesktop:bundleへ変更。コンパイルだけでなく、本体LICENSE、frontend通知、native通知manifestと各hash、MPL対象ソース、アドホック署名の整合性を完成.app上で確認する。配布用署名・公証とは区別する。

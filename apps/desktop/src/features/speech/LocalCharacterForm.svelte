@@ -22,7 +22,7 @@
     try {
       const response = await hostApi.session({ type: 'get_local_speech_catalog', args: { base_url: captured, engine } });
       if (!alive || captured !== endpoint) return;
-      if (response.type !== 'local_speech_catalog' || response.catalog.engine !== engine) throw new Error('話者一覧の応答が一致しません');
+      if (response.type !== 'local_speech_catalog' || response.catalog.engine !== engine) throw new Error(text('話者一覧の応答が一致しません', 'The voice list response does not match the selected engine'));
       catalog = response.catalog; saveLocalEndpoint(engine, captured);
     } catch (e) { if (alive) error = e instanceof Error ? e.message : String(e); }
     finally { if (alive) busy = false; }
@@ -36,7 +36,7 @@
     try {
       const result = await hostApi.session({ type: 'get_local_speech_policy', args: { engine, base_url: url, speaker_uuid } });
       if (!alive || captured !== selection || url !== endpoint) return;
-      if (result.type !== 'local_speech_policy') throw new Error('利用条件の応答が不正です');
+      if (result.type !== 'local_speech_policy') throw new Error(text('利用条件の応答が不正です', 'The voice terms response is invalid'));
       policy = result.policy;
     } catch (e) { if (alive) error = e instanceof Error ? e.message : String(e); }
     finally { if (alive) busy = false; }
