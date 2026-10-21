@@ -4,7 +4,7 @@ import type { ApiError, HostInfo, SessionRequest, SessionResponse, EventCursor, 
 
 function requireNative() {
   if (!isTauri()) {
-    const error: ApiError = { code: 'HOST_UNAVAILABLE', message: '編集にはSungekiアプリを起動してください。ブラウザは未接続です。', details: {}, retryable: false, suggested_actions: [] };
+    const error: ApiError = { code: 'HOST_UNAVAILABLE', message: '編集にはSungeki Makerアプリを起動してください。ブラウザは未接続です。', details: {}, retryable: false, suggested_actions: [] };
     throw error;
   }
 }
@@ -20,7 +20,7 @@ export const hostApi = new HostApi({
   async getCapabilities(): Promise<HostInfo> {
     if (!isTauri()) {
       const error: ApiError = {
-        code: 'HOST_UNAVAILABLE', message: 'ブラウザ表示では共通ホストに接続できません。Sungekiアプリを起動してください。',
+        code: 'HOST_UNAVAILABLE', message: 'ブラウザ表示では共通ホストに接続できません。Sungeki Makerアプリを起動してください。',
         details: {}, retryable: false, suggested_actions: [],
       };
       throw error;

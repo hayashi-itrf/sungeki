@@ -14,7 +14,7 @@ pub fn definitions() -> Vec<Tool> {
         ),
         tool::<InstallSpeechConfigArgs>(
             "install_speech_config",
-            "Sungeki用の音声エンジン設定候補を検査し初回登録。engineと候補JSONの絶対パスを指定。モデルは起動しない。既存の異なる設定は上書き不可。同一候補の再送可。原本検査に数分かかる。登録中の取消APIは未対応。",
+            "Sungeki Maker用の音声エンジン設定候補を検査し初回登録。engineと候補JSONの絶対パスを指定。モデルは起動しない。既存の異なる設定は上書き不可。同一候補の再送可。原本検査に数分かかる。登録中の取消APIは未対応。",
         ),
         tool::<ReadRenderArgs>(
             "read_render_output",
@@ -26,7 +26,7 @@ pub fn definitions() -> Vec<Tool> {
         ),
         tool::<EmptyArgs>(
             "get_runtime_settings",
-            "Sungeki専用の保存済み実行環境設定を取得。環境変数の上書き値や実行可否の検査結果ではない。",
+            "Sungeki Maker専用の保存済み実行環境設定を取得。環境変数の上書き値や実行可否の検査結果ではない。",
         ),
         tool::<SaveRuntimeSettingsArgs>(
             "save_runtime_settings",
@@ -204,7 +204,7 @@ pub fn definitions() -> Vec<Tool> {
         ),
         tool::<EmptyArgs>(
             "list_sbv2_profiles",
-            "Sungekiに登録済みのSBV2起動設定のID・名前・CPU設定を取得。エンジン起動や原本照合は行いません。",
+            "Sungeki Makerに登録済みのSBV2起動設定のID・名前・CPU設定を取得。エンジン起動や原本照合は行いません。",
         ),
         tool::<GetSbv2ProfileArgs>(
             "get_sbv2_profile",
@@ -212,7 +212,7 @@ pub fn definitions() -> Vec<Tool> {
         ),
         tool::<EmptyArgs>(
             "list_qwen_profiles",
-            "SungekiのQwen設定のIDと名前を取得。エンジン起動や原本照合は行いません。",
+            "Sungeki MakerのQwen設定のIDと名前を取得。エンジン起動や原本照合は行いません。",
         ),
         tool::<GetQwenProfileArgs>(
             "get_qwen_profile",
@@ -220,11 +220,11 @@ pub fn definitions() -> Vec<Tool> {
         ),
         tool::<StartQwenSpeechArgs>(
             "start_qwen_speech_job",
-            "wait_msは0〜30000、省略0。開始後の終了または期限まで待ち、同じjob_idを返す。待機量を変えた再送は再合成しない。設定済みのSungeki用Qwenプロファイルで音声合成ジョブを開始します。",
+            "wait_msは0〜30000、省略0。開始後の終了または期限まで待ち、同じjob_idを返す。待機量を変えた再送は再合成しない。設定済みのSungeki Maker用Qwenプロファイルで音声合成ジョブを開始します。",
         ),
         tool::<EmptyArgs>(
             "list_irodori_profiles",
-            "SungekiのIrodori設定のIDと名前を取得。エンジン起動や原本照合は行いません。",
+            "Sungeki MakerのIrodori設定のIDと名前を取得。エンジン起動や原本照合は行いません。",
         ),
         tool::<GetIrodoriProfileArgs>(
             "get_irodori_profile",
@@ -235,11 +235,11 @@ pub fn definitions() -> Vec<Tool> {
         tool::<StartSpeechArgs>("synthesize_local_speech", "Synthesize a local_http speech clip using AivisSpeech or COEIROINK v2; uses shared durable jobs."),
         tool::<StartIrodoriSpeechArgs>(
             "start_irodori_speech_job",
-            "wait_msは0〜30000、省略0。開始後の終了または期限まで待ち、同じjob_idを返す。待機量を変えた再送は再合成しない。設定済みのSungeki用Irodoriプロファイルで音声合成ジョブを開始します。",
+            "wait_msは0〜30000、省略0。開始後の終了または期限まで待ち、同じjob_idを返す。待機量を変えた再送は再合成しない。設定済みのSungeki Maker用Irodoriプロファイルで音声合成ジョブを開始します。",
         ),
         tool::<StartSbv2SpeechArgs>(
             "start_sbv2_speech_job",
-            "wait_msは0〜30000、省略0。開始後の終了または期限まで待ち、同じjob_idを返す。待機量を変えた再送は再合成しない。設定済みのSungeki用SBV2プロファイルで音声合成ジョブを開始します。",
+            "wait_msは0〜30000、省略0。開始後の終了または期限まで待ち、同じjob_idを返す。待機量を変えた再送は再合成しない。設定済みのSungeki Maker用SBV2プロファイルで音声合成ジョブを開始します。",
         ),
         tool::<StartSpeechArgs>(
             "start_speech_job",

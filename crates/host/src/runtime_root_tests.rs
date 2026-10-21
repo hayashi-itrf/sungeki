@@ -60,8 +60,8 @@ fn saved_location_and_explicit_override_are_selected_without_fallback() {
     let saved = Path::new("/Volumes/My SSD/Sungeki/runtime");
     assert_eq!(selected(None, Some(saved)).unwrap(), saved);
     assert_eq!(
-        selected(Some("/Volumes/Other/Sungeki".into()), Some(saved)).unwrap(),
-        Path::new("/Volumes/Other/Sungeki")
+        selected(Some("/Volumes/Other/Sungeki Maker".into()), Some(saved)).unwrap(),
+        Path::new("/Volumes/Other/Sungeki Maker")
     );
     assert_eq!(
         selected(Some("".into()), Some(saved)).unwrap(),

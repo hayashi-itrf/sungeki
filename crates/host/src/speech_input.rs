@@ -1,4 +1,4 @@
-//! Current Sungeki durable input formats; all validate themselves on deserialize.
+//! Current Sungeki Maker durable input formats; all validate themselves on deserialize.
 use crate::{sessions::Sessions, speech_state::invalid};
 use serde::{Deserialize, Serialize};
 use sungeki_jobs::Resource;
@@ -9,7 +9,7 @@ use sungeki_speech::{
 };
 
 // Strict engine-specific captures validate their structure and hash on load.
-// Keep existing Sungeki job bytes intact; this does not read the old application's jobs.
+// Keep existing Sungeki Maker job bytes intact; this does not read the old application's jobs.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub(crate) enum Input {

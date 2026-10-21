@@ -1,4 +1,4 @@
-//! Install a validated Sungeki configuration without replacing existing settings.
+//! Install a validated Sungeki Maker configuration without replacing existing settings.
 //! The temporary file is inspected in place, then published with no-clobber semantics.
 use std::{
     fs::{self, OpenOptions},
@@ -29,7 +29,7 @@ pub(crate) fn install(
     if !directory.is_absolute() || !directory.is_dir() {
         return Err(ApiError::new(
             ErrorCode::ValidationFailed,
-            "Sungeki設定フォルダーがありません",
+            "Sungeki Maker設定フォルダーがありません",
         ));
     }
     let original = crate::original_file::inspect(candidate, 32 * 1024 * 1024, true, cancel)?;

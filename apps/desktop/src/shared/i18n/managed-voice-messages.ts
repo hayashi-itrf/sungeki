@@ -1,7 +1,7 @@
 export const managedVoiceJapanese = {
   voiceConfigurationMissing: 'このアプリには音声エンジンの起動設定がまだ登録されていません。設定を用意した後、「設定一覧を更新」を押してください。',
   voiceConfigurationLocation: '設定が必要な保存場所',
-  voiceConfigurationSetup: 'Sungeki用に検査した設定ファイルが必要です。候補の作成には開発用セットアップが必要です。準備済みの設定JSONは「設定」の「音声エンジンの起動設定を登録」から登録できます。動画用ツールの設定とは別に登録してください。',
+  voiceConfigurationSetup: 'Sungeki Maker用に検査した設定ファイルが必要です。候補の作成には開発用セットアップが必要です。準備済みの設定JSONは「設定」の「音声エンジンの起動設定を登録」から登録できます。動画用ツールの設定とは別に登録してください。',
 
   voiceProfileTitle: '{engine}の起動設定',
   voiceProfileSelect: '起動設定を選択してください',
@@ -25,7 +25,7 @@ export const managedVoiceJapanese = {
 export const managedVoiceEnglish: Record<keyof typeof managedVoiceJapanese, string> = {
   voiceConfigurationMissing: 'No voice engine startup configuration is registered for this app. After setting it up, select Refresh profiles.',
   voiceConfigurationLocation: 'Required configuration location',
-  voiceConfigurationSetup: 'A configuration validated for Sungeki is required. Developer setup is needed to prepare the candidate. Register the prepared JSON in Settings under Register a voice engine configuration. Register voice engine settings separately from video tool settings.',
+  voiceConfigurationSetup: 'A configuration validated for Sungeki Maker is required. Developer setup is needed to prepare the candidate. Register the prepared JSON in Settings under Register a voice engine configuration. Register voice engine settings separately from video tool settings.',
 
   voiceProfileTitle: '{engine} startup profile',
   voiceProfileSelect: 'Select a startup profile',

@@ -26,7 +26,7 @@
 </script>
 <details>
   <summary>{en ? 'Register a voice engine configuration' : '音声エンジンの起動設定を登録'}</summary>
-  <p>{en ? 'Select a prepared Sungeki configuration JSON. The app checks its declared model originals before registering it. Existing different settings are never overwritten. This does not download or start a model.' : 'Sungeki用に準備した設定JSONを選びます。登録前にモデル原本を検査し、異なる既存設定は上書きしません。モデルのダウンロードや起動は行いません。'}</p>
+  <p>{en ? 'Select a prepared Sungeki Maker configuration JSON. The app checks its declared model originals before registering it. Existing different settings are never overwritten. This does not download or start a model.' : 'Sungeki Maker用に準備した設定JSONを選びます。登録前にモデル原本を検査し、異なる既存設定は上書きしません。モデルのダウンロードや起動は行いません。'}</p>
   <fieldset disabled={busy}>
     <label>{en ? 'Engine' : '音声エンジン'}
       <select bind:value={engine} onchange={() => { path = ''; result = ''; error = ''; }}><option value="sbv2">SBV2</option><option value="qwen">Qwen</option><option value="irodori">Irodori</option></select>

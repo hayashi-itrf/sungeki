@@ -1,4 +1,4 @@
-//! Sungeki-only profile input. Reading configuration never starts an engine.
+//! Sungeki Maker-only profile input. Reading configuration never starts an engine.
 use super::binding::Binding;
 use crate::original_file;
 use serde::{Deserialize, Serialize};
@@ -49,23 +49,23 @@ pub(crate) fn read_profiles(
     cancel: &AtomicBool,
 ) -> Result<Vec<Profile>, ApiError> {
     if !database.is_absolute() {
-        return Err(invalid("Sungeki保存領域には絶対パスが必要です"));
+        return Err(invalid("Sungeki Maker保存領域には絶対パスが必要です"));
     }
     let path = database
         .parent()
-        .ok_or_else(|| invalid("Sungeki保存領域がありません"))?
+        .ok_or_else(|| invalid("Sungeki Maker保存領域がありません"))?
         .join("qwen.json");
     if std::fs::symlink_metadata(&path).is_err_and(|e| e.kind() == std::io::ErrorKind::NotFound) {
         let mut error = ApiError::new(
             ErrorCode::CapabilityUnavailable,
-            "Sungeki用Qwen起動設定がありません",
+            "Sungeki Maker用Qwen起動設定がありません",
         );
         error
             .details
             .insert("configuration_path".into(), path.display().to_string());
         error
             .suggested_actions
-            .push("Sungeki用のQwenモデル・起動環境を設定してください".into());
+            .push("Sungeki Maker用のQwenモデル・起動環境を設定してください".into());
         return Err(error);
     }
     read_candidate(&path, cancel)

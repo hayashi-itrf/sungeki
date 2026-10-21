@@ -10,9 +10,9 @@
 | AivisSpeech | [Engine配布](https://github.com/Aivis-Project/AivisSpeech-Engine/releases/tag/1.2.0) | 1.2.0 macOS-arm64 の展開先にある `run` |
 | COEIROINK | [公式ダウンロード](https://coeiroink.com/download) | 2.13.0 macOS ARM64 の `COEIROINKv2.app/Contents/MacOS/engine/engine` |
 
-配布物は一式のまま保管し、実行ファイルだけを抜き出さないでください。パスは利用者の配置先に合わせます。COEIROINKの初期話者はアプリ内の `Contents/MacOS/speaker_info` にあります。AivisSpeechのモデルは公式の案内に従って追加します。モデル保存先はエンジン側の管理で、Sungekiの保存先設定では移動しません。
+配布物は一式のまま保管し、実行ファイルだけを抜き出さないでください。パスは利用者の配置先に合わせます。COEIROINKの初期話者はアプリ内の `Contents/MacOS/speaker_info` にあります。AivisSpeechのモデルは公式の案内に従って追加します。モデル保存先はエンジン側の管理で、Sungeki Makerの保存先設定では移動しません。
 
-初めての場合は、公式アプリを手動で起動して声を利用できることを確認し、Sungekiの実行ファイル欄を空欄のまま接続する方法でも使えます。自動起動を使う場合は手動起動したエンジンを終了してから設定してください。自動起動はmacOSのアクセス許可・モデル導入を代行しません。
+初めての場合は、公式アプリを手動で起動して声を利用できることを確認し、Sungeki Makerの実行ファイル欄を空欄のまま接続する方法でも使えます。自動起動を使う場合は手動起動したエンジンを終了してから設定してください。自動起動はmacOSのアクセス許可・モデル導入を代行しません。
 
 ## 操作
 
@@ -29,7 +29,7 @@
 
 AivisSpeech・COEIROINKは現段階では一括制作レシピ `build_video` に未対応。
 既存作品の音声クリップの合成と、その後の通常の動画出力を使用する。
-エンジンの自動インストールは含めない。VOICEVOX・AivisSpeech・COEIROINKは実行ファイルの設定により自動起動できる。Sungekiが起動したエンジンは再利用のためホスト終了まで維持し、終了時に所有するプロセス群だけを停止する。他のアプリが起動したエンジンは停止しない。起動中に接続先を変える場合はSungekiを終了してから変更する。COEIROINKは固定ポート50032、他2種は127.0.0.1の指定ポートを使用する。
+エンジンの自動インストールは含めない。VOICEVOX・AivisSpeech・COEIROINKは実行ファイルの設定により自動起動できる。Sungeki Makerが起動したエンジンは再利用のためホスト終了まで維持し、終了時に所有するプロセス群だけを停止する。他のアプリが起動したエンジンは停止しない。起動中に接続先を変える場合はSungeki Makerを終了してから変更する。COEIROINKは固定ポート50032、他2種は127.0.0.1の指定ポートを使用する。
 
 SBV2・Qwen・Irodoriは従来の起動プロファイルで合成ごとに起動と停止を管理する。全6エンジンとも起動管理に対応するが、保持期間は異なる。自動起動設定は作品ではなくこのMacの実行環境に保存される。
 
@@ -47,7 +47,7 @@ COEIROINKのこの配布版は開発スクリプトからポートを変更せ�
 
 ## 利用条件と検証範囲
 
-Sungeki本体のMITライセンスと、外部エンジン・モデル・音声の条件は別。
+Sungeki Maker本体のMITライセンスと、外部エンジン・モデル・音声の条件は別。
 [AivisSpeech Engine](https://github.com/Aivis-Project/AivisSpeech-Engine) はLGPL-3.0。
 モデルごとの条件は選択した声のpolicyで確認する。
 [COEIROINKの利用規約](https://coeiroink.com/terms) と話者別規約を両方確認する。

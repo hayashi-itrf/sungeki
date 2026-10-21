@@ -65,7 +65,7 @@
     </ul>
   </section>
   <p>{locale.text('runtimeOverrides')}</p>
-  <p>{locale.current === 'ja' ? 'VOICEVOX・AivisSpeech・COEIROINKの実行ファイルを指定すると、話者取得・合成時に自動起動します。空欄なら手動起動です。Sungekiが起動したエンジンはホスト終了時に停止します。起動済みの他アプリは停止しません。変更は次回起動から反映します。' : 'Configure engine executables for automatic startup on voice discovery or synthesis. Leave blank for manual startup. Engines launched here stop when the host exits; external engines are never stopped. Changes apply on the next engine launch.'}</p>
+  <p>{locale.current === 'ja' ? 'VOICEVOX・AivisSpeech・COEIROINKの実行ファイルを指定すると、話者取得・合成時に自動起動します。空欄なら手動起動です。Sungeki Makerが起動したエンジンはホスト終了時に停止します。起動済みの他アプリは停止しません。変更は次回起動から反映します。' : 'Configure engine executables for automatic startup on voice discovery or synthesis. Leave blank for manual startup. Engines launched here stop when the host exits; external engines are never stopped. Changes apply on the next engine launch.'}</p>
   <button disabled={busy} onclick={() => run(false)}>{locale.text(modified ? 'runtimeDiscardAndLoad' : 'runtimeLoad')}</button>
   {#if draft}
     <fieldset disabled={busy}>

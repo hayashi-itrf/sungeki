@@ -115,7 +115,7 @@ test('SBV2 submits a captured profile and uncertain retry preserves the exact re
 test('invalid or missing SBV2 configuration cannot silently switch engines', async () => {
   const value = structuredClone(snapshot);
   value.project.characters[0]!.voice = { type: 'sbv2' } as typeof value.project.characters[0]['voice'];
-  const session = vi.fn().mockRejectedValue({ code: 'CAPABILITY_UNAVAILABLE', message: 'Sungeki用SBV2起動設定がありません' });
+  const session = vi.fn().mockRejectedValue({ code: 'CAPABILITY_UNAVAILABLE', message: 'Sungeki Maker用SBV2起動設定がありません' });
   const jobs = new SpeechJobsController({ session }, 's');
   await jobs.start(value, 'clip', '', '../outside');
   expect(session).not.toHaveBeenCalled();

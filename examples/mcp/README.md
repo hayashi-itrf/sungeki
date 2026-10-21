@@ -1,6 +1,6 @@
 # TypeScriptから新MCPで動画を作る
 
-Nodeの標準機能とSungeki生成型だけを使う、ローカルstdio MCPの実行例。起動するのはSungekiのMCPクライアントで、編集・制作・保存は共通hostが行う。
+Nodeの標準機能とSungeki Maker生成型だけを使う、ローカルstdio MCPの実行例。起動するのはSungeki MakerのMCPクライアントで、編集・制作・保存は共通hostが行う。
 
 ## 準備
 

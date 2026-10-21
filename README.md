@@ -1,6 +1,6 @@
-# Sungeki
+# Sungeki Maker
 
-Sungekiの読み方は「すんげき」です。
+Sungeki Makerの読み方は「すんげきメーカー」です。
 
 日本語の音声合成と、画像・字幕・立ち絵を組み合わせた動画制作アプリです。GUIとMCPから共通の編集処理を利用できます。
 
@@ -32,7 +32,7 @@ npm test
 npm run desktop:bundle
 ```
 
-ローカル検証用アプリは`target/release/bundle/macos/Sungeki.app`に作成されます。通常ビルドはrelease、配布性能確認はdistを使用します。開発時のGUI起動は`npm run desktop:dev`です。
+ローカル検証用アプリは`target/release/bundle/macos/Sungeki Maker.app`に作成されます。通常ビルドはrelease、配布性能確認はdistを使用します。開発時のGUI起動は`npm run desktop:dev`です。
 
 アプリだけですべての音声・映像環境が導入されるわけではありません。動画出力にはFFmpeg/FFprobe、利用条件を満たすフォントを用意し、設定から登録してください。音声合成には利用するエンジンとモデル、VRM表示には利用者が用意したVRM/VRMA原本が必要です。
 

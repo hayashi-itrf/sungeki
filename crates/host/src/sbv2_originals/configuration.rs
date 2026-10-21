@@ -1,4 +1,4 @@
-//! Sungeki-only local configuration. No old-app fallback and no engine execution.
+//! Sungeki Maker-only local configuration. No old-app fallback and no engine execution.
 use super::{Binding, file, invalid};
 use serde::{Deserialize, Serialize};
 use std::{collections::BTreeSet, path::Path, sync::atomic::AtomicBool};
@@ -34,7 +34,7 @@ fn profile_id(id: &str) -> bool {
 /// not an arbitrary file. Keep model/runtime paths on their configured volume.
 pub(crate) fn load(database: &Path, id: &str, cancel: &AtomicBool) -> Result<Profile, ApiError> {
     if !profile_id(id) {
-        return Err(invalid("SBV2設定IDまたはSungeki保存領域が不正です"));
+        return Err(invalid("SBV2設定IDまたはSungeki Maker保存領域が不正です"));
     }
     read_profiles(database, cancel)?
         .into_iter()
@@ -56,23 +56,23 @@ pub(crate) fn summaries(
 }
 fn read_profiles(database: &Path, cancel: &AtomicBool) -> Result<Vec<Profile>, ApiError> {
     if !database.is_absolute() {
-        return Err(invalid("Sungeki保存領域には絶対パスが必要です"));
+        return Err(invalid("Sungeki Maker保存領域には絶対パスが必要です"));
     }
     let parent = database
         .parent()
-        .ok_or_else(|| invalid("Sungeki保存領域がありません"))?;
+        .ok_or_else(|| invalid("Sungeki Maker保存領域がありません"))?;
     let path = parent.join("sbv2.json");
     if std::fs::symlink_metadata(&path).is_err_and(|e| e.kind() == std::io::ErrorKind::NotFound) {
         let mut error = ApiError::new(
             ErrorCode::CapabilityUnavailable,
-            "Sungeki用SBV2起動設定がありません",
+            "Sungeki Maker用SBV2起動設定がありません",
         );
         error
             .details
             .insert("configuration_path".into(), path.display().to_string());
         error
             .suggested_actions
-            .push("Sungeki用のSBV2モデル・起動環境を設定してください".into());
+            .push("Sungeki Maker用のSBV2モデル・起動環境を設定してください".into());
         return Err(error);
     }
     read_candidate(&path, cancel)

@@ -4,7 +4,7 @@
   const builtAt = $derived(new Date(buildInfo.builtAt).toLocaleString(locale.current === 'ja' ? 'ja-JP' : 'en-US', { timeZoneName: 'short' }));
 </script>
 <section aria-label={locale.current === 'ja' ? 'このアプリについて' : 'About this app'}>
-  <strong>Sungeki</strong>
+  <strong>Sungeki Maker</strong>
   <dl>
     <dt>{locale.current === 'ja' ? 'バージョン' : 'Version'}</dt><dd>{buildInfo.version}</dd>
     <dt>{locale.current === 'ja' ? 'ビルド日時' : 'Built at'}</dt><dd>{builtAt}</dd>

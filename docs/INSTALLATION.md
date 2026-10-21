@@ -1,6 +1,6 @@
 # 初回導入（macOS Apple Silicon）
 
-ビルド済みのSungeki.appが起動できている方は、アプリのビルドや開発ツールの導入は不要です。動画出力に必要な設定は次の4項目です。
+ビルド済みのSungeki Maker.appが起動できている方は、アプリのビルドや開発ツールの導入は不要です。動画出力に必要な設定は次の4項目です。
 
 ## 最初の動画を出す
 
@@ -50,7 +50,7 @@ npm test
 npm run desktop:bundle
 ```
 
-`target/release/bundle/macos/Sungeki.app`ができます。初回は依存取得・コンパイルに時間と空き容量が必要です。グローバルのRust設定は変更せず、このプロジェクトのpinを使ってください。[開発手順](DEVELOPMENT.md)も参照してください。
+`target/release/bundle/macos/Sungeki Maker.app`ができます。初回は依存取得・コンパイルに時間と空き容量が必要です。グローバルのRust設定は変更せず、このプロジェクトのpinを使ってください。[開発手順](DEVELOPMENT.md)も参照してください。
 
 ## 困ったとき
 

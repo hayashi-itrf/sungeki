@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Sungeki",
+  "productName": "Sungeki Maker",
   "version": "0.1.0",
   "identifier": "io.github.hayashi-itrf.sungeki",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Sungeki",
+        "title": "Sungeki Maker",
         "width": 1100,
         "height": 760
       }

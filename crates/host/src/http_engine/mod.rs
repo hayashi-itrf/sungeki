@@ -76,7 +76,7 @@ pub(crate) async fn ensure(
         if !running.process.has_exited().map_err(error)? {
             if running.endpoint != endpoint {
                 return Err(error(
-                    "このエンジンは別の接続先で起動中です。Sungekiを終了してから接続先を変更してください",
+                    "このエンジンは別の接続先で起動中です。Sungeki Makerを終了してから接続先を変更してください",
                 ));
             }
             return Ok(());

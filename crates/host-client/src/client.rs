@@ -94,7 +94,7 @@ impl HostClient {
         if self.protocol_minor < request.minimum_protocol_minor() {
             return Err(ApiError::new(
                 ErrorCode::ProtocolMismatch,
-                "この操作には更新版ホストが必要です。実行中の作業を終えてSungekiアプリとMCPを更新してください",
+                "この操作には更新版ホストが必要です。実行中の作業を終えてSungeki MakerアプリとMCPを更新してください",
             ));
         }
         match self.request(RequestBody::Session { request }).await? {
@@ -198,14 +198,14 @@ async fn start_and_connect(options: &HostOptions) -> Result<UnixStream, ApiError
     if !options.host_binary.is_file() {
         let mut error = ApiError::new(
             ErrorCode::SidecarMissing,
-            "Sungekiのhost実行ファイルがありません",
+            "Sungeki Makerのhost実行ファイルがありません",
         );
         error
             .details
             .insert("path".into(), options.host_binary.display().to_string());
         error
             .suggested_actions
-            .push("ホストをビルドするか、Sungekiアプリを再インストールしてください".into());
+            .push("ホストをビルドするか、Sungeki Makerアプリを再インストールしてください".into());
         return Err(error);
     }
     let mut child = Command::new(&options.host_binary)

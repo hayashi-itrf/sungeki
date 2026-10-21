@@ -29,11 +29,11 @@ test('multiple profiles require a choice and refresh preserves only existing cho
 });
 test('failed refresh clears stale choices and presents the host explanation', async () => {
   const session = vi.fn().mockResolvedValueOnce({ type: 'sbv2_profiles', profiles: [profile] })
-    .mockRejectedValueOnce({ message: 'Sungeki用SBV2起動設定がありません' });
+    .mockRejectedValueOnce({ message: 'Sungeki Maker用SBV2起動設定がありません' });
   const profiles = new Sbv2Profiles({ session });
   await profiles.refresh(); await profiles.refresh();
   expect(profiles.ready).toBe(false); expect(profiles.profiles).toEqual([]);
-  expect(render(Sbv2ProfilePicker, { props: { profiles } }).body).toContain('Sungeki用SBV2起動設定がありません');
+  expect(render(Sbv2ProfilePicker, { props: { profiles } }).body).toContain('Sungeki Maker用SBV2起動設定がありません');
 });
 test('invalid duplicate IDs and late disposed responses cannot enable start', async () => {
   const profiles = new Sbv2Profiles({ session: vi.fn().mockResolvedValue({ type: 'sbv2_profiles', profiles: [profile, profile] }) });

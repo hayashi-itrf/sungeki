@@ -229,7 +229,7 @@ fn dispatch(request: RequestBody, ready: &mut bool, info: &HostInfo) -> (Respons
                     ResponseBody::Error {
                         error: ApiError::new(
                             ErrorCode::ProtocolMismatch,
-                            "互換性のないホストプロトコルです。Sungekiのビルドを揃えてください",
+                            "互換性のないホストプロトコルです。Sungeki Makerのビルドを揃えてください",
                         ),
                     },
                     true,

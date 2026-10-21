@@ -42,6 +42,6 @@ fn main() {
             host::watch_sessions
         ])
         .build(tauri::generate_context!())
-        .expect("Sungekiのネイティブアプリを起動できませんでした")
+        .expect("Sungeki Makerのネイティブアプリを起動できませんでした")
         .run(exit::on_event);
 }
