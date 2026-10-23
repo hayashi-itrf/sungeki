@@ -24,8 +24,8 @@
     } finally { busy = false; }
   }
 </script>
-<details>
-  <summary>{en ? 'Register a voice engine configuration' : '音声エンジンの起動設定を登録'}</summary>
+<section>
+  <h2>{en ? 'Register a voice engine configuration' : '音声エンジンの起動設定を登録'}</h2>
   <p>{en ? 'Select a prepared Sungeki Maker configuration JSON. The app checks its declared model originals before registering it. Existing different settings are never overwritten. This does not download or start a model.' : 'Sungeki Maker用に準備した設定JSONを選びます。登録前にモデル原本を検査し、異なる既存設定は上書きしません。モデルのダウンロードや起動は行いません。'}</p>
   <fieldset disabled={busy}>
     <label>{en ? 'Engine' : '音声エンジン'}
@@ -38,7 +38,7 @@
   {#if busy}<p role="status">{en ? 'Checking originals. This may take several minutes. Closing settings does not cancel registration. Cancellation from this screen is not yet supported.' : '原本を確認中です。数分かかる場合があります。設定画面を閉じても登録は継続します。この画面からの取消はまだ未対応です。'}</p>{/if}
   {#if result}<p role="status">{en ? 'Registered. Refresh profiles in the speech dialog. Synthesis has not been tested.' : '登録しました。音声画面の「設定一覧を更新」を押してください。実合成はまだ確認していません。'}</p><code>{result}</code>{/if}
   {#if error}<p role="alert">{error}</p><p>{en ? 'If the response was lost, retry the same configuration. Identical settings are accepted without duplication.' : '応答を確認できなかった場合は、同じ設定で再確認してください。同一内容の再登録は重複を作りません。'}</p>{/if}
-</details>
+</section>
 <style>
   fieldset { display:grid; gap:10px; border:1px solid var(--border); margin:12px 0; }
   label { display:grid; gap:5px; } code { overflow-wrap:anywhere; } button { justify-self:start; }

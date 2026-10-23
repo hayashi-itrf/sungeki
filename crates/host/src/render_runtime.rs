@@ -1,3 +1,5 @@
+#[path = "bundled_vrm.rs"]
+pub(crate) mod bundled;
 pub(crate) use crate::media_job_runtime::Runtime;
 #[path = "preview_runtime.rs"]
 pub(crate) mod preview;
@@ -19,16 +21,21 @@ fn resolve(
     let path = |name: &str, value: Option<&std::path::Path>| {
         crate::runtime_settings::file(env(name).map(PathBuf::from), value, name)
     };
-    let font_sha256 = match env("SUNGEKI_RENDER_FONT_SHA256") {
+    let font_sha256 = match crate::runtime_settings::select(
+        env("SUNGEKI_RENDER_FONT_SHA256"),
+        saved.font_sha256.as_ref().map(std::ffi::OsString::from),
+    )
+    .0
+    {
         Some(value) => value
             .into_string()
             .map_err(|_| invalid("フォント検査値が不正です"))?,
-        None => saved.font_sha256.clone().ok_or_else(|| {
-            ApiError::new(
+        None => {
+            return Err(ApiError::new(
                 ErrorCode::CapabilityUnavailable,
                 "字幕フォントの準備が必要です。「設定」→「動画制作の実行環境」で保存済み設定を読み込み、字幕フォントを選んで保存してください。検査値は保存時に自動取得します。初回はFFmpeg・FFprobeも設定してください。",
-            )
-        })?,
+            ));
+        }
     };
     crate::runtime_settings::validate(&crate::runtime_settings::Settings {
         format_version: 1,
@@ -38,10 +45,15 @@ fn resolve(
     Ok(sungeki_render::RenderRuntime {
         vrm: if needs_vrm {
             Some(sungeki_render::vrm_worker::VrmRuntime {
-                node: path("SUNGEKI_VRM_NODE", saved.vrm_node.as_deref())?,
-                worker: path(
-                    "SUNGEKI_VRM_RENDER_WORKER",
+                node: bundled::file(
+                    env("SUNGEKI_VRM_NODE"),
+                    saved.vrm_node.as_deref(),
+                    "bin/node",
+                )?,
+                worker: bundled::file(
+                    env("SUNGEKI_VRM_RENDER_WORKER"),
                     saved.vrm_render_worker.as_deref(),
+                    "workers/vrm/src/render-main.ts",
                 )?,
                 work_root: crate::runtime_root::selected(
                     env("SUNGEKI_RUNTIME_ROOT"),

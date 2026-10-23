@@ -32,6 +32,9 @@ pub enum SessionResponse {
     RuntimeSettings {
         settings: crate::RuntimeSettings,
     },
+    RuntimeEnvironment {
+        environment: crate::RuntimeEnvironment,
+    },
     Preset {
         record: PresetRecord,
     },

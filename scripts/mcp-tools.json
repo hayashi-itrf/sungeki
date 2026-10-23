@@ -36,6 +36,7 @@
   "get_proxy_job",
   "get_qwen_profile",
   "get_render_job",
+  "get_runtime_environment",
   "get_runtime_settings",
   "get_sbv2_profile",
   "get_speech_job",

@@ -427,6 +427,22 @@
           "url": "https://github.com/PistonDevelopers/freetype-sys/blob/9040df60c41b76aeaa19c231d488e79d91e666fe/freetype2/src/pcf/README"
         }
       ]
+    },
+    {
+      "name": "rmcp",
+      "version": "3.4.0",
+      "declared_license": "Apache-2.0",
+      "commit": "fd7811fdaa9fefa1c8034534b4d7a31c97204f89",
+      "manifest_url": "https://raw.githubusercontent.com/modelcontextprotocol/rust-sdk/fd7811fdaa9fefa1c8034534b4d7a31c97204f89/crates/rmcp/Cargo.toml",
+      "manifest_sha256": "853e5b93c1afcfc3a5669ed98c3d924ae3aa62e2f1f60392fd06937be3be8eb9",
+      "manifest_matches_installed_original": true,
+      "documents": [
+        {
+          "url": "https://raw.githubusercontent.com/modelcontextprotocol/rust-sdk/fd7811fdaa9fefa1c8034534b4d7a31c97204f89/LICENSE",
+          "file": "modelcontextprotocol__rust-sdk__fd7811fdaa9fefa1c8034534b4d7a31c97204f89__LICENSE",
+          "sha256": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a"
+        }
+      ]
     }
   ]
 }

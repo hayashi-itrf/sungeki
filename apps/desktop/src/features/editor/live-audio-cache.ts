@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { HostApi, SessionSnapshot } from '@sungeki/api-client';
 import type { LiveCue } from './live-audio-plan';
 // Session/revision scoped. Only nearby clips are decoded; no output files are created.
@@ -18,23 +19,23 @@ export class LiveAudioCache {
     const loading = this.pending.get(cue.clip.id);
     if (loading) return loading;
     const task = this.chain.catch(() => {}).then(async () => {
-      if (this.disposed) throw new Error('再生を終了しました');
+      if (this.disposed) throw new Error(extraText("再生を終了しました"));
       let offset = 0, bytes: Uint8Array | undefined;
       do {
-        if (this.disposed) throw new Error('再生を終了しました');
+        if (this.disposed) throw new Error(extraText("再生を終了しました"));
         const result = await this.api.session({ type: 'read_editing_audio', session_id: this.snapshot.session_id,
           expected_revision: this.snapshot.revision, clip_id: cue.clip.id, offset, length: 1024 * 1024 });
         if (result.type !== 'editing_audio_bytes' || result.offset !== offset || result.total > 128 * 1024 * 1024)
-          throw new Error('音声の取得結果が不正です');
+          throw new Error(extraText("音声の取得結果が不正です"));
         bytes ??= new Uint8Array(result.total);
         const part = Uint8Array.from(atob(result.base64), c => c.charCodeAt(0));
-        if (!part.length || result.total !== bytes.length || offset + part.length > bytes.length) throw new Error('音声の取得範囲が不正です');
+        if (!part.length || result.total !== bytes.length || offset + part.length > bytes.length) throw new Error(extraText("音声の取得範囲が不正です"));
         bytes.set(part, offset); offset += part.length;
       } while (offset < bytes.length);
       const buffer = await this.context.decodeAudioData(bytes.buffer as ArrayBuffer);
-      if (this.disposed) throw new Error('再生を終了しました');
+      if (this.disposed) throw new Error(extraText("再生を終了しました"));
       const size = (b: AudioBuffer) => b.length * b.numberOfChannels * 4;
-      if (size(buffer) > 128 * 1024 * 1024) throw new Error('この音声は編集再生のメモリー上限を超えています。確認用動画で再生してください');
+      if (size(buffer) > 128 * 1024 * 1024) throw new Error(extraText("この音声は編集再生のメモリー上限を超えています。確認用動画で再生してください"));
       let used = [...this.buffers.values()].reduce((n, b) => n + size(b), 0);
       for (const [id, b] of this.buffers) {
         if (used + size(buffer) <= 128 * 1024 * 1024) break;

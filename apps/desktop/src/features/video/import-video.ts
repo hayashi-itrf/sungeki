@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import { locale } from '../../shared/i18n/locale.svelte';
 import type { Canvas, Command, VideoProbe, VideoStreamInfo } from '@sungeki/api-client';
 // Initial placement only. Actual decoding/display normalization belongs to the renderer.
@@ -33,7 +34,7 @@ export function importVideo(path: string, probe: VideoProbe, start: number, canv
   const [w, h] = displaySize(probe.metadata.video);
   const scale = Math.min(canvas.width / w, canvas.height / h, 1);
   const width = w * scale, height = h * scale;
-  const name = path.split('/').at(-1) || '動画素材';
+  const name = path.split('/').at(-1) || extraText("動画素材");
   return [
     { type: 'register_asset', asset: { id: ids.asset, name, source: null, credit: '', content_hash: probe.sha256,
       locator: { type: 'absolute', path }, probe: { type: 'video', info: probe } } },

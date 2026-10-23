@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import { matchingAudio } from './reuse.svelte';
 import { locale } from '../../shared/i18n/locale.svelte';
 import type { BuildRecipe, BuildReuseRequest, BuildReuseSource, HostApi, Voice } from '@sungeki/api-client';
@@ -7,7 +8,7 @@ export function buildProfiles(recipe: BuildRecipe, people: { character: string; 
   const profiles: Record<string, string> = {};
   for (const role of recipe.roles) {
     if (role.character.voice.type === 'voicevox') continue;
-    if (role.character.voice.type === 'local_http') throw new Error('AivisSpeech・COEIROINKは編集画面の音声合成を使用してください。一括制作は未対応です。');
+    if (role.character.voice.type === 'local_http') throw new Error(extraText("AivisSpeech・COEIROINKは編集画面の音声合成を使用してください。一括制作は未対応です。"));
     const selection = people.find(p => p.character === role.character.id)?.profile;
     if (!selection || selection.engine !== role.character.voice.type || !/^[A-Za-z0-9_-]{1,64}$/.test(selection.id)) {
       throw new Error(locale.text('productionValidationVoiceProfile').replace('{name}', () => role.character.name));

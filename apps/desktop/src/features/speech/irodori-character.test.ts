@@ -47,4 +47,3 @@ test('profile list auto-selects only one choice and clears stale selection on er
   session.mockRejectedValueOnce(new Error('設定なし')); await profiles.refresh();
   expect(profiles.ready).toBe(false); expect(profiles.selectedId).toBe('');
 });
-

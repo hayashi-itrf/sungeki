@@ -1,8 +1,8 @@
 <script lang="ts">
   import { locale } from '../../shared/i18n/locale.svelte';
 </script>
-<details>
-  <summary>{locale.text('keyboardShortcuts')}</summary>
+<section>
+  <h2>{locale.text('keyboardShortcuts')}</h2>
   <p>{locale.text('keyboardPlatform')}</p>
   <dl>
     <dt>{locale.text("playbackPlay")} / {locale.text("playbackPause")}</dt><dd>Space</dd>
@@ -16,7 +16,7 @@
   </dl>
   <p>{locale.text('keyboardInputHint')}</p>
   <p>{locale.text('keyboardTimelineHint')}</p>
-</details>
+</section>
 <style>
   dl { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   dt { font-weight:600; } dd { margin:0; }

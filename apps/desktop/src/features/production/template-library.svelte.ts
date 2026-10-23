@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { BuildRecipe, HostApi, PresetRecord, PresetRequest, PresetSummary } from '@sungeki/api-client';
 
 /** Library persistence only. Loading a template never changes an editor Project. */
@@ -24,16 +25,16 @@ export class TemplateLibrary {
         this.items = request.after_id ? [...this.items, ...templates.filter(v => !this.items.some(old => old.id === v.id))] : templates;
         this.next = response.next_after_id;
       } else if (response.type === 'preset' && request.action !== 'list') {
-        if (response.record.id !== request.id) throw new Error('プリセットの応答が一致しません / Preset response mismatch');
+        if (response.record.id !== request.id) throw new Error(extraText("プリセットの応答が一致しません / Preset response mismatch"));
         const content = response.record.preset?.content;
-        if (content && content.kind !== 'template') throw new Error('制作テンプレートを選択してください / Select a production template');
+        if (content && content.kind !== 'template') throw new Error(extraText("制作テンプレートを選択してください / Select a production template"));
         this.selected = response.record;
         this.recipe = content ? JSON.parse(JSON.stringify(content.recipe)) : null;
         if (response.record.preset) {
           const item: PresetSummary = { id: response.record.id, revision: response.record.revision, name: response.record.preset.name, kind: 'template' };
           this.items = [item, ...this.items.filter(old => old.id !== item.id)];
         } else this.items = this.items.filter(old => old.id !== request.id);
-      } else throw new Error('プリセットの応答が一致しません / Preset response mismatch');
+      } else throw new Error(extraText("プリセットの応答が一致しません / Preset response mismatch"));
       this.pending = null;
     } catch (e) {
       if (!this.alive) return;

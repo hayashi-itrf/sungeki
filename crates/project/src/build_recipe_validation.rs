@@ -12,6 +12,9 @@ fn text(value: &str, max: usize) -> bool {
 }
 impl BuildRecipe {
     pub fn validate(&self) -> Result<(), ValidationError> {
+        if let Some(presentation) = &self.presentation {
+            presentation.validate(self)?;
+        }
         let role_count = match self.preset_id.as_str() {
             "dialogue-wide-v1" => 2,
             "narration-wide-v1" | "narration-portrait-v1" => 1,
@@ -126,6 +129,8 @@ impl BuildRecipe {
         }
         self.image(&s.background_asset_id)?;
         for (i, line) in s.lines.iter().enumerate() {
+            self.validate_psd_states(line, p)
+                .map_err(|e| ValidationError::new(format!("{}行目: {}", i + 1, e.0)))?;
             let role = self
                 .roles
                 .iter()

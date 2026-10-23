@@ -43,7 +43,7 @@
   import CheckpointPanel from './CheckpointPanel.svelte';
   import Timeline from './Timeline.svelte';
   import TimelineDivider from './TimelineDivider.svelte';
-  let { onopensettings }: { onopensettings: () => void } = $props();
+  let { onopensettings, onopenhelp }: { onopensettings: () => void; onopenhelp: () => void } = $props();
   let timelineShare = $state(40);
   import StructurePanel from '../scenes/StructurePanel.svelte';
   let previewGeneration = $state(0);
@@ -67,7 +67,7 @@
 
 <QuitDialog {editor} />
 <section aria-label={locale.text('editorWorkspace')} class="workspace" style:--timeline-share={timelineShare} class:preview-expanded={previewExpanded} aria-busy={editor.busy}>
-  <DocumentToolbar {editor} {onopensettings} />
+  <DocumentToolbar {editor} {onopensettings} {onopenhelp} />
   <EditorNotices {editor} />
   {#if editor.snapshot}
     <div class="editing">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { uiText } from '../../shared/i18n/extended-ui';
   import type { Clip } from '@sungeki/api-client';
   import type { EditorController } from '../editor/controller.svelte';
   import { commitPose } from './commit-pose';
@@ -12,7 +13,7 @@
 
 </script>
 {#if clip.content.type === 'vrm' && editor.snapshot}
-  {#if editor.drafting && !opened}<p>他の欄の入力を適用するか取り消すと、ポーズを編集できます。</p>{/if}
+  {#if editor.drafting && !opened}<p>{uiText("他の欄の入力を適用するか取り消すと、ポーズを編集できます。")}</p>{/if}
   <VrmPoseFields value={clip.content.standing} assets={editor.snapshot.project.assets}
     sessionId={editor.snapshot.session_id} revision={editor.snapshot.revision}
     disabled={!opened && (editor.drafting || editor.busy || !!editor.pending || !!editor.incoming)}

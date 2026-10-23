@@ -81,6 +81,9 @@ impl Sessions {
         if let SessionRequest::GetRuntimeSettings = request {
             return crate::runtime_settings::execute(shared, None);
         }
+        if let SessionRequest::GetRuntimeEnvironment {} = request {
+            return crate::runtime_settings::environment::execute(shared);
+        }
         if let SessionRequest::SaveRuntimeSettings { args } = request {
             return crate::runtime_settings::execute(shared, Some(args));
         }

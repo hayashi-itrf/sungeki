@@ -15,8 +15,8 @@
   }
 </script>
 
-<details class="settings">
-  <summary>{locale.text('appearance')}</summary>
+<section>
+  <h2>{locale.text('appearance')}</h2>
   <div class="appearance">
     <label for="appearance-theme">{locale.text('theme')}</label>
     <select id="appearance-theme" value={theme} onchange={changeTheme}>
@@ -31,4 +31,10 @@
     <p>{locale.text('languageScope')}</p>
     <p role="status">{locale.text(message)}</p>
   </div>
-</details>
+</section>
+
+<style>
+  .appearance { display:grid; grid-template-columns:max-content minmax(160px,300px); gap:14px; align-items:center; }
+  .appearance p { grid-column:1 / -1; margin:4px 0; }
+  @media(max-width:600px) { .appearance { grid-template-columns:1fr; } }
+</style>

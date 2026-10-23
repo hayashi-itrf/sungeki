@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { SessionRequest, SessionResponse } from '@sungeki/api-client';
 type PreviewRequest = Extract<SessionRequest, { type: 'image_preview' | 'psd_preview' | 'video_preview' }>;
 type Send = (request: SessionRequest) => Promise<SessionResponse>;
@@ -12,7 +13,7 @@ export async function requestImagePreview(send: Send, request: PreviewRequest,
     try {
       const result = await send(request);
       if (cancelled()) return null;
-      if (result.type !== 'image_preview') throw new Error('画像を取得できませんでした');
+      if (result.type !== 'image_preview') throw new Error(extraText("画像を取得できませんでした"));
       return `data:image/png;base64,${result.png_base64}`;
     } catch (cause) {
       if (cancelled()) return null;

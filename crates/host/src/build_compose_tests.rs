@@ -5,7 +5,7 @@ use sungeki_project::Project;
 #[test]
 fn fixed_plan_ids_are_canonical_unique_and_match_recipe_shape() {
     let input = input();
-    for mode in 0..6 {
+    for mode in 0..7 {
         let mut changed = input.clone();
         match mode {
             0 => changed.plan.script.track_id = changed.recipe.assets[0].id.clone(),
@@ -15,7 +15,14 @@ fn fixed_plan_ids_are_canonical_unique_and_match_recipe_shape() {
             }
             3 => changed.plan.layout.foreword = None,
             4 => changed.step_ids[0] = uuid::Uuid::new_v4().simple().to_string(),
-            _ => changed.plan.speech_operation_ids[0] = changed.plan.script.speech_ids[0].clone(),
+            5 => changed.plan.speech_operation_ids[0] = changed.plan.script.speech_ids[0].clone(),
+            _ => {
+                changed.plan.layout.opening = Some(sungeki_editor::BuildOpeningIds {
+                    logo: None,
+                    audio: vec![],
+                    performers: vec![],
+                })
+            }
         }
         assert!(
             state(&changed, JobPhase::Running)

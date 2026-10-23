@@ -1,0 +1,2 @@
+# Preserve upstream notice text and its manifest hashes verbatim.
+licenses/external-image/THIRD_PARTY_IMAGE_RUNTIME.txt -whitespace

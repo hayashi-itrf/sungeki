@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { EventCursor, HostApi, SessionSnapshot } from '@sungeki/api-client';
 
 export type SyncStatus = 'connecting' | 'live' | 'resynced' | 'retrying';
@@ -25,7 +26,7 @@ export function syncSession(api: SyncApi, initial: SessionSnapshot,
         if (batch.resync_required || batch.events.some(e => e.session_id === initial.session_id && e.event_seq > observed)) {
           const response = await api.session({ type: 'get', session_id: initial.session_id });
           if (stopped) break;
-          if (response.type !== 'snapshot' && response.type !== 'edited') throw new Error('文書の応答形式が不正です');
+          if (response.type !== 'snapshot' && response.type !== 'edited') throw new Error(extraText("文書の応答形式が不正です"));
           receive(response.snapshot);
         }
         // Checkpoints belong to a Project, which may have more than one open session.

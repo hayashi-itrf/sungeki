@@ -6,8 +6,8 @@
   const interval = $derived(percentile(uiPerformance.dragIntervals, .95));
   const show = (value: number | null) => value === null ? locale.text('perfUnmeasured') : `${value.toFixed(1)} ms`;
 </script>
-<details>
-  <summary>{locale.text('perfTitle')}</summary>
+<section>
+  <h2>{locale.text('perfTitle')}</h2>
   <p>{locale.text('perfHint')}</p>
   <button onclick={() => uiPerformance.setEnabled(!uiPerformance.enabled)}>{uiPerformance.enabled ? locale.text('perfStop') : locale.text('perfStart')}</button>
   <button onclick={() => uiPerformance.clear()}>{locale.text('perfClear')}</button>
@@ -22,5 +22,5 @@
   <p>{locale.text('perfExcludedHint')}</p>
   <p>{locale.text('perfTimingHint')}</p>
   <p>{locale.text('perfDragHint')}</p>
-</details>
+</section>
 <style>dl { display:grid; grid-template-columns:1fr auto; gap:8px; } dd { margin:0; } p { line-height:1.6; } button { margin-right:8px; }</style>

@@ -1,11 +1,12 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { BuildStanding, Clip, Preset, Project } from '@sungeki/api-client';
 
 /** Capture settings only; confirmed Project changes always go through host. */
 export function captureCharacter(project: Project, characterId: string, clipId: string, name: string): Preset {
   const character = project.characters.find(c => c.id === characterId);
-  if (!character) throw new Error('キャラクターを選択してください / Select a character');
+  if (!character) throw new Error(extraText("キャラクターを選択してください / Select a character"));
   const clip = clipId ? project.clips.find(c => c.id === clipId) : null;
-  if (clipId && !clip) throw new Error('立ち絵が見つかりません / Standing not found');
+  if (clipId && !clip) throw new Error(extraText("立ち絵が見つかりません / Standing not found"));
   let standing: BuildStanding | null = null;
   const assetIds = new Set<string>();
   if (clip) {
@@ -19,10 +20,10 @@ export function captureCharacter(project: Project, characterId: string, clipId: 
     } else if (c.type === 'vrm' && c.standing.character_id === characterId) {
       standing = { type: 'vrm', standing: c.standing, flip_x };
       assetIds.add(c.standing.model_asset_id); assetIds.add(c.standing.motion_asset_id);
-    } else throw new Error('人物と立ち絵の関連付けを確認してください / Check character binding');
+    } else throw new Error(extraText("人物と立ち絵の関連付けを確認してください / Check character binding"));
   }
   const assets = project.assets.filter(a => assetIds.has(a.id));
-  if (assets.length !== assetIds.size) throw new Error('参照素材が不足しています / Missing asset references');
+  if (assets.length !== assetIds.size) throw new Error(extraText("参照素材が不足しています / Missing asset references"));
   return structuredClone({ schema_version: 1, name, description: '', tags: [], content: { kind: 'character', character, assets, standing } });
 }
 
@@ -34,6 +35,6 @@ export function isStandingFor(clip: Clip, characterId: string): boolean {
 
 export function captureVoice(project: Project, characterId: string, name: string): Preset {
   const character = project.characters.find(c => c.id === characterId);
-  if (!character) throw new Error('キャラクターを選択してください / Select a character');
+  if (!character) throw new Error(extraText("キャラクターを選択してください / Select a character"));
   return structuredClone({ schema_version: 1, name, description: '', tags: [], content: { kind: 'voice', voice: character.voice, credit: character.credit } });
 }

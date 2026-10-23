@@ -4,10 +4,20 @@ use crate::*;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
+#[path = "build_presentation.rs"]
+mod presentation;
+pub use presentation::*;
+#[path = "build_opening.rs"]
+mod opening;
+pub use opening::*;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(deny_unknown_fields)]
 pub struct BuildRecipe {
+    /// Resolved by the common editor before the first save/render.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub presentation: Option<BuildPresentation>,
     pub preset_id: String,
     pub title: String,
     pub assets: Vec<Asset>,
@@ -65,6 +75,11 @@ pub struct BuildScene {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(deny_unknown_fields)]
 pub struct BuildLine {
+    /// Role-keyed PSD pose and mouth binding changes at this line's start.
+    /// Omitted roles hold their state; each scene starts from role defaults.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub psd_states: Option<std::collections::BTreeMap<String, BuildPsdState>>,
     /// Sprite pose change for this role, held until changed; resets each scene.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
@@ -73,6 +88,12 @@ pub struct BuildLine {
     pub subtitle_text: String,
     pub spoken_text: Option<String>,
     pub pose: Option<PsdPose>,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema, TS)]
+#[serde(deny_unknown_fields)]
+pub struct BuildPsdState {
+    pub pose: PsdPose,
+    pub speech: PsdSpeechBinding,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema, TS)]
 #[serde(deny_unknown_fields)]

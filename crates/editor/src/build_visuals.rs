@@ -131,6 +131,7 @@ pub(crate) fn card(
     start: u64,
     duration: u64,
     credits: bool,
+    background_asset_id: Option<&str>,
 ) -> Vec<Command> {
     let mut commands = vec![Command::AddScene {
         scene: Scene {
@@ -143,10 +144,15 @@ pub(crate) fn card(
     }];
     let contents = [
         (
-            ClipContent::Shape {
-                shape: ShapeKind::Rectangle,
-                fill: "#ffffff".into(),
-            },
+            background_asset_id.map_or_else(
+                || ClipContent::Shape {
+                    shape: ShapeKind::Rectangle,
+                    fill: "#ffffff".into(),
+                },
+                |id| ClipContent::Image {
+                    asset_id: id.into(),
+                },
+            ),
             rect(0., 0., p.canvas.width as f64, p.canvas.height as f64),
         ),
         (
@@ -210,6 +216,7 @@ mod tests {
                     0,
                     3_000_000,
                     credits,
+                    None,
                 );
                 let Command::AddClip { clip } = commands.last().unwrap() else {
                     panic!()

@@ -64,6 +64,9 @@ fn validate_role(recipe: &BuildRecipe, role: &BuildRole) -> Result<(), ApiError>
         BuildStanding::Image { .. } => Err(invalid(
             "任意画像の立ち絵はimage-custom-v1を指定してください",
         )),
+        // The shared recipe validator above still checks source hash, layers,
+        // speech/character ownership and non-empty asset/voice credits.
+        BuildStanding::Psd { .. } if role.preset_id == "psd-custom-v1" => Ok(()),
         BuildStanding::Psd {
             asset_id,
             pose,

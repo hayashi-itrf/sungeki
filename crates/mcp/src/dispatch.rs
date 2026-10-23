@@ -32,6 +32,10 @@ pub fn request(
             let _: EmptyArgs = parse(args)?;
             SessionRequest::GetRuntimeSettings
         }
+        "get_runtime_environment" => {
+            let _: EmptyArgs = parse(args)?;
+            SessionRequest::GetRuntimeEnvironment {}
+        }
         "save_runtime_settings" => SessionRequest::SaveRuntimeSettings { args: parse(args)? },
         "read_review_image" => SessionRequest::ReadReviewImage { args: parse(args)? },
         "export_subtitles" => SessionRequest::ExportSubtitles { args: parse(args)? },

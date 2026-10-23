@@ -1,7 +1,7 @@
 export const reportActionEnglish = {
   reviewTargetScene: 'Go to scene {name} ({time})',
   reviewTargetCurrentScene: 'Go to current scene {name} ({time})',
-  reviewTargetMissingScene: 'The scene is no longer in this project. Review the current project again.', 
+  reviewTargetMissingScene: 'The scene is no longer in this project. Review the current project again.',
   "frameImageMismatch": "The image response does not match.",
   "frameImageCapacity": "This image exceeds the display size limit (64 MB).",
   "frameImageIncomplete": "Part of the image is missing.",
@@ -37,7 +37,7 @@ export const reportActionEnglish = {
 export const reportActionJapanese: Record<keyof typeof reportActionEnglish, string> = {
   reviewTargetScene: 'シーン「{name}」へ移動（{time}）',
   reviewTargetCurrentScene: '現在のシーン「{name}」へ移動（{time}）',
-  reviewTargetMissingScene: '対象シーンは現在の作品にありません。最新の作品を確認し直してください。', 
+  reviewTargetMissingScene: '対象シーンは現在の作品にありません。最新の作品を確認し直してください。',
   "frameImageMismatch": "画像の応答が一致しません。",
   "frameImageCapacity": "この画像は画面表示の容量上限（64MB）を超えています。",
   "frameImageIncomplete": "画像の一部が欠けています。",

@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import { locale } from '../../shared/i18n/locale.svelte';
 import type { BuildVideoJob, BuildVideoRequest, HostApi, StartBuildVideoArgs } from '@sungeki/api-client';
 import type { StartJournal } from './start-journal';
@@ -49,7 +50,7 @@ export class BuildJobsController {
   }
   private async job(request: BuildVideoRequest, id: string) {
     const response = await this.api.session({ type: 'build_video', request });
-    if (response.type !== 'build_video_job' || response.job.job_id !== id) throw new Error('制作の応答が一致しません。');
+    if (response.type !== 'build_video_job' || response.job.job_id !== id) throw new Error(extraText("制作の応答が一致しません。"));
     return response.job;
   }
   private accept(job: BuildVideoJob) {
@@ -140,7 +141,7 @@ export class BuildJobsController {
     await this.run(async () => {
       const response = await this.api.session({ type: 'build_video', request: { type: 'list', after: next ? this.after : null, limit: 12 } });
       if (!this.alive) return;
-      if (response.type !== 'build_video_jobs' || response.job_ids.length > 12 || new Set(response.job_ids).size !== response.job_ids.length) throw new Error('制作一覧の応答が不正です。');
+      if (response.type !== 'build_video_jobs' || response.job_ids.length > 12 || new Set(response.job_ids).size !== response.job_ids.length) throw new Error(extraText("制作一覧の応答が不正です。"));
       const jobs: BuildVideoJob[] = [];
       const unavailable: { id: string; message: string }[] = [];
       for (const id of response.job_ids) {

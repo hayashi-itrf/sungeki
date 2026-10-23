@@ -125,6 +125,7 @@ pub fn parse_markdown_script(
                 return Err(error(line, "セリフは全体で200件以内にしてください"));
             }
             scene.lines.push(BuildLine {
+                psd_states: Default::default(),
                 role: role.into(),
                 subtitle_text: text.into(),
                 spoken_text: None,

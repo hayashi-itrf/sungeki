@@ -7,6 +7,77 @@ mod relink;
 use crate::SessionRequest;
 impl SessionRequest {
     pub fn minimum_protocol_minor(&self) -> u16 {
+        if matches!(self, Self::GetRuntimeEnvironment {}) {
+            return 160;
+        }
+        let recipe = match self {
+            Self::BuildVideo {
+                request: crate::BuildVideoRequest::Start { args },
+            } => Some(&args.recipe),
+            Self::Presets {
+                request: crate::PresetRequest::Save { preset, .. },
+            } => match &preset.content {
+                sungeki_project::PresetContent::Template { recipe } => Some(recipe),
+                _ => None,
+            },
+            _ => None,
+        };
+        if recipe.is_some_and(|r| r.presentation.as_ref().is_some_and(|p| p.fitting.is_some())) {
+            return 159;
+        }
+        if recipe.is_some_and(|r| {
+            r.bgm.as_ref().is_some_and(|b| b.playback.fade_in_us.0 > 0)
+                && r.presentation
+                    .as_ref()
+                    .is_some_and(|p| p.bgm_speech_envelope.is_some())
+        }) {
+            return 158;
+        }
+        if recipe.is_some_and(|r| r.roles.iter().any(|role| role.preset_id == "psd-custom-v1")) {
+            return 157;
+        }
+        if recipe.is_some_and(|r| {
+            r.presentation
+                .as_ref()
+                .is_some_and(|p| p.structure.is_some())
+        }) {
+            return 156;
+        }
+        if recipe.is_some_and(|r| {
+            r.scenes
+                .iter()
+                .any(|s| s.lines.iter().any(|l| l.psd_states.is_some()))
+        }) {
+            return 155;
+        }
+        let presentation = match self {
+            Self::BuildVideo {
+                request: crate::BuildVideoRequest::Start { args },
+            } => args.recipe.presentation.as_ref(),
+            Self::Presets {
+                request: crate::PresetRequest::Save { preset, .. },
+            } => match &preset.content {
+                sungeki_project::PresetContent::Template { recipe } => recipe.presentation.as_ref(),
+                _ => None,
+            },
+            _ => None,
+        };
+        if presentation.is_some_and(|p| p.opening.is_some()) {
+            return 154;
+        }
+        if presentation.is_some_and(|p| p.slots.is_some() || p.ending.is_some()) {
+            return 153;
+        }
+        if matches!(self, Self::BuildVideo {
+            request: crate::BuildVideoRequest::Start { args }
+        } if args.recipe.presentation.is_some())
+            || matches!(self, Self::Presets {
+                request: crate::PresetRequest::Save { preset, .. }
+            } if matches!(&preset.content, sungeki_project::PresetContent::Template { recipe }
+                if recipe.presentation.is_some()))
+        {
+            return 152;
+        }
         if matches!(
             self,
             Self::GetRuntimeSettings | Self::SaveRuntimeSettings { .. }

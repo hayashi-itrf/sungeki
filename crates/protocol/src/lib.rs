@@ -6,9 +6,9 @@ pub use error::{ApiError, ErrorCode};
 pub use handshake::{Capabilities, ClientHello, HostInfo};
 pub use message::{Request, RequestBody, Response, ResponseBody};
 pub const PROTOCOL_MAJOR: u16 = 1;
-pub const PROTOCOL_MINOR: u16 = 151;
+pub const PROTOCOL_MINOR: u16 = 160;
 pub const APPLICATION: &str = "sungeki-host";
-pub const BUILD_ID: &str = concat!(env!("CARGO_PKG_VERSION"), "-managed-http-speech-150");
+pub const BUILD_ID: &str = concat!(env!("CARGO_PKG_VERSION"), "-runtime-environment-160");
 pub const SOCKET_NAME: &str = "host.sock";
 mod session;
 pub use session::*;
@@ -98,3 +98,6 @@ pub use lifecycle::*;
 
 mod local_speech;
 pub use local_speech::*;
+
+#[cfg(test)]
+mod custom_psd_minor_tests;

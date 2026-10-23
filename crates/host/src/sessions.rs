@@ -209,6 +209,7 @@ impl Sessions {
             | SessionRequest::Presets { .. }
             | SessionRequest::InstantiatePreset { .. }
             | SessionRequest::GetRuntimeSettings
+            | SessionRequest::GetRuntimeEnvironment {}
             | SessionRequest::SaveRuntimeSettings { .. }
             | SessionRequest::ExportSubtitles { .. }
             | SessionRequest::VideoPreview { .. }

@@ -10,7 +10,7 @@
   import EditorNotices from './EditorNotices.svelte';
   import type { EditorController } from './controller.svelte';
   import { handleShortcut } from './shortcuts';
-  let { editor, onopensettings }: { editor: EditorController; onopensettings: () => void } = $props();
+  let { editor, onopensettings, onopenhelp }: { editor: EditorController; onopensettings: () => void; onopenhelp: () => void } = $props();
   let filesOpen = $state(false);
   let title = $state('');
   let path = $state('');
@@ -81,6 +81,7 @@
     <button title={locale.text('undo') + ' (⌘/Ctrl+Z)'} disabled={unavailable || editor.drafting || !editor.snapshot.undo_operation_id} onclick={() => editor.history('undo')}>{locale.text('undo')}</button>
     <button title={locale.text('redo') + ' (⌘/Ctrl+Shift+Z)'} disabled={unavailable || editor.drafting || !editor.snapshot.redo_operation_id} onclick={() => editor.history('redo')}>{locale.text('redo')}</button>
   {/if}
+  <button onclick={onopenhelp}>{locale.current === 'ja' ? '使い方' : 'User guide'}</button>
   <button class="settings" onclick={onopensettings}>{locale.text('settings')}</button>
 </div>
 <Modal bind:open={filesOpen} title={locale.text('files')}>

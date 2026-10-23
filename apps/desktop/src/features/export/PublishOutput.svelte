@@ -9,7 +9,7 @@
   const result = $derived(publication.result?.job_id === job.job_id ? publication.result : null);
   function choose() {
     return publication.choose(job, () => save({ title: locale.text('videoSaveDialog'),
-      defaultPath: `動画-${job.job_id.slice(0, 8)}.mp4`, filters: [{ name: 'MP4動画', extensions: ['mp4'] }] }));
+      defaultPath: `${locale.current === 'en' ? 'video' : '動画'}-${job.job_id.slice(0, 8)}.mp4`, filters: [{ name: locale.current === 'en' ? 'MP4 video' : 'MP4動画', extensions: ['mp4'] }] }));
   }
 </script>
 <div class="publish" aria-label={locale.text('videoSaveCopy')}>

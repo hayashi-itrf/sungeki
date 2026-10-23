@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { uiText } from '../../shared/i18n/extended-ui';
   import type { Clip, Project } from '@sungeki/api-client';
   import { vrmExpressions } from './vrm-expressions';
   import VrmCanvas from './VrmCanvas.svelte';
   let { clip, project, timeUs, sessionId, revision, generation }: {
     clip: Clip; project: Project; timeUs: number; sessionId: string; revision: number; generation: number;
   } = $props();
-  let image = $state(''); let status = $state('VRMを読み込んでいます…');
+  let image = $state(''); let status = $state(uiText("VRMを読み込んでいます…"));
   let t = $derived(clip.transform);
   let source = $derived(project.clips.find(c => c.id === clip.id)?.transform ?? t);
 </script>
@@ -18,7 +19,7 @@
       onImage={png => { image = png; }} onStatus={message => { status = message; }} />
   </foreignObject>
   {#if image && !status}
-    <image href={image} aria-label="VRMモデル" x={t.x} y={t.y} width={t.width} height={t.height} preserveAspectRatio="none"
+    <image href={image} aria-label={uiText("VRMモデル")} x={t.x} y={t.y} width={t.width} height={t.height} preserveAspectRatio="none"
       transform={t.flip_x ? `translate(${2*t.x+t.width} 0) scale(-1 1)` : undefined} />
   {:else}
     <text x={t.x + 8} y={t.y + 24} fill="#65758b" font-size="14">{status}</text>

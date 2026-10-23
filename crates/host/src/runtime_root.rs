@@ -16,9 +16,7 @@ pub(crate) fn selected(
     override_path: Option<std::ffi::OsString>,
     saved: Option<&Path>,
 ) -> io::Result<PathBuf> {
-    override_path
-        .map(PathBuf::from)
-        .or_else(|| saved.map(Path::to_owned))
+    crate::runtime_settings::select(override_path.map(PathBuf::from), saved.map(Path::to_owned)).0
         .ok_or_else(|| invalid("保存フォルダが未設定です。「設定」→「動画制作の実行環境」で外部ディスクの保存フォルダを選んで保存してください。"))
 }
 fn invalid(message: impl ToString) -> io::Error {

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { locale } from '../../shared/i18n/locale.svelte';
+  import { uiText } from '../../shared/i18n/extended-ui';
   import { untrack } from 'svelte';
   import type { Asset, VrmStanding } from '@sungeki/api-client';
   import { containDialogFocus } from '../../shared/components/dialog-focus';
@@ -6,13 +8,13 @@
   let { value, assets, sessionId, revision, commit, beginPose, durationUs = 1, initialTimeUs = 0, disabled = false, blocked = false, error = '' }: {
     value: VrmStanding; assets: Asset[]; sessionId: string; revision: number; commit: (pose: NonNullable<VrmStanding['pose']>) => Promise<boolean>; durationUs?: number; initialTimeUs?: number; disabled?: boolean; blocked?: boolean; error?: string; beginPose?: () => (() => void);
   } = $props();
-  const joints = [
-    ['hips','腰'],['spine','背骨'],['chest','胸'],['upperChest','胸の上'],['neck','首'],['head','頭'],
-    ['leftShoulder','左肩'],['leftUpperArm','左上腕'],['leftLowerArm','左ひじ'],['leftHand','左手首'],
-    ['rightShoulder','右肩'],['rightUpperArm','右上腕'],['rightLowerArm','右ひじ'],['rightHand','右手首'],
-    ['leftUpperLeg','左もも'],['leftLowerLeg','左ひざ'],['leftFoot','左足首'],
-    ['rightUpperLeg','右もも'],['rightLowerLeg','右ひざ'],['rightFoot','右足首'],
-  ];
+  const joints = $derived([
+    ['hips',uiText("腰")],['spine',uiText("背骨")],['chest',uiText("胸")],['upperChest',uiText("胸の上")],['neck',uiText("首")],['head',uiText("頭")],
+    ['leftShoulder',uiText("左肩")],['leftUpperArm',uiText("左上腕")],['leftLowerArm',uiText("左ひじ")],['leftHand',uiText("左手首")],
+    ['rightShoulder',uiText("右肩")],['rightUpperArm',uiText("右上腕")],['rightLowerArm',uiText("右ひじ")],['rightHand',uiText("右手首")],
+    ['leftUpperLeg',uiText("左もも")],['leftLowerLeg',uiText("左ひざ")],['leftFoot',uiText("左足首")],
+    ['rightUpperLeg',uiText("右もも")],['rightLowerLeg',uiText("右ひざ")],['rightFoot',uiText("右足首")],
+  ]);
   let dialog: HTMLDialogElement;
   let draft = $state<VrmStanding>(untrack(() => $state.snapshot(value)));
   let discard: (() => void) | undefined;
@@ -39,45 +41,45 @@
     draft = { ...draft, pose: all ? {} : pose };
   }
 </script>
-<button type="button" {disabled} onclick={show}>姿を見ながらポーズを編集</button>
-<dialog bind:this={dialog} use:containDialogFocus aria-label="VRMのポーズを編集"
+<button type="button" {disabled} onclick={show}>{uiText("姿を見ながらポーズを編集")}</button>
+<dialog bind:this={dialog} use:containDialogFocus aria-label={uiText("VRMのポーズを編集")}
   onkeydown={event => { if (event.key === 'Enter' && !(event.target instanceof HTMLButtonElement)) event.preventDefault(); }}
   oncancel={event => { if (busy) event.preventDefault(); }} oninput={event => event.stopPropagation()} onclose={close}>
-  <header><h2>VRMのポーズを編集</h2></header>
+  <header><h2>{uiText("VRMのポーズを編集")}</h2></header>
   {#if open}
     <div class="layout"><div class="stage"><VrmCanvas standing={draft} {assets} {sessionId} {revision}
       timeUs={value.source_start_us + Math.round((Number.isFinite(at) ? Math.min(Math.max(0, at), Math.max(0, durationUs - 1) / 1e6) : 0) * 1e6)} {view} onBones={bones => { available = bones; }} /></div><fieldset class="controls" disabled={busy}>
-    <p>確認時刻と視点はこの画面だけに使用します。作品の時刻・カメラ設定は変わりません。</p>
-    <label>クリップ内の確認時刻（秒）<input type="range" min="0" max={Math.max(0, durationUs - 1) / 1e6} step="any" bind:value={at} /></label>
-    <label>確認時刻（秒）<input type="number" required min="0" max={Math.max(0, durationUs - 1) / 1e6} step="any" bind:value={at} /></label>
-    <details><summary>拡大・視点</summary>
-      <label>拡大倍率 {view.zoom.toFixed(1)}倍<input type="range" min="1" max="4" step="0.1" bind:value={view.zoom} /></label>
-      <label>横から見る角度 {view.yaw}°<input type="range" min="-180" max="180" step="1" bind:value={view.yaw} /></label>
-      <label>上下から見る角度 {view.pitch}°<input type="range" min="-80" max="80" step="1" bind:value={view.pitch} /></label>
-      <button type="button" onclick={() => { view = { yaw: 0, pitch: 0, zoom: 1 }; }}>正面・全身に戻す</button>
+    <p>{uiText("確認時刻と視点はこの画面だけに使用します。作品の時刻・カメラ設定は変わりません。")}</p>
+    <label>{uiText("クリップ内の確認時刻（秒）")}<input type="range" min="0" max={Math.max(0, durationUs - 1) / 1e6} step="any" bind:value={at} /></label>
+    <label>{uiText("確認時刻（秒）")}<input type="number" required min="0" max={Math.max(0, durationUs - 1) / 1e6} step="any" bind:value={at} /></label>
+    <details><summary>{uiText("拡大・視点")}</summary>
+      <label>{locale.current === 'en' ? 'Zoom' : '拡大倍率'} {view.zoom.toFixed(1)}×<input type="range" min="1" max="4" step="0.1" bind:value={view.zoom} /></label>
+      <label>{locale.current === 'en' ? 'Horizontal angle' : '横から見る角度'} {view.yaw}°<input type="range" min="-180" max="180" step="1" bind:value={view.yaw} /></label>
+      <label>{locale.current === 'en' ? 'Vertical angle' : '上下から見る角度'} {view.pitch}°<input type="range" min="-80" max="80" step="1" bind:value={view.pitch} /></label>
+      <button type="button" onclick={() => { view = { yaw: 0, pitch: 0, zoom: 1 }; }}>{uiText("正面・全身に戻す")}</button>
     </details>
-    <p>角度を変えた関節だけモーションより優先されます。</p>
-    <label>関節<select bind:value={bone}>
-      {#each joints as [id, name]}<option value={id} disabled={!available.includes(id)}>{name}{available.length && !available.includes(id) ? '（なし）' : ''}</option>{/each}
+    <p>{uiText("角度を変えた関節だけモーションより優先されます。")}</p>
+    <label>{uiText("関節")}<select bind:value={bone}>
+      {#each joints as [id, name]}<option value={id} disabled={!available.includes(id)}>{name}{available.length && !available.includes(id) ? uiText("（なし）") : ''}</option>{/each}
     </select></label>
-    <p>{draft.pose?.[bone] ? 'この関節は指定した角度で固定します。' : 'この関節はモーションに従っています。角度を入力すると基準姿勢からの角度で固定します。'}</p>
+    <p>{draft.pose?.[bone] ? uiText("この関節は指定した角度で固定します。") : uiText("この関節はモーションに従っています。角度を入力すると基準姿勢からの角度で固定します。")}</p>
     {#each ['X', 'Y', 'Z'] as axis, index}
-      <label>{axis}軸（度）
+      <label>{axis}{locale.current === 'en' ? 'axis (degrees)' : '軸（度）'}
         <input type="range" min="-180" max="180" step="1" value={angles[index]}
           disabled={!available.includes(bone)} oninput={e => update(index, e.currentTarget.valueAsNumber)} />
-        <input aria-label={`${axis}軸の角度`} type="number" required min="-180" max="180" step="1" value={angles[index]}
+        <input aria-label={`${axis} ${locale.current === 'en' ? 'axis angle' : '軸の角度'}`} type="number" required min="-180" max="180" step="1" value={angles[index]}
           disabled={!available.includes(bone)} oninput={e => update(index, e.currentTarget.valueAsNumber)} />
       </label>
     {/each}
-    <button type="button" onclick={() => reset()}>この関節をモーションに戻す</button>
-    <button type="button" onclick={() => reset(true)}>全関節をモーションに戻す</button>
+    <button type="button" onclick={() => reset()}>{uiText("この関節をモーションに戻す")}</button>
+    <button type="button" onclick={() => reset(true)}>{uiText("全関節をモーションに戻す")}</button>
     </fieldset></div>
     <footer>
-      <div><p>「ポーズを適用」で作品に反映します。「元に戻す」で戻せます。</p>
-      {#if blocked}<p role="alert">別の更新または未解決の送信があります。閉じて編集画面の案内を確認してください。</p>{/if}
+      <div><p>{uiText("「ポーズを適用」で作品に反映します。「元に戻す」で戻せます。")}</p>
+      {#if blocked}<p role="alert">{uiText("別の更新または未解決の送信があります。閉じて編集画面の案内を確認してください。")}</p>{/if}
       {#if error}<p role="alert">{error}</p>{/if}</div>
-      <button type="button" disabled={busy} onclick={() => dialog.close()}>取り消す</button>
-      <button type="button" onclick={usePose} disabled={busy || blocked || !available.length}>{busy ? '適用中…' : 'ポーズを適用'}</button>
+      <button type="button" disabled={busy} onclick={() => dialog.close()}>{uiText("取り消す")}</button>
+      <button type="button" onclick={usePose} disabled={busy || blocked || !available.length}>{busy ? uiText("適用中…") : uiText("ポーズを適用")}</button>
     </footer>
   {/if}
 </dialog>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { uiText } from '../../shared/i18n/extended-ui';
   import { untrack } from 'svelte';
   import type { Asset, VrmStanding } from '@sungeki/api-client';
   import type { VrmScene, PreviewView } from '@sungeki/vrm';
@@ -22,9 +23,9 @@
     if (!target) return;
     const input = untrack(() => ({ model, motion, revision, sessionId, width, height }));
     let disposed = false; let scene: VrmScene | undefined;
-    loading = true; error = ''; active = null; onStatus('VRMを読み込んでいます…');
+    loading = true; error = ''; active = null; onStatus(untrack(() => uiText("VRMを読み込んでいます…")));
     void (async () => {
-      if (!input.model || !input.motion) throw Error('モデルまたはモーション素材がありません');
+      if (!input.model || !input.motion) throw Error(uiText("モデルまたはモーション素材がありません"));
       const module = await import('@sungeki/vrm');
       const modelBytes = await readVrmBytes(r => hostApi.session(r), input.sessionId, input.revision, input.model, () => disposed);
       const motionBytes = await readVrmBytes(r => hostApi.session(r), input.sessionId, input.revision, input.motion, () => disposed);
@@ -60,9 +61,9 @@
     if (scene) { error = ''; void render(scene); }
   });
 </script>
-<div class="vrm-canvas" aria-label="VRMプレビュー">
-  {#key identity}<canvas bind:this={canvas} aria-label="VRMモデル" style:visibility={loading || error ? 'hidden' : 'visible'}></canvas>{/key}
-  {#if loading || error}<p role={error ? 'alert' : 'status'}>{error || 'VRMを読み込んでいます…'}</p>{/if}
+<div class="vrm-canvas" aria-label={uiText("VRMプレビュー")}>
+  {#key identity}<canvas bind:this={canvas} aria-label={uiText("VRMモデル")} style:visibility={loading || error ? 'hidden' : 'visible'}></canvas>{/key}
+  {#if loading || error}<p role={error ? 'alert' : 'status'}>{error || uiText("VRMを読み込んでいます…")}</p>{/if}
 </div>
 <style>
   .vrm-canvas { width:100%; height:100%; position:relative; }

@@ -5,9 +5,12 @@ mod audio;
 #[path = "common/build_recipe.rs"]
 mod setup;
 use setup::*;
+#[path = "common/build_opening.rs"]
+mod opening;
 
 fn layout_ids() -> BuildLayoutIds {
     BuildLayoutIds {
+        opening: None,
         tracks: std::array::from_fn(|n| id(500 + n as u32)),
         scenes: (0..2)
             .map(|n| BuildSceneVisualIds {
@@ -280,3 +283,18 @@ mod bgm_points;
 
 #[path = "common/build_facing.rs"]
 mod facing;
+
+#[path = "common/build_presentation.rs"]
+mod presentation;
+
+#[path = "common/build_layout_slots.rs"]
+mod slots;
+
+#[path = "common/build_psd_states.rs"]
+mod psd_states;
+
+#[path = "common/build_structure.rs"]
+mod structure;
+
+#[path = "common/build_fitting.rs"]
+mod fitting;

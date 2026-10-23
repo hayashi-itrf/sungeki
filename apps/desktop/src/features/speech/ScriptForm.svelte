@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { extraText } from '../../shared/i18n/extra-ui';
   import { scriptText as t } from './script-messages';
   import { isBlankScriptLine } from './script-input';
   import type { Command } from '@sungeki/api-client';
@@ -33,7 +34,7 @@
     if (!first) { editor.error = t("セリフを入力してください。"); return; }
     const trackId = crypto.randomUUID();
     const commands: Command[] = [
-      { type: 'add_track', track: { id: trackId, name: '台本のナレーション', kind: 'audio', visible: true, muted: false } },
+      { type: 'add_track', track: { id: trackId, name: extraText("台本のナレーション"), kind: 'audio', visible: true, muted: false } },
       { type: 'append_speech_script', script: { lines, character_id: characterId, track_id: trackId,
         scene_id: sceneId || null, start_us: values[0], provisional_duration_us: values[1], gap_us: values[2] } },
     ];

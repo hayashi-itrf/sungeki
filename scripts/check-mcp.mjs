@@ -1,9 +1,11 @@
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import assert from 'node:assert/strict';
+import { resolve } from 'node:path';
 import expectedTools from './mcp-tools.json' with { type: 'json' };
 
-const child = spawn('./target/release/sungeki-mcp', [], { stdio: ['pipe', 'pipe', 'pipe'] });
+const executable = resolve(process.argv[2] ?? './target/release/sungeki-mcp');
+const child = spawn(executable, [], { cwd: '/tmp', stdio: ['pipe', 'pipe', 'pipe'] });
 const waiting = new Map();
 let stderr = '';
 child.stderr.setEncoding('utf8').on('data', (data) => { stderr += data; });

@@ -23,7 +23,7 @@
   <p>{t('## シーン名、- left: セリフ の形式で入力します。二人の場合は right も使えます。読みだけ変える場合は直後の行に半角空白2つと > 読み を指定します。', 'Use ## Scene name and - left: Speech. Dialogue also supports right. For a separate pronunciation, follow the speech with two spaces and > Spoken text.')}</p>
   <p>{t('既存の場面の後ろに追加します。追加後に各場面の背景・間隔・演出を設定してください。解析だけでは作品を変更せず、音声も生成しません。', 'Scenes are appended after the existing ones. Choose their backgrounds, gaps and effects afterward. Parsing does not edit the project or synthesize audio.')}</p>
   <label>{t('Markdown台本（100,000文字・200セリフまで）', 'Markdown script (up to 100,000 characters and 200 speeches)')}
-    <textarea rows="7" bind:value={source} disabled={disabled || input.busy} placeholder={'## 導入\n- left: こんにちは。'}></textarea>
+    <textarea rows="7" bind:value={source} disabled={disabled || input.busy} placeholder={locale.current === 'en' ? '## Introduction\n- left: Hello.' : '## 導入\n- left: こんにちは。'}></textarea>
   </label>
   <button type="button" disabled={disabled || input.busy || !source.trim()} onclick={() => input.parse(source, narration)}>{t('台本を確認', 'Check script')}</button>
   {#if input.busy}<p role="status">{t('台本を確認しています…', 'Checking script…')}</p>{/if}

@@ -1,5 +1,6 @@
 """Foreground development owner. Not the production host's engine lease manager."""
 import fcntl
+import errno
 import http.client
 import json
 import os
@@ -47,6 +48,24 @@ def health(port):
         connection.close()
 
 
+def check_port_available(port):
+    # A stopped server may leave TIME_WAIT connections. Reuse those addresses,
+    # but still require an exclusive listener; never adopt an external engine.
+    # BSD can allow a specific-address bind beside a wildcard listener even
+    # with listen(). Check reachability first, including non-VOICEVOX services.
+    try:
+        connection = socket.create_connection(('127.0.0.1', port), timeout=0.5)
+    except ConnectionRefusedError:
+        pass
+    else:
+        connection.close()
+        raise OSError(errno.EADDRINUSE, '別のプロセスが音声用ポートを使用中です')
+    with socket.socket() as probe:
+        probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        probe.bind(('127.0.0.1', port))
+        probe.listen(1)
+
+
 def stop(child):
     # poll(None) leaves an unreaped owned child. If it exits between poll and
     # killpg, its PID cannot be recycled until this parent reaps it.
@@ -89,8 +108,7 @@ def run(directory):
         if not binary.is_absolute() or not binary.is_file() or not os.access(binary, os.X_OK):
             raise RuntimeError('VOICEVOXの実行可能な絶対パスを指定してください')
         # Never attach to or stop an already listening external engine.
-        with socket.socket() as probe:
-            probe.bind(('127.0.0.1', port))
+        check_port_available(port)
         endpoint.unlink(missing_ok=True)  # only under the exclusive owner lock
         listener = socket.socket(socket.AF_UNIX)
         listener.bind(str(endpoint))

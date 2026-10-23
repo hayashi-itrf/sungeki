@@ -3,6 +3,7 @@ mod exit;
 #[cfg(target_os = "macos")]
 mod exit_macos;
 mod host;
+mod mcp_setup;
 mod startup;
 mod startup_trace;
 
@@ -33,6 +34,7 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             startup::check_shell,
+            mcp_setup::mcp_executable_path,
             startup_trace::trace_startup,
             exit::exit_status,
             exit::finish_exit,

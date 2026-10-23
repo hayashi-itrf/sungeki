@@ -156,3 +156,70 @@ fn vrm_custom_preset_requires_matching_model_motion_and_speech_credit() {
     r.assets.last_mut().unwrap().credit.clear();
     assert!(validate(&r).is_err());
 }
+
+#[test]
+fn custom_psd_keeps_shared_source_mouth_character_and_credit_validation() {
+    let mut recipe: BuildRecipe = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/recipes/build-dialogue.json"
+    ))
+    .unwrap();
+    let project: sungeki_project::Project = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/psd-speech-project.json"
+    ))
+    .unwrap();
+    let sungeki_project::ClipContent::Psd {
+        asset_id,
+        pose,
+        speech,
+    } = &project.clips[0].content
+    else {
+        panic!()
+    };
+    let mut asset = project
+        .assets
+        .iter()
+        .find(|a| &a.id == asset_id)
+        .unwrap()
+        .clone();
+    asset.id = uuid::Uuid::new_v4().to_string();
+    asset.credit = "テスト素材の作者".into();
+    let mut speech = speech.clone().unwrap();
+    speech.character_id = recipe.roles[0].character.id.clone();
+    recipe.roles[0].standing = BuildStanding::Psd {
+        asset_id: asset.id.clone(),
+        pose: pose.clone(),
+        speech,
+        flip_x: false,
+    };
+    recipe.assets.push(asset);
+    recipe.roles[0].preset_id = "psd-custom-v1".into();
+    recipe.roles[1].preset_id = "image-custom-v1".into();
+    validate(&recipe).unwrap();
+    let mut bad = recipe.clone();
+    bad.assets.last_mut().unwrap().credit.clear();
+    assert!(validate(&bad).is_err());
+    let mut bad = recipe.clone();
+    let BuildStanding::Psd { pose, .. } = &mut bad.roles[0].standing else {
+        panic!()
+    };
+    pose.source_sha256 = "b".repeat(64);
+    assert!(validate(&bad).is_err());
+    let mut bad = recipe.clone();
+    let BuildStanding::Psd { speech, .. } = &mut bad.roles[0].standing else {
+        panic!()
+    };
+    speech.open_option = "/999".into();
+    assert!(validate(&bad).is_err());
+    let mut bad = recipe.clone();
+    let other = bad.roles[1].character.id.clone();
+    let BuildStanding::Psd { speech, .. } = &mut bad.roles[0].standing else {
+        panic!()
+    };
+    speech.character_id = other;
+    assert!(validate(&bad).is_err());
+    let mut bad = recipe.clone();
+    bad.roles[0].preset_id = "unknown-psd".into();
+    assert!(validate(&bad).is_err());
+    recipe.roles[0].preset_id = "zundamon-sakamoto-2.3-mouth".into();
+    assert!(validate(&recipe).is_err());
+}

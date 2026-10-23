@@ -1,7 +1,7 @@
 //! Read-only metadata inspection. Registration remains a common editor command.
 use crate::sessions::Sessions;
 use std::{
-    path::{Path, PathBuf},
+    path::Path,
     sync::{Arc, Mutex, atomic::Ordering},
     time::Duration,
 };
@@ -32,15 +32,15 @@ pub(crate) fn execute(
     };
     let admission = super::Admission::acquire(runtime)?;
     let saved = crate::runtime_settings::load(&database)?;
-    let node = crate::runtime_settings::file(
-        std::env::var_os("SUNGEKI_VRM_NODE").map(PathBuf::from),
+    let node = crate::render_runtime::bundled::file(
+        std::env::var_os("SUNGEKI_VRM_NODE"),
         saved.vrm_node.as_deref(),
-        "VRM Node",
+        "bin/node",
     )?;
-    let worker = crate::runtime_settings::file(
-        std::env::var_os("SUNGEKI_VRM_INSPECT_WORKER").map(PathBuf::from),
+    let worker = crate::render_runtime::bundled::file(
+        std::env::var_os("SUNGEKI_VRM_INSPECT_WORKER"),
         saved.vrm_inspect_worker.as_deref(),
-        "VRM検査worker",
+        "workers/vrm/src/inspect.ts",
     )?;
     let directory = crate::render_location::root(&database)?;
     let result = probe_vrm(

@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { HostApi, SessionSnapshot } from '@sungeki/api-client';
 import { LiveAudioCache } from './live-audio-cache';
 import { cueGain, cueOffset, liveAudioPlan, projectDuration, type LiveCue } from './live-audio-plan';
@@ -71,7 +72,7 @@ export class LivePlayer {
       let time = this.now();
       if (time >= this.duration) { this.position = this.duration; this.running = false; this.pause(); return; }
       const active = this.plan.cues.filter(c => c.start <= time && time < c.end);
-      if (active.length > 32) throw new Error("編集再生で同時に再生できる音声は32個までです");
+      if (active.length > 32) throw new Error(extraText("編集再生で同時に再生できる音声は32個までです"));
       const missing = active.filter(c => !this.voices.has(c.clip.id) && !this.cache!.get(c.clip.id));
       if (missing.length) {
         // Hold the clock while decoding; never skip the beginning of a sentence.
@@ -82,7 +83,7 @@ export class LivePlayer {
         for (const cue of active) {
           const buffer = await this.cache.load(cue);
           decodedBytes += buffer.length * buffer.numberOfChannels * 4;
-          if (decodedBytes > 128 * 1024 * 1024) throw new Error('同時再生する音声が編集再生のメモリー上限を超えています');
+          if (decodedBytes > 128 * 1024 * 1024) throw new Error(extraText("同時再生する音声が編集再生のメモリー上限を超えています"));
           loaded.set(cue.clip.id, buffer);
         }
         if (token !== this.token) return;

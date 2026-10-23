@@ -9,9 +9,9 @@ const project = { assets: [{ id: 'background', probe: { type: 'image' } }] } as 
 afterEach(() => { locale.current = 'ja'; });
 test('English script errors identify physical lines and retain the accepted Japanese directives', () => {
   locale.current = 'en';
-  expect(() => parseDialogue('左：Hello\r\n\r\n読み：hello')).toThrow('Line 3: add 読み：text');
-  expect(() => parseDialogue('左：Hello\nポーズ：smile\nポーズ：other')).toThrow('Line 3: add ポーズ：name');
-  expect(() => parseDialogue('Left: Hello')).toThrow('Line 1: enter 左：dialogue or 右：dialogue');
+  expect(() => parseDialogue('左：Hello\r\n\r\n読み：hello')).toThrow('Line 3: add reading:text');
+  expect(() => parseDialogue('左：Hello\nポーズ：smile\nポーズ：other')).toThrow('Line 3: add pose:name');
+  expect(() => parseDialogue('Left: Hello')).toThrow('Line 1: enter left:dialogue or right:dialogue');
   const script = '左： Hello \r\n読み： はろー \r\nポーズ： 笑顔 \r\n右：Reply';
   const english = parseDialogue(script);
   locale.current = 'ja';
@@ -33,7 +33,7 @@ test('scene validation translates locations and limits without altering draft or
   expect(() => scenesFromForm(project, [{ ...input[0]!, gapSeconds: NaN }])).toThrow('Scene 1: Set the gap');
   expect(() => scenesFromForm(project, [{ ...input[0]!, fade: { inSeconds: -1, outSeconds: 0 } }])).toThrow('Scene 1: Set non-negative fade times');
   expect(() => scenesFromForm(project, [{ ...input[0]!, script: '' }])).toThrow('Scene 1: Use 1–200 dialogue lines.');
-  expect(() => scenesFromForm(project, [{ ...input[0]!, script: '左：Hello\n読み：' }])).toThrow('Scene 1: Line 2: add 読み：text');
+  expect(() => scenesFromForm(project, [{ ...input[0]!, script: '左：Hello\n読み：' }])).toThrow('Scene 1: Line 2: add reading:text');
   const many = { ...input[0]!, script: Array(101).fill('左：Hello').join('\n') };
   expect(() => scenesFromForm(project, [many, many])).toThrow('no more than 200 dialogue lines across all scenes');
 });

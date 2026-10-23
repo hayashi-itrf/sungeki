@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { ExportSubtitlesArgs, HostApi, SubtitlePublication } from '@sungeki/api-client';
 
 export class SubtitlesController {
@@ -34,13 +35,13 @@ export class SubtitlesController {
     if (!args) return;
     const response = await this.api.session({ type: 'export_subtitles', args });
     if (!this.alive) return;
-    if (response.type !== 'subtitles_exported') throw new Error('字幕の保存結果を確認できませんでした。');
+    if (response.type !== 'subtitles_exported') throw new Error(extraText("字幕の保存結果を確認できませんでした。"));
     const p = response.publication;
     if (p.session_id !== args.session_id || p.source_revision !== args.expected_revision
       || p.format !== args.format || p.include_text !== args.include_text || !p.path.startsWith('/')
       || !/^[a-f0-9]{64}$/.test(p.sha256) || !/^[a-f0-9]{64}$/.test(p.content_hash)
       || !Number.isSafeInteger(p.byte_length) || p.byte_length < 0) {
-      throw new Error('字幕の保存結果が要求と一致しません。');
+      throw new Error(extraText("字幕の保存結果が要求と一致しません。"));
     }
     this.result = p; this.pending = null;
   }

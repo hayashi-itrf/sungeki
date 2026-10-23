@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { AudioAnalysis, AudioProbe, Clip } from '@sungeki/api-client';
 
 // Source-pre-gain envelopes. The source period uses the same ceil sample
@@ -32,7 +33,7 @@ export function materialWaveformPath(analysis: AudioAnalysis, r: NonNullable<Ret
     for (let i = first; i < end; i++) {
       min = Math.min(min, analysis.peaks[i][0]); max = Math.max(max, analysis.peaks[i][1]);
     }
-    if (!Number.isFinite(min + max)) throw new Error('音声区間に対応する波形がありません。');
+    if (!Number.isFinite(min + max)) throw new Error(extraText("音声区間に対応する波形がありません。"));
     return [min, max];
   }
   const paths: string[] = [];

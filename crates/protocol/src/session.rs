@@ -1,6 +1,9 @@
 #[path = "runtime_settings.rs"]
 mod runtime_settings;
 pub use runtime_settings::*;
+#[path = "runtime_environment.rs"]
+mod runtime_environment;
+pub use runtime_environment::*;
 #[path = "presets.rs"]
 mod presets;
 pub use presets::*;
@@ -39,6 +42,7 @@ pub enum SessionRequest {
         args: crate::InstallSpeechConfigArgs,
     },
     GetRuntimeSettings,
+    GetRuntimeEnvironment {},
     SaveRuntimeSettings {
         args: crate::SaveRuntimeSettingsArgs,
     },

@@ -1,3 +1,4 @@
+import { uiText } from '../../shared/i18n/extended-ui';
 import { locale } from '../../shared/i18n/locale.svelte';
 import type { Command, Project, VrmAssetProbe } from '@sungeki/api-client';
 export type VrmImportSource = { path: string; credit: string; probe: VrmAssetProbe };
@@ -17,7 +18,7 @@ export function importVrm(project: Project, model: VrmImportSource, motion: VrmI
   };
   const width = Math.min(650, project.canvas.width), height = Math.min(900, project.canvas.height);
   return [register(model, ids.model), register(motion, ids.motion),
-    { type: 'add_track', track: { id: ids.track, name: 'VRM立ち絵', kind: 'visual', visible: true, muted: false } },
+    { type: 'add_track', track: { id: ids.track, name: uiText("VRM立ち絵"), kind: 'visual', visible: true, muted: false } },
     { type: 'add_clip', clip: { id: ids.clip, track_id: ids.track, scene_id: sceneId || null,
       start_us: Math.round(start * 1e6), duration_us: Math.round(duration * 1e6),
       transform: { x: (project.canvas.width-width)/2, y: (project.canvas.height-height)/2, width, height, opacity: 1 },

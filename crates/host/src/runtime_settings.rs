@@ -95,14 +95,27 @@ pub fn validate(settings: &Settings) -> Result<(), ApiError> {
     }
     Ok(())
 }
+/// Select before validation: even an invalid explicit override wins.
+pub(crate) fn select<T>(
+    override_value: Option<T>,
+    saved: Option<T>,
+) -> (Option<T>, sungeki_protocol::RuntimeSettingSource) {
+    use sungeki_protocol::RuntimeSettingSource;
+    match (override_value, saved) {
+        (Some(value), _) => (Some(value), RuntimeSettingSource::Environment),
+        (None, Some(value)) => (Some(value), RuntimeSettingSource::Saved),
+        (None, None) => (None, RuntimeSettingSource::Unset),
+    }
+}
+
 /// An explicitly supplied override is validated, never silently replaced.
 pub fn file(
     override_path: Option<PathBuf>,
     saved: Option<&Path>,
     name: &str,
 ) -> Result<PathBuf, ApiError> {
-    let path = override_path
-        .or_else(|| saved.map(Path::to_owned))
+    let path = select(override_path, saved.map(Path::to_owned))
+        .0
         .ok_or_else(|| {
             ApiError::new(
                 ErrorCode::CapabilityUnavailable,
@@ -114,6 +127,8 @@ pub fn file(
     }
     Ok(path)
 }
+#[path = "runtime_environment.rs"]
+pub(crate) mod environment;
 #[path = "runtime_font.rs"]
 mod font;
 #[path = "runtime_settings_store.rs"]

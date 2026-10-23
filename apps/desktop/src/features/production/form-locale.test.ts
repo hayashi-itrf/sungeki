@@ -62,7 +62,7 @@ test.each(['dialogue-wide-v1', 'narration-portrait-v1'] as const)('form language
   const english = render(BuildForm, { props: { editor, jobs, draft, templates } }).body;
   for (const label of ['New project name', 'Production format', 'Speaker', 'Background', 'Scene order',
     'Foreword text (up to 4 lines)', 'VOICEVOX address', 'Choose a save location and start production']) expect(english).toContain(label);
-  expect(english).toContain('読み：full spoken text'); expect(english).toContain('入力済みの前書き');
+  expect(english).toContain('reading:full spoken text'); expect(english).toContain('入力済みの前書き');
   expect(english).not.toContain('新しい作品名');
   for (const option of ['Sprite: $$通常', 'Sprite: $$笑顔', 'VRM: $$モデル']) expect(english).toContain(option);
   expect(english).not.toContain('スプライト：');

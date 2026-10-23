@@ -6,6 +6,7 @@ Tauri v2 / Rust / Svelte / TypeScriptで構成しています。確定した作�
 
 - Node.js 22.22.3、npm 10.9.8（`.node-version`と`package.json`）
 - Rust 1.98.1（`rust-toolchain.toml`）
+- Vite 8.3.5、Vitest 5.0.5（2026-10-24の開発依存修正。各manifestと`package-lock.json`で固定）
 - ビルド時の通知収集・結合試験にはPython 3（利用者の描画には不要）
 
 macOS Apple Siliconを主な検証対象としています。Linuxのhost/MCPはCI対象ですが、Linux/WindowsのGUIを動作保証するものではありません。
@@ -33,7 +34,7 @@ npm run desktop:bundle
 
 ## 実行環境
 
-大きな依存とキャッシュは外部ディスクの専用フォルダーへ置きます。描画は`crates/raster`に内蔵しています。`workers/image`と`setup:image`は比較検証専用です。VRMは`npm run setup:vrm`で専用ブラウザーを準備します。音声モデル・VRM/PSD・フォント・FFmpegはソースに含みません。
+大きな依存とキャッシュは外部ディスクの専用フォルダーへ置きます。描画は`crates/raster`に内蔵しています。`workers/image`と`setup:image`は比較検証専用です。macOSアプリには[VRM描画環境](BUNDLED_VRM.md)を同梱します。アプリ外の開発hostでVRMを使う場合は`npm run setup:vrm`で専用ブラウザーを準備します。音声モデル・VRM/PSD・フォント・FFmpegはソースに含みません。
 
 `target/release/sungeki-mcp`はstdio MCPサーバーです。`get_capabilities`で利用可能な機能を確認してください。例は`examples/mcp/README.md`にあります。実行環境が未設定なら音声・映像の一部機能は利用できません。
 

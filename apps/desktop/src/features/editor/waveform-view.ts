@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { AnalyzeAudioArgs, AudioAnalysis, AudioProbe, Clip } from '@sungeki/api-client';
 export function waveformRange(clip: Clip, probe: AudioProbe, start: number, span: number) {
   const from = Math.max(0, (start * 1e6 - clip.start_us) * probe.sample_rate / 1e6);
@@ -20,7 +21,7 @@ export function validateWaveform(a: AudioAnalysis, r: AnalyzeAudioArgs, p: Audio
     || a.start_frame !== Math.min(p.frames, r.start_bucket * width)
     || a.end_frame !== Math.min(p.frames, (r.start_bucket + count) * width)
     || a.peaks.length !== count || a.peaks.some(([min, max]) => !Number.isFinite(min + max) || min > max)) {
-    throw new Error('音声素材と波形の応答が一致しません。');
+    throw new Error(extraText("音声素材と波形の応答が一致しません。"));
   }
 }
 export function waveformPath(a: AudioAnalysis, range: NonNullable<ReturnType<typeof waveformRange>>) {

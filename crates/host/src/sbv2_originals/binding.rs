@@ -69,7 +69,9 @@ impl Binding {
             .and_then(|s| s.strip_suffix('/'))
             .and_then(|s| s.parse::<u16>().ok())
             .filter(|port| *port >= 1024)
-            .ok_or_else(|| invalid("Sungeki Maker管理起動には127.0.0.1の1024以上のportが必要です"))?;
+            .ok_or_else(|| {
+                invalid("Sungeki Maker管理起動には127.0.0.1の1024以上のportが必要です")
+            })?;
         Ok(std::net::SocketAddrV4::new(
             std::net::Ipv4Addr::LOCALHOST,
             port,

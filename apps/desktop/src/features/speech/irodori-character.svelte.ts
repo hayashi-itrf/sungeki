@@ -1,9 +1,10 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { Character, HostApi, IrodoriProfileDetails } from '@sungeki/api-client';
 import { newCharacterSubtitles } from './new-character-subtitles';
 
 export function irodoriCharacter(details: IrodoriProfileDetails, speaker: string, name: string, credit: string, background: string): Character {
-  if (!name.trim()) throw new Error('キャラクター名を入力してください。');
-  if (!details.speakers.some(s => s.id === speaker)) throw new Error('話者を選び直してください。');
+  if (!name.trim()) throw new Error(extraText("キャラクター名を入力してください。"));
+  if (!details.speakers.some(s => s.id === speaker)) throw new Error(extraText("話者を選び直してください。"));
   return { id: crypto.randomUUID(), name, credit,
     subtitle_style: newCharacterSubtitles(background),
     voice: { type: 'irodori', identity: structuredClone(details.identity), settings: {
@@ -27,7 +28,7 @@ export class IrodoriCharacterDraft {
   dispose() { this.alive = false; this.generation++; }
   private async fetch(id: string) {
     const response = await this.api.session({ type: 'speech_job', request: { type: 'get_irodori_profile', args: { profile_id: id } } });
-    if (response.type !== 'irodori_profile' || response.details.profile_id !== id) throw new Error('声の確認結果が選択した起動設定と一致しません。');
+    if (response.type !== 'irodori_profile' || response.details.profile_id !== id) throw new Error(extraText("声の確認結果が選択した起動設定と一致しません。"));
     return structuredClone(response.details);
   }
   async inspect() {
@@ -38,7 +39,7 @@ export class IrodoriCharacterDraft {
       const details = await this.fetch(id);
       if (!this.alive || generation !== this.generation) return;
       const initial = details.default_settings;
-      if (!details.speakers.some(s => s.id === initial.voice_id)) throw new Error('声の初期設定を確認できませんでした。');
+      if (!details.speakers.some(s => s.id === initial.voice_id)) throw new Error(extraText("声の初期設定を確認できませんでした。"));
       this.details = details; this.speaker = initial.voice_id;
     } catch (error) { if (this.alive && generation === this.generation) this.error = message(error); }
     finally { if (this.alive && generation === this.generation) this.busy = false; }
@@ -53,7 +54,7 @@ export class IrodoriCharacterDraft {
       if (!this.alive || generation !== this.generation) return null;
       if (JSON.stringify(current) !== JSON.stringify(captured)) {
         this.details = null;
-        throw new Error('モデル原本または声の情報が変わりました。話者を確認し直してください。');
+        throw new Error(extraText("モデル原本または声の情報が変わりました。話者を確認し直してください。"));
       }
       return character;
     } catch (error) { if (this.alive && generation === this.generation) this.error = message(error); return null; }

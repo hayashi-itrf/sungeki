@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { extraText } from '../../shared/i18n/extra-ui';
   import { characterText as t, characterDiagnostic } from './character-messages';
   import { onDestroy } from 'svelte';
   import type { EditorController } from '../editor/controller.svelte';
@@ -22,7 +23,7 @@
       } });
       if (!alive) return;
       if (result.type !== 'voicevox_speaker' || JSON.stringify(result.details) !== JSON.stringify(captured.details)) {
-        choice = null; throw new Error('声の情報または利用条件が変わりました。一覧から選び直してください。');
+        choice = null; throw new Error(extraText("声の情報または利用条件が変わりました。一覧から選び直してください。"));
       }
       const character = createCharacter(result.details, captured.styleId, name, credit, editor.snapshot!.project.canvas.background);
       submitting(character.id);

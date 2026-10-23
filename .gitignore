@@ -20,3 +20,6 @@ apps/desktop/src-tauri/resources/native-notices/
 *.mobileprovision
 /secrets/
 /publication-staging/
+/output/
+
+apps/desktop/src-tauri/resources/vrm-runtime/

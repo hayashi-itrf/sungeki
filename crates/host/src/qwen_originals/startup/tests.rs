@@ -84,7 +84,7 @@ while True:
   rate=48000 if mode=='speech_wrong_rate' else 24000
   pcm=b'\x01\x00'*240
   body=b'RIFF'+struct.pack('<I',36+len(pcm))+b'WAVEfmt '+struct.pack('<IHHIIHH',16,1,1,rate,rate*2,2,16)+b'data'+struct.pack('<I',len(pcm))+pcm
-  if mode=='speech_bad': body=b'bad wav' 
+  if mode=='speech_bad': body=b'bad wav'
  try: c.sendall(b'HTTP/1.1 200 OK\r\nContent-Length: '+str(len(body)).encode()+b'\r\nConnection: close\r\n\r\n'+body)
  except BrokenPipeError: pass
  c.close()

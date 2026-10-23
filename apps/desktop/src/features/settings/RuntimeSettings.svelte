@@ -20,9 +20,6 @@
     { key: 'ffprobe', label: 'runtimeFfprobe' },
     { key: 'font', label: 'runtimeFont' },
     { key: 'font_sha256', label: 'runtimeFontHash' },
-    { key: 'vrm_node', label: 'runtimeNode' },
-    { key: 'vrm_render_worker', label: 'runtimeVrmRender' },
-    { key: 'vrm_inspect_worker', label: 'runtimeVrmInspect' },
   ];
   async function chooseFile(field: typeof fields[number]) {
     if (field.key === 'font_sha256' || busy || !draft) return;
@@ -51,8 +48,8 @@
     } finally { busy = false; }
   }
 </script>
-<details class="settings">
-  <summary>{locale.text('runtimeTitle')}</summary>
+<section>
+  <h2>{locale.text('runtimeTitle')}</h2>
   <p>{locale.text('runtimeScope')}</p>
   <section aria-label={locale.text('runtimeNeedsTitle')}>
     <h3>{locale.text('runtimeNeedsTitle')}</h3>
@@ -90,7 +87,7 @@
     <button disabled={busy || !modified} onclick={() => run(true)}>{locale.text('runtimeSave')}</button>
   {/if}
   <p role="status">{errorMessage ? runtimeDiagnostic(errorMessage) : locale.text(modified ? 'runtimeUnsaved' : messageKey)}</p>
-</details>
+</section>
 <style>
   fieldset { display: grid; gap: 10px; margin: 12px 0; border: 1px solid var(--border); }
   label { display: grid; gap: 4px; }

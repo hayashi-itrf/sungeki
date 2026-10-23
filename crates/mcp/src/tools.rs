@@ -28,6 +28,10 @@ pub fn definitions() -> Vec<Tool> {
             "get_runtime_settings",
             "Sungeki Maker専用の保存済み実行環境設定を取得。環境変数の上書き値や実行可否の検査結果ではない。",
         ),
+        tool::<EmptyArgs>(
+            "get_runtime_environment",
+            "接続中hostの設定保存先と、FFmpeg・FFprobe・字幕フォント・そのSHA256・runtimeルートの保存値、現在の選択値、出所を取得。環境変数を保存値より優先。読取専用で設定保存・導入・エンジン起動はしない。ファイル・マウント・ハッシュ・実行は未検査（verification=not_run）。VRM・TTS・処理別作業先・既存ジョブの固定環境は対象外。",
+        ),
         tool::<SaveRuntimeSettingsArgs>(
             "save_runtime_settings",
             "実行環境設定を比較して保存。expectedは直前の取得値。font指定時にfont_sha256を省略すると原本SHA256を取得して保存・応答する。指定済み検査値は自動更新しない。ツール実行・フォント描画の成功は保証しない。作品は不変。実行中ジョブは開始時の設定を維持。",

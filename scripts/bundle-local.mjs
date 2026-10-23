@@ -1,6 +1,6 @@
 // Produce a self-consistent local macOS bundle, without a distribution identity.
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,9 +14,11 @@ const profile = args.includes('--dist') ? 'dist' : 'release';
 const target = process.arch === 'arm64' ? 'aarch64-apple-darwin' : 'x86_64-apple-darwin';
 run(process.env.SUNGEKI_BUILD_PYTHON || 'python3', ['-X', 'utf8',
   'scripts/prepare-native-notices.py', '--target', target]);
+run(process.execPath, ['scripts/prepare-vrm-bundle.mjs']);
 const configuration = JSON.parse(readFileSync(resolve(root, 'apps/desktop/src-tauri/tauri.conf.json'), 'utf8'));
 const bundleConfig = JSON.stringify({ bundle: { active: true, resources: {
   ...configuration.bundle.resources, 'resources/native-notices/': 'native-notices/',
+  'resources/vrm-runtime/': 'vrm-runtime/',
   '../dist/THIRD_PARTY_FRONTEND.txt': 'THIRD_PARTY_FRONTEND.txt',
 } } });
 // The standalone bundle command cannot select a custom Cargo profile.
@@ -26,6 +28,13 @@ const command = profile === 'dist'
   : ['bundle', '--bundles', 'app', '--config', bundleConfig];
 run('npm', ['run', 'tauri', '-w', '@sungeki/desktop', '--', ...command]);
 const bundle = resolve(root, `target/${profile}/bundle/macos/${configuration.productName}.app`);
+const iconName = execFileSync('/usr/libexec/PlistBuddy', [
+  '-c', 'Print :CFBundleIconFile', resolve(bundle, 'Contents/Info.plist'),
+], { encoding: 'utf8' }).trim();
+if (iconName !== 'icon.icns' || !readFileSync(resolve(bundle, 'Contents/Resources', iconName))
+  .equals(readFileSync(resolve(root, 'apps/desktop/src-tauri/icons/icon.icns')))) {
+  throw new Error('アプリアイコンの登録または同梱内容が一致しません');
+}
 // Check the packaged artifact, not only the resource configuration.
 if (!readFileSync(resolve(bundle, 'Contents/Resources/LICENSE')).equals(readFileSync(resolve(root, 'LICENSE')))) {
   throw new Error('同梱LICENSEが本体のLICENSEと一致しません');
@@ -45,8 +54,25 @@ for (const [file, expected] of Object.entries(JSON.parse(noticeManifest.toString
   const actual = createHash('sha256').update(readFileSync(resolve(bundledNotices, file))).digest('hex');
   if (actual !== expected) throw new Error(`同梱した第三者通知が一致しません: ${file}`);
 }
+const vrmRoot = resolve(bundle, 'Contents/Resources/vrm-runtime');
+const vrmManifest = JSON.parse(readFileSync(resolve(vrmRoot, 'manifest.json')));
+for (const [file, expected] of Object.entries(vrmManifest.files)) {
+  if (file.startsWith('/') || file.split('/').includes('..')) throw Error('Invalid VRM resource path');
+  if (createHash('sha256').update(readFileSync(resolve(vrmRoot, file))).digest('hex') !== expected)
+    throw Error('VRM resource mismatch: ' + file);
+}
 // Sign nested code first, then seal the bundle's resources. '-' is ad-hoc only.
-run('/usr/bin/codesign', ['--force', '--sign', '-', resolve(bundle, 'Contents/MacOS/sungeki-host')]);
+for (const name of ['sungeki-host', 'sungeki-mcp']) {
+  const executable = resolve(bundle, 'Contents/MacOS', name);
+  if (!readFileSync(executable).equals(readFileSync(resolve(root, `target/${profile}/${name}`)))) {
+    throw new Error(`同梱プログラムがビルド結果と一致しません: ${name}`);
+  }
+  run('/usr/bin/codesign', ['--force', '--sign', '-', executable]);
+}
+run('/usr/bin/codesign', ['--force', '--sign', '-', resolve(bundle, 'Contents/Resources/vrm-runtime/bin/node')]);
+vrmManifest.files['bin/node'] = createHash('sha256').update(readFileSync(resolve(vrmRoot, 'bin/node'))).digest('hex');
+writeFileSync(resolve(vrmRoot, 'manifest.json'), JSON.stringify(vrmManifest, null, 2) + '\n');
 run('/usr/bin/codesign', ['--force', '--sign', '-', bundle]);
 run('/usr/bin/codesign', ['--verify', '--deep', '--strict', bundle]);
+run(process.execPath, ['scripts/check-mcp.mjs', resolve(bundle, 'Contents/MacOS/sungeki-mcp')]);
 console.log('ローカル.appの署名整合性を確認しました（配布署名・公証ではありません）');

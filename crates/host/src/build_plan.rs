@@ -2,7 +2,9 @@
 use super::invalid;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
-use sungeki_editor::{BuildForewordIds, BuildLayoutIds, BuildSceneVisualIds, BuildScriptIds};
+use sungeki_editor::{
+    BuildForewordIds, BuildLayoutIds, BuildOpeningIds, BuildSceneVisualIds, BuildScriptIds,
+};
 use sungeki_project::BuildRecipe;
 use sungeki_protocol::ApiError;
 
@@ -29,6 +31,19 @@ impl Plan {
                 speech_ids: (0..count).map(|_| id()).collect(),
             },
             layout: BuildLayoutIds {
+                opening: recipe
+                    .presentation
+                    .as_ref()
+                    .and_then(|p| p.opening.as_ref())
+                    .map(|o| BuildOpeningIds {
+                        logo: o.logo.as_ref().map(|_| id()),
+                        audio: o.audio.iter().map(|_| id()).collect(),
+                        performers: o
+                            .performers
+                            .iter()
+                            .map(|p| p.intervals(o.duration_us).iter().map(|_| id()).collect())
+                            .collect(),
+                    }),
                 tracks: std::array::from_fn(|_| id()),
                 scenes: recipe
                     .scenes
@@ -55,8 +70,18 @@ impl Plan {
         }
     }
     pub fn validate(&self, recipe: &BuildRecipe, steps: &[String]) -> Result<(), ApiError> {
+        let opening = recipe
+            .presentation
+            .as_ref()
+            .and_then(|p| p.opening.as_ref());
+        let opening_matches = match (&self.layout.opening, opening) {
+            (None, None) => true,
+            (Some(ids), Some(o)) => ids.matches(o),
+            _ => false,
+        };
         let count: usize = recipe.scenes.iter().map(|s| s.lines.len()).sum();
-        if self.script.scene_ids.len() != recipe.scenes.len()
+        if !opening_matches
+            || self.script.scene_ids.len() != recipe.scenes.len()
             || self.script.speech_ids.len() != count
             || self.speech_asset_ids.len() != count
             || self.speech_operation_ids.len() != count

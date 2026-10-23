@@ -1,9 +1,10 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { AudioProbe, Command } from '@sungeki/api-client';
 export function importAudio(path: string, probe: AudioProbe, start: number,
   ids: { asset: string; track: string; clip: string }): Command[] {
   if (!path.startsWith('/') || !Number.isSafeInteger(start) || start < 0 ||
       !Number.isSafeInteger(probe.duration_us) || probe.duration_us <= 0 || start + probe.duration_us > 604800000000) {
-    throw new Error('音声の配置範囲が作品の上限を超えています。開始位置を変更してください。');
+    throw new Error(extraText("音声の配置範囲が作品の上限を超えています。開始位置を変更してください。"));
   }
   const name = path.split('/').at(-1) || '音声素材';
   return [

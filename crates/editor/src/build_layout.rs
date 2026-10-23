@@ -2,11 +2,18 @@
 mod bgm;
 #[path = "build_diagrams.rs"]
 mod diagrams;
+#[path = "build_opening.rs"]
+mod opening;
+#[path = "build_presentation.rs"]
+mod presentation;
+#[path = "build_structure.rs"]
+mod structure;
 use crate::{
     BuildScriptIds, Command, ForewordTemplate, apply_batch, build_visuals as visual,
     dialogue_template::rect,
 };
 use bgm::bgm_playback;
+pub use opening::BuildOpeningIds;
 use serde::{Deserialize, Serialize};
 use sungeki_project::*;
 
@@ -29,6 +36,8 @@ pub struct BuildForewordIds {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct BuildLayoutIds {
+    #[serde(default)]
+    pub opening: Option<BuildOpeningIds>,
     /// Background, left, right, diagrams, music, cards.
     pub tracks: [String; 6],
     pub scenes: Vec<BuildSceneVisualIds>,
@@ -52,10 +61,22 @@ pub fn plan_build_layout(
     ids: &BuildLayoutIds,
 ) -> Result<Vec<Command>, ValidationError> {
     let (_, count) = crate::build_speech::validate_stage(p, recipe, speech)?;
+    let opening = recipe
+        .presentation
+        .as_ref()
+        .and_then(|p| p.opening.as_ref());
+    let plain_title = recipe
+        .presentation
+        .as_ref()
+        .and_then(|p| p.structure.as_ref())
+        .and_then(|s| s.title_duration_us)
+        .map_or(3_000_000, |t| t.0);
+    let lead_us = opening.map_or(plain_title, |o| o.duration_us.0);
     if count != speech.speech_ids.len()
         || ids.scenes.len() != recipe.scenes.len()
         || ids.bgm.is_some() != recipe.bgm.is_some()
         || ids.foreword.is_some() != recipe.foreword.is_some()
+        || ids.opening.is_some() != opening.is_some()
     {
         return Err(error());
     }
@@ -89,12 +110,17 @@ pub fn plan_build_layout(
             },
         });
     }
+    let behind = recipe
+        .presentation
+        .as_ref()
+        .and_then(|p| p.slots.as_ref())
+        .is_some_and(|s| s.diagrams_behind_standings);
     commands.push(Command::ReorderTracks {
         track_ids: vec![
             ids.tracks[0].clone(),
-            ids.tracks[1].clone(),
-            ids.tracks[2].clone(),
-            ids.tracks[3].clone(),
+            ids.tracks[if behind { 3 } else { 1 }].clone(),
+            ids.tracks[if behind { 1 } else { 2 }].clone(),
+            ids.tracks[if behind { 2 } else { 3 }].clone(),
             speech.track_id.clone(),
             ids.tracks[4].clone(),
             ids.tracks[5].clone(),
@@ -120,7 +146,7 @@ pub fn plan_build_layout(
                 fade: Some(fade.clone()),
             });
         }
-        let start = TimeUs(source.start_us.0 + 3_000_000);
+        let start = TimeUs(source.start_us.0 + lead_us);
         commands.push(Command::MoveScene {
             scene_id: source.id.clone(),
             start_us: start,
@@ -141,6 +167,7 @@ pub fn plan_build_layout(
             )?,
         });
         let mut poses = [None, None];
+        let mut mouth_bindings = [None, None];
         let mut sprite_poses = [None, None];
         for (line_index, line) in scene.lines.iter().enumerate() {
             let c = &p.clips[offset + line_index];
@@ -162,6 +189,16 @@ pub fn plan_build_layout(
             }
             if let Some(pose) = &line.pose {
                 poses[role_index] = Some(pose);
+                mouth_bindings[role_index] = None;
+            }
+            for (name, state) in line.psd_states.iter().flatten() {
+                let index = recipe
+                    .roles
+                    .iter()
+                    .position(|r| &r.role == name)
+                    .ok_or_else(error)?;
+                poses[index] = Some(&state.pose);
+                mouth_bindings[index] = Some(&state.speech);
             }
             let end = if line_index + 1 < scene.lines.len() {
                 p.clips[offset + line_index + 1].start_us.0
@@ -174,7 +211,7 @@ pub fn plan_build_layout(
                         id: visual_ids.standing[line_index][1].clone(),
                         track_id: ids.tracks[2].clone(),
                         scene_id: Some(source.id.clone()),
-                        start_us: TimeUs(c.start_us.0 + 3_000_000),
+                        start_us: TimeUs(c.start_us.0 + lead_us),
                         duration_us: TimeUs(end - c.start_us.0),
                         content: ClipContent::Shape {
                             shape: ShapeKind::Rectangle,
@@ -190,6 +227,11 @@ pub fn plan_build_layout(
             for (role_index, role) in recipe.roles.iter().enumerate() {
                 let (mut content, flip) =
                     visual::standing(role, poses[role_index], sprite_poses[role_index]);
+                if let (ClipContent::Psd { speech, .. }, Some(binding)) =
+                    (&mut content, mouth_bindings[role_index])
+                {
+                    *speech = Some(binding.clone());
+                }
                 if let ClipContent::Vrm { standing } = &mut content {
                     standing.source_start_us.0 = standing
                         .source_start_us
@@ -203,7 +245,7 @@ pub fn plan_build_layout(
                         &visual_ids.standing[line_index][role_index],
                         &ids.tracks[role_index + 1],
                         &source.id,
-                        TimeUs(c.start_us.0 + 3_000_000),
+                        TimeUs(c.start_us.0 + lead_us),
                         TimeUs(end - c.start_us.0),
                         content,
                         role_index + 1,
@@ -219,6 +261,7 @@ pub fn plan_build_layout(
             &visual_ids.diagrams,
             offset,
             &ids.tracks[3],
+            lead_us,
         )?);
         offset += scene.lines.len();
     }
@@ -226,10 +269,13 @@ pub fn plan_build_layout(
         .duration()
         .ok_or_else(error)?
         .0
-        .checked_add(3_000_000)
+        .checked_add(lead_us)
         .ok_or_else(error)?;
+    let ending = recipe.presentation.as_ref().and_then(|p| p.ending.as_ref());
+    let ending_duration = ending.map_or(3_500_000, |e| e.duration_us.0);
+    let ending_background = ending.and_then(|e| e.background_asset_id.as_deref());
     let end = speech_end
-        .checked_add(3_500_000)
+        .checked_add(ending_duration)
         .filter(|end| *end <= MAX_TIME_US)
         .ok_or_else(error)?;
     if let (Some(bgm), Some(id)) = (&recipe.bgm, &ids.bgm) {
@@ -248,6 +294,22 @@ pub fn plan_build_layout(
             },
         });
     }
+    if let (Some(opening), Some(extra)) = (opening, &ids.opening) {
+        commands.extend(opening::plan(p, recipe, opening, ids, extra)?);
+    } else {
+        commands.extend(visual::card(
+            p,
+            &ids.title_scene,
+            &ids.title_clips,
+            &ids.tracks[5],
+            "タイトル",
+            recipe.title.clone(),
+            0,
+            lead_us,
+            false,
+            None,
+        ));
+    }
     crate::track_separation::complete_layout(p, &mut commands)?;
     let candidate = apply_batch(p, &commands)?;
     let selected = candidate
@@ -255,18 +317,20 @@ pub fn plan_build_layout(
         .iter()
         .map(|c| c.id.clone())
         .collect::<Vec<_>>();
-    let credits = crate::credits::text_for_clips(&candidate, &selected)?;
-    commands.extend(visual::card(
-        p,
-        &ids.title_scene,
-        &ids.title_clips,
-        &ids.tracks[5],
-        "タイトル",
-        recipe.title.clone(),
-        0,
-        3_000_000,
-        false,
-    ));
+    let mut credits = crate::credits::text_for_clips(&candidate, &selected)?;
+    if let Some(id) = ending_background {
+        let asset = recipe
+            .assets
+            .iter()
+            .find(|a| a.id == id)
+            .ok_or_else(error)?;
+        for line in asset.credit.lines() {
+            if !credits.lines().any(|existing| existing == line) {
+                credits.push('\n');
+                credits.push_str(line);
+            }
+        }
+    }
     commands.extend(visual::card(
         p,
         &ids.credits_scene,
@@ -275,8 +339,9 @@ pub fn plan_build_layout(
         "クレジット",
         credits,
         speech_end,
-        3_500_000,
+        ending_duration,
         true,
+        ending_background,
     ));
     if let (Some(foreword), Some(ids)) = (&recipe.foreword, &ids.foreword) {
         commands.push(Command::PrependForeword {
@@ -292,6 +357,10 @@ pub fn plan_build_layout(
         });
     }
     crate::track_separation::complete_layout(p, &mut commands)?;
+    let candidate = apply_batch(p, &commands)?;
+    commands.extend(structure::plan(&candidate, recipe, speech, ids)?);
+    let candidate = apply_batch(p, &commands)?;
+    commands.extend(presentation::plan(&candidate, recipe, ids)?);
     apply_batch(p, &commands)?;
     Ok(commands)
 }

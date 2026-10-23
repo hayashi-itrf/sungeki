@@ -5,6 +5,7 @@ function page() {
   const target = {};
   const events: string[] = [];
   vi.stubGlobal('document', {
+    documentElement: { lang: '' },
     dispatchEvent: (event: Event) => { events.push(event.type); return true; },
     getElementById: (id: string) => id === 'app' ? target : status,
     createElement: () => ({ textContent: '', style: {} }),
@@ -53,4 +54,17 @@ test('successful mount removes only the startup notice', async () => {
   expect(start).toHaveBeenCalledWith(target);
   expect(status.remove).toHaveBeenCalledOnce();
   expect(status.replaceChildren).not.toHaveBeenCalled();
+});
+
+test('startup failure follows the saved English preference without translating error details', async () => {
+  const { status } = page();
+  Object.assign(status, { querySelectorAll: () => [{ textContent: '' }, { textContent: '' }] });
+  vi.stubGlobal('localStorage', { getItem: () => 'en' });
+  vi.doMock('./app/bootstrap', () => ({ start: () => { throw new Error('原文の診断'); } }));
+  await import('./main');
+  await vi.dynamicImportSettled();
+  const nodes = status.replaceChildren.mock.calls[0];
+  expect(nodes[0].textContent).toBe('Unable to start');
+  expect(nodes[1].textContent).toContain('Close and reopen');
+  expect(nodes[2].textContent).toContain('原文の診断');
 });

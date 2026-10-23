@@ -58,7 +58,9 @@ pub use build_speech::plan_build_speech_application;
 
 mod build_layout;
 mod build_visuals;
-pub use build_layout::{BuildForewordIds, BuildLayoutIds, BuildSceneVisualIds, plan_build_layout};
+pub use build_layout::{
+    BuildForewordIds, BuildLayoutIds, BuildOpeningIds, BuildSceneVisualIds, plan_build_layout,
+};
 
 mod build_portrait;
 

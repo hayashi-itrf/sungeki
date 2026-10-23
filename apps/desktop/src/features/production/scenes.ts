@@ -5,7 +5,7 @@ import { diagramsFromForm, type DiagramInput } from './diagrams';
 import { parseDialogue } from './dialogue';
 export type SceneInput = { name: string; background: string; script: string; gapSeconds: number | undefined; fade?: SceneFadeInput; diagrams: DiagramInput[] };
 export function newScene(name: string): SceneInput {
-  return { name, background: '', gapSeconds: 0.15, script: '左：こんにちは。\n右：動画を作ってみましょう。', diagrams: [] };
+  return { name, background: '', gapSeconds: 0.15, script: locale.current === 'en' ? 'left: Hello.\nright: Let’s make a video.' : '左：こんにちは。\n右：動画を作ってみましょう。', diagrams: [] };
 }
 export function scenesFromForm(project: Project, input: SceneInput[]): BuildScene[] {
   if (!input.length || input.length > 200) throw new Error(locale.text('productionValidationSceneCount'));

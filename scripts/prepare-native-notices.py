@@ -30,7 +30,7 @@ def main():
         # Include build-time code generators, even when their crates are not linked.
         tree.write_bytes(subprocess.check_output([
             'cargo', 'tree', '--locked', '--offline', '--target', args.target,
-            '-p', 'sungeki-desktop', '-p', 'sungeki-host', '--edges', 'normal,build',
+            '-p', 'sungeki-desktop', '-p', 'sungeki-host', '-p', 'sungeki-mcp', '--edges', 'normal,build',
             '--prefix', 'none', '--format', '{p}'], cwd=ROOT))
         review = work / 'review'
         subprocess.run([sys.executable, str(ROOT / 'scripts/collect-license-evidence.py'),

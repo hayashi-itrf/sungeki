@@ -51,7 +51,7 @@ export async function runWorker(modelPath: string, motionPath: string, signal: A
     }
     server = await serveAssets(model.bytes, motion.bytes);
     context = await chromium.launchPersistentContext(profile, {
-      channel: 'chromium', headless: true, chromiumSandbox: true, timeout: 30000,
+      ...(paths.executable ? { executablePath: paths.executable } : { channel: 'chromium' }), headless: true, chromiumSandbox: true, timeout: 30000,
       args: ['--use-angle=metal'], ignoreDefaultArgs: ['--enable-unsafe-swiftshader'],
       viewport: { width: 640, height: 640 }, deviceScaleFactor: 1,
       env: browserEnvironment({ ...paths, temporary }),

@@ -8,6 +8,7 @@ pub(super) fn plan(
     diagram_ids: &[String],
     offset: usize,
     track_id: &str,
+    lead_us: u64,
 ) -> Result<Vec<Command>, ValidationError> {
     let mut commands = Vec::new();
     for (diagram, id) in scene.diagrams.iter().zip(diagram_ids) {
@@ -29,7 +30,7 @@ pub(super) fn plan(
                 id: id.clone(),
                 track_id: track_id.to_owned(),
                 scene_id: Some(source.id.clone()),
-                start_us: TimeUs(first.start_us.0 + 3_000_000),
+                start_us: TimeUs(first.start_us.0 + lead_us),
                 duration_us: duration,
                 content: match &diagram.video_playback {
                     Some(playback) => ClipContent::Video {

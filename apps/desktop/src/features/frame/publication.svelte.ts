@@ -38,7 +38,7 @@ export class PublicationController {
     if (!args || !expected?.output) return;
     const response = await this.api.session({ type: 'frame_preview', request: { type: 'publish', args } });
     if (!this.alive) return;
-    if (response.type !== 'frame_preview_published') throw new Error(t('保存の応答を確認できませんでした。'));
+    if (response.type !== 'frame_preview_published') throw new Error(t("保存の応答を確認できませんでした。"));
     const p = response.publication, output = expected.output;
     if (p.job_id !== args.job_id || p.session_id !== this.sessionId
       || p.source_revision !== expected.source_revision || p.content_hash !== expected.content_hash

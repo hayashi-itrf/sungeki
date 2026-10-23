@@ -31,6 +31,17 @@ export type RenderBytes = { offset: number, total: number, base64: string, };
 export type ManagedSpeechEngine = "sbv2" | "qwen" | "irodori";
 export type InstallSpeechConfigArgs = { engine: ManagedSpeechEngine, candidate_path: string, };
 export type RuntimeSettings = { format_version: number, voicevox_engine?: string, aivis_engine?: string, coeiroink_engine?: string, runtime_root: string | null, ffmpeg: string | null, ffprobe: string | null, font: string | null, font_sha256: string | null, vrm_node: string | null, vrm_render_worker: string | null, vrm_inspect_worker: string | null, };
+export type RuntimeEnvironment = { data_directory: string, runtime_settings_path: string, scope: RuntimeEnvironmentScope, saved: RuntimeEnvironmentValues, selected: RuntimeEnvironmentSelections, verification: RuntimeEnvironmentVerification, };
+export type RuntimeEnvironmentScope = "render_paths_and_runtime_root";
+export type RuntimeEnvironmentVerification = "not_run";
+export type RuntimeEnvironmentValues = { runtime_root: string | null, ffmpeg: string | null, ffprobe: string | null, font: string | null, font_sha256: string | null, };
+export type RuntimeEnvironmentSelections = { runtime_root: RuntimeSettingSelection, ffmpeg: RuntimeSettingSelection, ffprobe: RuntimeSettingSelection, font: RuntimeSettingSelection, font_sha256: RuntimeSettingSelection, };
+export type RuntimeSettingSelection = {
+/**
+ * Selected verbatim, including an empty or invalid explicit override.
+ */
+value: string | null, source: RuntimeSettingSource, environment_variable: string, };
+export type RuntimeSettingSource = "environment" | "saved" | "unset";
 export type SaveRuntimeSettingsArgs = { expected: RuntimeSettings, settings: RuntimeSettings, };
 export type SubtitleFormat = "srt" | "web_vtt";
 export type ExportSubtitlesArgs = { session_id: string, expected_revision: number, path: string, format: SubtitleFormat, include_text: boolean, };
@@ -75,7 +86,72 @@ export type BuildVideoJob = { job_id: string, session_id: string, title: string,
  * Editing freshness only; Get does not reverify media bytes or quality.
  */
 stale: boolean, review_asset_freshness: AssetFreshness | null, };
-export type BuildRecipe = { preset_id: string, title: string, assets: Array<Asset>, roles: Array<BuildRole>, scenes: Array<BuildScene>, bgm: BuildBgm | null, foreword: BuildForeword | null, audio_mix: AudioMix, pronunciation_dictionary: Array<PronunciationEntry>, };
+export type BuildRecipe = {
+/**
+ * Resolved by the common editor before the first save/render.
+ */
+presentation?: BuildPresentation, preset_id: string, title: string, assets: Array<Asset>, roles: Array<BuildRole>, scenes: Array<BuildScene>, bgm: BuildBgm | null, foreword: BuildForeword | null, audio_mix: AudioMix, pronunciation_dictionary: Array<PronunciationEntry>, };
+export type BuildPresentation = { fitting?: BuildVisualFits,
+/**
+ * Ordered sections. Body and collected credits are required; omitted optional sections are hidden.
+ */
+structure?: BuildStructure,
+/**
+ * Fixed, credited media and authored mouth cues, before synthesized scenes.
+ */
+opening?: BuildOpening,
+/**
+ * Exact static rectangles, resolved before the first layout is committed.
+ */
+slots?: BuildLayoutSlots, ending?: BuildEnding,
+/**
+ * Offset from the preset's fitted standing rectangle, in canvas pixels.
+ */
+standing_offset_y: number, credits: BuildCreditsStyle | null, bgm_speech_envelope: BuildSpeechEnvelope | null, };
+export type BuildStructure = { blocks: Array<BuildBlock>,
+/**
+ * Applies only to the plain title card, not to authored opening audio.
+ */
+title_duration_us: TimeUs | null, };
+export type BuildBlock = "foreword" | "opening" | "body" | "credits";
+export type BuildLayoutSlots = {
+/**
+ * Keys are recipe role names. Unspecified roles keep their preset rectangle.
+ */
+standing: { [key in string]: Transform }, subtitle: Transform | null, diagram: Transform | null, diagrams_behind_standings: boolean, };
+export type BuildFitMode = "stretch" | "contain";
+export type BuildVisualFit = { mode: BuildFitMode,
+/**
+ * Fraction of leftover space before the fitted image: 0=start, .5=center, 1=end.
+ */
+anchor_x: number, anchor_y: number, };
+export type BuildVisualFits = { standing: { [key in string]: BuildVisualFit }, diagram: BuildVisualFit | null, opening_logo: BuildVisualFit | null, opening_standing: { [key in string]: BuildVisualFit }, };
+export type BuildEnding = { duration_us: TimeUs,
+/**
+ * Full-canvas image. None retains the credit card's solid background.
+ */
+background_asset_id: string | null, };
+export type BuildOpening = { duration_us: TimeUs, background_asset_id: string, logo: BuildOpeningImage | null, audio: Array<BuildOpeningAudio>, performers: Array<BuildOpeningPerformer>, theme: BuildOpeningText, };
+export type BuildOpeningRange = { start_us: TimeUs, duration_us: TimeUs, };
+export type BuildOpeningAudio = { asset_id: string, range: BuildOpeningRange, playback: AudioPlayback, };
+export type BuildOpeningImage = { asset_id: string, range: BuildOpeningRange, transform: Transform, fade: VisualFade | null, };
+export type BuildOpeningPerformer = { role: string, transform: Transform,
+/**
+ * Sorted, disjoint open-mouth intervals; the remaining opening is closed.
+ */
+mouth_open: Array<BuildOpeningRange>, };
+export type BuildOpeningText = { text: string, range: BuildOpeningRange, transform: Transform, font_size: number, color: string, outline: SubtitleOutline | null, layout: SubtitleLayout, };
+export type BuildCreditsStyle = { background: string, color: string, font_size: number, transform: Transform, layout: SubtitleLayout, fade: VisualFade,
+/**
+ * Explicit imported display policy; asset/character attribution is retained.
+ */
+omit_lines_containing: Array<string>, };
+export type BuildSpeechEnvelope = {
+/**
+ * Music starts at project zero, including the optional foreword.
+ * Level is 1 outside the synthesized first-to-last speech interval.
+ */
+speech_level: number, ramp_us: TimeUs, };
 export type BuildRole = { role: string, preset_id: string, character: Character, standing: BuildStanding, };
 export type BuildStanding = { "type": "vrm", standing: VrmStanding, flip_x: boolean, } | { "type": "sprite", sprites: SpriteSet, pose: string | null, flip_x: boolean, } | { "type": "image", asset_id: string, flip_x: boolean, } | { "type": "psd", asset_id: string, pose: PsdPose, speech: PsdSpeechBinding, flip_x: boolean, };
 export type BuildScene = {
@@ -85,9 +161,15 @@ export type BuildScene = {
 fade?: VisualFade, name: string, background_asset_id: string, gap_us: TimeUs, lines: Array<BuildLine>, diagrams: Array<BuildDiagram>, };
 export type BuildLine = {
 /**
+ * Role-keyed PSD pose and mouth binding changes at this line's start.
+ * Omitted roles hold their state; each scene starts from role defaults.
+ */
+psd_states?: { [key in string]: BuildPsdState },
+/**
  * Sprite pose change for this role, held until changed; resets each scene.
  */
 sprite_pose?: string, role: string, subtitle_text: string, spoken_text: string | null, pose: PsdPose | null, };
+export type BuildPsdState = { pose: PsdPose, speech: PsdSpeechBinding, };
 export type BuildDiagram = { fade?: VisualFade,
 /**
  * Image movement over the resolved inclusive speech range.
@@ -468,8 +550,8 @@ export type ApiError = { code: ErrorCode, message: string, details: { [key in st
 export type Capabilities = { editing: boolean, persistence: boolean, speech: boolean, rendering: boolean, vrm: boolean, };
 export type ClientHello = { application: string, protocol_major: number, protocol_minor: number, build_id: string, client_name: string, capabilities: Array<string>, };
 export type HostInfo = { application: string, protocol_major: number, protocol_minor: number, build_id: string, host_instance_id: string, capabilities: Capabilities, };
-export type SessionRequest = { "type": "get_local_speech_policy", args: LocalSpeechPolicyArgs, } | { "type": "get_local_speech_catalog", args: LocalSpeechCatalogArgs, } | { "type": "read_editing_audio", session_id: string, expected_revision: number, clip_id: string, offset: number, length: number, } | { "type": "parse_markdown_script", args: ParseMarkdownScriptArgs, } | { "type": "instantiate_preset", args: InstantiatePresetArgs, } | { "type": "presets", request: PresetRequest, } | { "type": "install_speech_config", args: InstallSpeechConfigArgs, } | { "type": "get_runtime_settings" } | { "type": "save_runtime_settings", args: SaveRuntimeSettingsArgs, } | { "type": "proxy", request: ProxyRequest, } | { "type": "export_subtitles", args: ExportSubtitlesArgs, } | { "type": "build_video", request: BuildVideoRequest, } | { "type": "frame_preview", request: FramePreviewRequest, } | { "type": "collection", request: CollectionRequest, } | { "type": "audio_preview", request: AudioPreviewRequest, } | { "type": "video_preview", args: VideoPreviewArgs, } | { "type": "probe_vrm", path: string, kind: VrmKind, } | { "type": "probe_video", path: string, } | { "type": "probe_audio", path: string, } | { "type": "propose_speech_gain", args: ProposeSpeechGainArgs, } | { "type": "loudness_job", request: LoudnessJobRequest, } | { "type": "analyze_audio", args: AnalyzeAudioArgs, } | { "type": "psd_preview", session_id: string, expected_revision: number, clip_id: string, time_us: TimeUs, } | { "type": "probe_psd", path: string, } | { "type": "render_job", request: RenderJobRequest, } | { "type": "speech_job", request: SpeechJobRequest, } | { "type": "get_voicevox_speaker", args: GetVoicevoxSpeakerArgs, } | { "type": "discover_voicevox", args: DiscoverVoicevoxArgs, } | { "type": "get_voicevox_catalog", args: GetVoicevoxCatalogArgs, } | { "type": "preview_pronunciation", session_id: string, expected_revision: number, subtitle_text: string, spoken_text: string | null, } | { "type": "read_review_image", args: ReadReviewImageArgs, } | { "type": "start_review", sampling?: ReviewFrameOptions, session_id: string, job_id: string, expected_revision: number, wait_ms: number, } | { "type": "get_review_job", job_id: string, wait_ms: number, } | { "type": "cancel_review_job", job_id: string, } | { "type": "list_review_jobs", session_id: string | null, after: string | null, limit: number, } | { "type": "read_vrm_asset", session_id: string, expected_revision: number, asset_id: string, offset: number, length: number, } | { "type": "image_preview", session_id: string, asset_id: string, expected_revision: number, } | { "type": "probe_image", path: string, } | { "type": "read_project", session_id: string, expected_revision: number | null, query: ProjectQuery, } | { "type": "preview_edit", session_id: string, expected_revision: number, commands: Array<Command>, offset: number, limit: number, } | { "type": "checkpoint", session_id: string, request: CheckpointRequest, } | { "type": "create", title: string, } | { "type": "open", path: string, import_checkpoints: boolean, } | { "type": "save", session_id: string, path: string | null, expected_revision: number, } | { "type": "list", } | { "type": "get", session_id: string, } | { "type": "edit", session_id: string, edit: EditRequest, };
-export type SessionResponse = { "type": "local_speech_policy", policy: string, } | { "type": "local_speech_catalog", catalog: LocalSpeechCatalog, } | { "type": "editing_audio_bytes", offset: number, total: number, base64: string, } | { "type": "markdown_script", scenes: Array<MarkdownScene>, } | { "type": "render_frame", image: RenderFrame, } | { "type": "render_bytes", data: RenderBytes, } | { "type": "speech_config_installed", configuration_path: string, } | { "type": "runtime_settings", settings: RuntimeSettings, } | { "type": "preset", record: PresetRecord, } | { "type": "presets", items: Array<PresetSummary>, next_after_id: string | null, } | { "type": "proxy_removed", job_id: string, asset_id: string, removed: boolean, } | { "type": "proxy_job", job: ProxyJob, } | { "type": "proxy_jobs", job_ids: Array<string>, } | { "type": "subtitles_exported", publication: SubtitlePublication, } | { "type": "build_video_job", job: BuildVideoJob, } | { "type": "build_reuse_source", source: BuildReuseSource, } | { "type": "build_video_jobs", job_ids: Array<string>, } | { "type": "frame_preview_bytes", data: FramePreviewBytes, } | { "type": "frame_preview_published", publication: FramePreviewPublication, } | { "type": "frame_preview_job", job: FramePreviewJob, } | { "type": "frame_preview_jobs", job_ids: Array<string>, } | { "type": "collection_plan_page", page: CollectionPlanPage, } | { "type": "collection_job", job: CollectionJob, } | { "type": "collection_jobs", job_ids: Array<string>, } | { "type": "audio_preview_job", job: AudioPreviewJob, } | { "type": "audio_preview_jobs", job_ids: Array<string>, } | { "type": "audio_preview_bytes", data: AudioPreviewBytes, } | { "type": "vrm_probed", probe: VrmAssetProbe, } | { "type": "video_probed", probe: VideoProbe, } | { "type": "audio_probed", probe: AudioProbe, } | { "type": "speech_gain_proposed", proposal: SpeechGainProposal, } | { "type": "loudness_job", job: LoudnessJob, } | { "type": "loudness_jobs", job_ids: Array<string>, } | { "type": "audio_analyzed", analysis: AudioAnalysis, } | { "type": "render_published", publication: RenderPublication, } | { "type": "psd_probed", probe: PsdProbe, } | { "type": "render_job", job: RenderJob, } | { "type": "render_jobs", job_ids: Array<string>, } | { "type": "speech_job", job: SpeechJob, } | { "type": "speech_jobs", job_ids: Array<string>, } | { "type": "qwen_profile", details: QwenProfileDetails, } | { "type": "qwen_profiles", profiles: Array<QwenProfileSummary>, } | { "type": "irodori_profile", details: IrodoriProfileDetails, } | { "type": "irodori_profiles", profiles: Array<IrodoriProfileSummary>, } | { "type": "sbv2_profile", details: Sbv2ProfileDetails, } | { "type": "sbv2_profiles", profiles: Array<Sbv2ProfileSummary>, } | { "type": "voicevox_speaker", details: VoicevoxSpeakerDetails, } | { "type": "voicevox_engine", engine: VoicevoxEngineInfo, } | { "type": "voicevox_catalog", engine: VoicevoxEngineInfo, core_version: string, speakers: Array<VoicevoxSpeakerInfo>, } | { "type": "pronunciation_preview", session_id: string, revision: number, final_text: string, explicit_reading: boolean, applied: Array<PronunciationUse>, } | { "type": "review_image_bytes", data: FramePreviewBytes, } | { "type": "review_job", job: ReviewJob, } | { "type": "review_jobs", job_ids: Array<string>, } | { "type": "vrm_asset_bytes", offset: number, total: number, sha256: string, base64: string, } | { "type": "image_preview", asset_id: string, sha256: string, png_base64: string, width: number, height: number, } | { "type": "image_probed", probe: ImageProbe, } | { "type": "project_read", result: ProjectReadResult, } | { "type": "edit_preview", preview: EditPreview, } | { "type": "checkpoint_deleted", checkpoint_id: string, } | { "type": "checkpoint_compared", comparison: CheckpointComparison, } | { "type": "checkpoint_created", checkpoint: CheckpointSummary, } | { "type": "checkpoints", checkpoints: Array<CheckpointSummary>, next_after: string | null, } | { "type": "snapshot", snapshot: SessionSnapshot, } | { "type": "sessions", session_ids: Array<string>, } | { "type": "edited", receipt: EditReceipt, snapshot: SessionSnapshot, };
+export type SessionRequest = { "type": "get_local_speech_policy", args: LocalSpeechPolicyArgs, } | { "type": "get_local_speech_catalog", args: LocalSpeechCatalogArgs, } | { "type": "read_editing_audio", session_id: string, expected_revision: number, clip_id: string, offset: number, length: number, } | { "type": "parse_markdown_script", args: ParseMarkdownScriptArgs, } | { "type": "instantiate_preset", args: InstantiatePresetArgs, } | { "type": "presets", request: PresetRequest, } | { "type": "install_speech_config", args: InstallSpeechConfigArgs, } | { "type": "get_runtime_settings" } | { "type": "get_runtime_environment", } | { "type": "save_runtime_settings", args: SaveRuntimeSettingsArgs, } | { "type": "proxy", request: ProxyRequest, } | { "type": "export_subtitles", args: ExportSubtitlesArgs, } | { "type": "build_video", request: BuildVideoRequest, } | { "type": "frame_preview", request: FramePreviewRequest, } | { "type": "collection", request: CollectionRequest, } | { "type": "audio_preview", request: AudioPreviewRequest, } | { "type": "video_preview", args: VideoPreviewArgs, } | { "type": "probe_vrm", path: string, kind: VrmKind, } | { "type": "probe_video", path: string, } | { "type": "probe_audio", path: string, } | { "type": "propose_speech_gain", args: ProposeSpeechGainArgs, } | { "type": "loudness_job", request: LoudnessJobRequest, } | { "type": "analyze_audio", args: AnalyzeAudioArgs, } | { "type": "psd_preview", session_id: string, expected_revision: number, clip_id: string, time_us: TimeUs, } | { "type": "probe_psd", path: string, } | { "type": "render_job", request: RenderJobRequest, } | { "type": "speech_job", request: SpeechJobRequest, } | { "type": "get_voicevox_speaker", args: GetVoicevoxSpeakerArgs, } | { "type": "discover_voicevox", args: DiscoverVoicevoxArgs, } | { "type": "get_voicevox_catalog", args: GetVoicevoxCatalogArgs, } | { "type": "preview_pronunciation", session_id: string, expected_revision: number, subtitle_text: string, spoken_text: string | null, } | { "type": "read_review_image", args: ReadReviewImageArgs, } | { "type": "start_review", sampling?: ReviewFrameOptions, session_id: string, job_id: string, expected_revision: number, wait_ms: number, } | { "type": "get_review_job", job_id: string, wait_ms: number, } | { "type": "cancel_review_job", job_id: string, } | { "type": "list_review_jobs", session_id: string | null, after: string | null, limit: number, } | { "type": "read_vrm_asset", session_id: string, expected_revision: number, asset_id: string, offset: number, length: number, } | { "type": "image_preview", session_id: string, asset_id: string, expected_revision: number, } | { "type": "probe_image", path: string, } | { "type": "read_project", session_id: string, expected_revision: number | null, query: ProjectQuery, } | { "type": "preview_edit", session_id: string, expected_revision: number, commands: Array<Command>, offset: number, limit: number, } | { "type": "checkpoint", session_id: string, request: CheckpointRequest, } | { "type": "create", title: string, } | { "type": "open", path: string, import_checkpoints: boolean, } | { "type": "save", session_id: string, path: string | null, expected_revision: number, } | { "type": "list", } | { "type": "get", session_id: string, } | { "type": "edit", session_id: string, edit: EditRequest, };
+export type SessionResponse = { "type": "local_speech_policy", policy: string, } | { "type": "local_speech_catalog", catalog: LocalSpeechCatalog, } | { "type": "editing_audio_bytes", offset: number, total: number, base64: string, } | { "type": "markdown_script", scenes: Array<MarkdownScene>, } | { "type": "render_frame", image: RenderFrame, } | { "type": "render_bytes", data: RenderBytes, } | { "type": "speech_config_installed", configuration_path: string, } | { "type": "runtime_settings", settings: RuntimeSettings, } | { "type": "runtime_environment", environment: RuntimeEnvironment, } | { "type": "preset", record: PresetRecord, } | { "type": "presets", items: Array<PresetSummary>, next_after_id: string | null, } | { "type": "proxy_removed", job_id: string, asset_id: string, removed: boolean, } | { "type": "proxy_job", job: ProxyJob, } | { "type": "proxy_jobs", job_ids: Array<string>, } | { "type": "subtitles_exported", publication: SubtitlePublication, } | { "type": "build_video_job", job: BuildVideoJob, } | { "type": "build_reuse_source", source: BuildReuseSource, } | { "type": "build_video_jobs", job_ids: Array<string>, } | { "type": "frame_preview_bytes", data: FramePreviewBytes, } | { "type": "frame_preview_published", publication: FramePreviewPublication, } | { "type": "frame_preview_job", job: FramePreviewJob, } | { "type": "frame_preview_jobs", job_ids: Array<string>, } | { "type": "collection_plan_page", page: CollectionPlanPage, } | { "type": "collection_job", job: CollectionJob, } | { "type": "collection_jobs", job_ids: Array<string>, } | { "type": "audio_preview_job", job: AudioPreviewJob, } | { "type": "audio_preview_jobs", job_ids: Array<string>, } | { "type": "audio_preview_bytes", data: AudioPreviewBytes, } | { "type": "vrm_probed", probe: VrmAssetProbe, } | { "type": "video_probed", probe: VideoProbe, } | { "type": "audio_probed", probe: AudioProbe, } | { "type": "speech_gain_proposed", proposal: SpeechGainProposal, } | { "type": "loudness_job", job: LoudnessJob, } | { "type": "loudness_jobs", job_ids: Array<string>, } | { "type": "audio_analyzed", analysis: AudioAnalysis, } | { "type": "render_published", publication: RenderPublication, } | { "type": "psd_probed", probe: PsdProbe, } | { "type": "render_job", job: RenderJob, } | { "type": "render_jobs", job_ids: Array<string>, } | { "type": "speech_job", job: SpeechJob, } | { "type": "speech_jobs", job_ids: Array<string>, } | { "type": "qwen_profile", details: QwenProfileDetails, } | { "type": "qwen_profiles", profiles: Array<QwenProfileSummary>, } | { "type": "irodori_profile", details: IrodoriProfileDetails, } | { "type": "irodori_profiles", profiles: Array<IrodoriProfileSummary>, } | { "type": "sbv2_profile", details: Sbv2ProfileDetails, } | { "type": "sbv2_profiles", profiles: Array<Sbv2ProfileSummary>, } | { "type": "voicevox_speaker", details: VoicevoxSpeakerDetails, } | { "type": "voicevox_engine", engine: VoicevoxEngineInfo, } | { "type": "voicevox_catalog", engine: VoicevoxEngineInfo, core_version: string, speakers: Array<VoicevoxSpeakerInfo>, } | { "type": "pronunciation_preview", session_id: string, revision: number, final_text: string, explicit_reading: boolean, applied: Array<PronunciationUse>, } | { "type": "review_image_bytes", data: FramePreviewBytes, } | { "type": "review_job", job: ReviewJob, } | { "type": "review_jobs", job_ids: Array<string>, } | { "type": "vrm_asset_bytes", offset: number, total: number, sha256: string, base64: string, } | { "type": "image_preview", asset_id: string, sha256: string, png_base64: string, width: number, height: number, } | { "type": "image_probed", probe: ImageProbe, } | { "type": "project_read", result: ProjectReadResult, } | { "type": "edit_preview", preview: EditPreview, } | { "type": "checkpoint_deleted", checkpoint_id: string, } | { "type": "checkpoint_compared", comparison: CheckpointComparison, } | { "type": "checkpoint_created", checkpoint: CheckpointSummary, } | { "type": "checkpoints", checkpoints: Array<CheckpointSummary>, next_after: string | null, } | { "type": "snapshot", snapshot: SessionSnapshot, } | { "type": "sessions", session_ids: Array<string>, } | { "type": "edited", receipt: EditReceipt, snapshot: SessionSnapshot, };
 export type SessionSnapshot = { event_cursor: EventCursor, session_id: string, project: Project, revision: number, document_path: string | null, dirty: boolean, undo_operation_id: string | null, redo_operation_id: string | null, };
 export type RequestBody = { "type": "hello", hello: ClientHello, } | { "type": "get_capabilities", } | { "type": "lifecycle", action: ExitAction, } | { "type": "watch", after: EventCursor | null, wait_ms: number, } | { "type": "session", request: SessionRequest, };
 export type Request = { request_id: number, body: RequestBody, };

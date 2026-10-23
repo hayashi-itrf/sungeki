@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import type { HostApi, ProjectReadResult } from '@sungeki/api-client';
 type Summary = Extract<ProjectReadResult['data'], { view: 'summary' }>;
 export interface SessionEntry { id: string; summary: Summary | null; revision: number | null; error: string }
@@ -17,7 +18,7 @@ export class SessionBrowserModel {
     try {
       const result = await this.api.session({ type: 'list' });
       if (generation !== this.generation) return;
-      if (result.type !== 'sessions') throw new Error('作品一覧の応答が不正です。');
+      if (result.type !== 'sessions') throw new Error(extraText("作品一覧の応答が不正です。"));
       this.ids = result.session_ids;
       await this.page(generation);
       if (generation === this.generation) this.loaded = true;
@@ -34,7 +35,7 @@ export class SessionBrowserModel {
     try {
       const result = await this.api.session({ type: 'read_project', session_id: id, expected_revision: null,
         query: { view: 'summary', scene_ids: null, clip_ids: null, offset: 0, limit: 20 } });
-      if (result.type !== 'project_read' || result.result.data.view !== 'summary') throw new Error('作品の要約を取得できませんでした。');
+      if (result.type !== 'project_read' || result.result.data.view !== 'summary') throw new Error(extraText("作品の要約を取得できませんでした。"));
       return { id, summary: result.result.data, revision: result.result.revision, error: '' };
     } catch (error) { return { id, summary: null, revision: null, error: message(error) }; }
   }

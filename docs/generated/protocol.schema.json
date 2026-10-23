@@ -343,6 +343,56 @@
         ],
         "type": "object"
       },
+      "BuildBlock": {
+        "enum": [
+          "foreword",
+          "opening",
+          "body",
+          "credits"
+        ],
+        "type": "string"
+      },
+      "BuildCreditsStyle": {
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "fade": {
+            "$ref": "#/$defs/VisualFade"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "omit_lines_containing": {
+            "description": "Explicit imported display policy; asset/character attribution is retained.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "background",
+          "color",
+          "font_size",
+          "transform",
+          "layout",
+          "fade",
+          "omit_lines_containing"
+        ],
+        "type": "object"
+      },
       "BuildDiagram": {
         "additionalProperties": false,
         "properties": {
@@ -413,6 +463,34 @@
         ],
         "type": "object"
       },
+      "BuildEnding": {
+        "additionalProperties": false,
+        "properties": {
+          "background_asset_id": {
+            "description": "Full-canvas image. None retains the credit card's solid background.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildFitMode": {
+        "enum": [
+          "stretch",
+          "contain"
+        ],
+        "type": "string"
+      },
       "BuildForeword": {
         "additionalProperties": false,
         "properties": {
@@ -435,6 +513,46 @@
         ],
         "type": "object"
       },
+      "BuildLayoutSlots": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "diagrams_behind_standings": {
+            "type": "boolean"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/Transform"
+            },
+            "description": "Keys are recipe role names. Unspecified roles keep their preset rectangle.",
+            "type": "object"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "standing",
+          "diagrams_behind_standings"
+        ],
+        "type": "object"
+      },
       "BuildLine": {
         "additionalProperties": false,
         "properties": {
@@ -446,6 +564,16 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "psd_states": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildPsdState"
+            },
+            "description": "Role-keyed PSD pose and mouth binding changes at this line's start.\nOmitted roles hold their state; each scene starts from role defaults.",
+            "type": [
+              "object",
+              "null"
             ]
           },
           "role": {
@@ -471,6 +599,292 @@
         "required": [
           "role",
           "subtitle_text"
+        ],
+        "type": "object"
+      },
+      "BuildOpening": {
+        "additionalProperties": false,
+        "properties": {
+          "audio": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningAudio"
+            },
+            "type": "array"
+          },
+          "background_asset_id": {
+            "type": "string"
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpeningImage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "performers": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningPerformer"
+            },
+            "type": "array"
+          },
+          "theme": {
+            "$ref": "#/$defs/BuildOpeningText"
+          }
+        },
+        "required": [
+          "duration_us",
+          "background_asset_id",
+          "audio",
+          "performers",
+          "theme"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningAudio": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "playback": {
+            "$ref": "#/$defs/AudioPlayback"
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "playback"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningImage": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "fade": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VisualFade"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "transform"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningPerformer": {
+        "additionalProperties": false,
+        "properties": {
+          "mouth_open": {
+            "description": "Sorted, disjoint open-mouth intervals; the remaining opening is closed.",
+            "items": {
+              "$ref": "#/$defs/BuildOpeningRange"
+            },
+            "type": "array"
+          },
+          "role": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "role",
+          "transform",
+          "mouth_open"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningRange": {
+        "additionalProperties": false,
+        "properties": {
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "start_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start_us",
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningText": {
+        "additionalProperties": false,
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "outline": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SubtitleOutline"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "text": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "text",
+          "range",
+          "transform",
+          "font_size",
+          "color",
+          "layout"
+        ],
+        "type": "object"
+      },
+      "BuildPresentation": {
+        "additionalProperties": false,
+        "properties": {
+          "bgm_speech_envelope": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildSpeechEnvelope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "credits": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildCreditsStyle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ending": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildEnding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fitting": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFits"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpening"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Fixed, credited media and authored mouth cues, before synthesized scenes."
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildLayoutSlots"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exact static rectangles, resolved before the first layout is committed."
+          },
+          "standing_offset_y": {
+            "description": "Offset from the preset's fitted standing rectangle, in canvas pixels.",
+            "format": "double",
+            "type": "number"
+          },
+          "structure": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildStructure"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Ordered sections. Body and collected credits are required; omitted optional sections are hidden."
+          }
+        },
+        "required": [
+          "standing_offset_y"
+        ],
+        "type": "object"
+      },
+      "BuildPsdState": {
+        "additionalProperties": false,
+        "properties": {
+          "pose": {
+            "$ref": "#/$defs/PsdPose"
+          },
+          "speech": {
+            "$ref": "#/$defs/PsdSpeechBinding"
+          }
+        },
+        "required": [
+          "pose",
+          "speech"
         ],
         "type": "object"
       },
@@ -542,6 +956,17 @@
                 "type": "null"
               }
             ]
+          },
+          "presentation": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildPresentation"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Resolved by the common editor before the first save/render."
           },
           "preset_id": {
             "type": "string"
@@ -650,6 +1075,26 @@
         ],
         "type": "object"
       },
+      "BuildSpeechEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "ramp_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "speech_level": {
+            "description": "Music starts at project zero, including the optional foreword.\nLevel is 1 outside the synthesized first-to-last speech interval.",
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "speech_level",
+          "ramp_us"
+        ],
+        "type": "object"
+      },
       "BuildStanding": {
         "oneOf": [
           {
@@ -751,6 +1196,95 @@
             "type": "object"
           }
         ]
+      },
+      "BuildStructure": {
+        "additionalProperties": false,
+        "properties": {
+          "blocks": {
+            "items": {
+              "$ref": "#/$defs/BuildBlock"
+            },
+            "type": "array"
+          },
+          "title_duration_us": {
+            "description": "Applies only to the plain title card, not to authored opening audio.",
+            "format": "uint64",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "blocks"
+        ],
+        "type": "object"
+      },
+      "BuildVisualFit": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor_x": {
+            "description": "Fraction of leftover space before the fitted image: 0=start, .5=center, 1=end.",
+            "format": "double",
+            "type": "number"
+          },
+          "anchor_y": {
+            "format": "double",
+            "type": "number"
+          },
+          "mode": {
+            "$ref": "#/$defs/BuildFitMode"
+          }
+        },
+        "required": [
+          "mode",
+          "anchor_x",
+          "anchor_y"
+        ],
+        "type": "object"
+      },
+      "BuildVisualFits": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "standing",
+          "opening_standing"
+        ],
+        "type": "object"
       },
       "Canvas": {
         "additionalProperties": false,
@@ -5491,6 +6025,56 @@
         ],
         "type": "object"
       },
+      "BuildBlock": {
+        "enum": [
+          "foreword",
+          "opening",
+          "body",
+          "credits"
+        ],
+        "type": "string"
+      },
+      "BuildCreditsStyle": {
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "fade": {
+            "$ref": "#/$defs/VisualFade"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "omit_lines_containing": {
+            "description": "Explicit imported display policy; asset/character attribution is retained.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "background",
+          "color",
+          "font_size",
+          "transform",
+          "layout",
+          "fade",
+          "omit_lines_containing"
+        ],
+        "type": "object"
+      },
       "BuildDiagram": {
         "additionalProperties": false,
         "properties": {
@@ -5561,6 +6145,34 @@
         ],
         "type": "object"
       },
+      "BuildEnding": {
+        "additionalProperties": false,
+        "properties": {
+          "background_asset_id": {
+            "description": "Full-canvas image. None retains the credit card's solid background.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildFitMode": {
+        "enum": [
+          "stretch",
+          "contain"
+        ],
+        "type": "string"
+      },
       "BuildForeword": {
         "additionalProperties": false,
         "properties": {
@@ -5583,6 +6195,46 @@
         ],
         "type": "object"
       },
+      "BuildLayoutSlots": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "diagrams_behind_standings": {
+            "type": "boolean"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/Transform"
+            },
+            "description": "Keys are recipe role names. Unspecified roles keep their preset rectangle.",
+            "type": "object"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "standing",
+          "diagrams_behind_standings"
+        ],
+        "type": "object"
+      },
       "BuildLine": {
         "additionalProperties": false,
         "properties": {
@@ -5594,6 +6246,16 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "psd_states": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildPsdState"
+            },
+            "description": "Role-keyed PSD pose and mouth binding changes at this line's start.\nOmitted roles hold their state; each scene starts from role defaults.",
+            "type": [
+              "object",
+              "null"
             ]
           },
           "role": {
@@ -5619,6 +6281,292 @@
         "required": [
           "role",
           "subtitle_text"
+        ],
+        "type": "object"
+      },
+      "BuildOpening": {
+        "additionalProperties": false,
+        "properties": {
+          "audio": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningAudio"
+            },
+            "type": "array"
+          },
+          "background_asset_id": {
+            "type": "string"
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpeningImage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "performers": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningPerformer"
+            },
+            "type": "array"
+          },
+          "theme": {
+            "$ref": "#/$defs/BuildOpeningText"
+          }
+        },
+        "required": [
+          "duration_us",
+          "background_asset_id",
+          "audio",
+          "performers",
+          "theme"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningAudio": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "playback": {
+            "$ref": "#/$defs/AudioPlayback"
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "playback"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningImage": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "fade": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VisualFade"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "transform"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningPerformer": {
+        "additionalProperties": false,
+        "properties": {
+          "mouth_open": {
+            "description": "Sorted, disjoint open-mouth intervals; the remaining opening is closed.",
+            "items": {
+              "$ref": "#/$defs/BuildOpeningRange"
+            },
+            "type": "array"
+          },
+          "role": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "role",
+          "transform",
+          "mouth_open"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningRange": {
+        "additionalProperties": false,
+        "properties": {
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "start_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start_us",
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningText": {
+        "additionalProperties": false,
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "outline": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SubtitleOutline"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "text": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "text",
+          "range",
+          "transform",
+          "font_size",
+          "color",
+          "layout"
+        ],
+        "type": "object"
+      },
+      "BuildPresentation": {
+        "additionalProperties": false,
+        "properties": {
+          "bgm_speech_envelope": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildSpeechEnvelope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "credits": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildCreditsStyle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ending": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildEnding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fitting": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFits"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpening"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Fixed, credited media and authored mouth cues, before synthesized scenes."
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildLayoutSlots"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exact static rectangles, resolved before the first layout is committed."
+          },
+          "standing_offset_y": {
+            "description": "Offset from the preset's fitted standing rectangle, in canvas pixels.",
+            "format": "double",
+            "type": "number"
+          },
+          "structure": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildStructure"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Ordered sections. Body and collected credits are required; omitted optional sections are hidden."
+          }
+        },
+        "required": [
+          "standing_offset_y"
+        ],
+        "type": "object"
+      },
+      "BuildPsdState": {
+        "additionalProperties": false,
+        "properties": {
+          "pose": {
+            "$ref": "#/$defs/PsdPose"
+          },
+          "speech": {
+            "$ref": "#/$defs/PsdSpeechBinding"
+          }
+        },
+        "required": [
+          "pose",
+          "speech"
         ],
         "type": "object"
       },
@@ -5690,6 +6638,17 @@
                 "type": "null"
               }
             ]
+          },
+          "presentation": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildPresentation"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Resolved by the common editor before the first save/render."
           },
           "preset_id": {
             "type": "string"
@@ -5798,6 +6757,26 @@
         ],
         "type": "object"
       },
+      "BuildSpeechEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "ramp_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "speech_level": {
+            "description": "Music starts at project zero, including the optional foreword.\nLevel is 1 outside the synthesized first-to-last speech interval.",
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "speech_level",
+          "ramp_us"
+        ],
+        "type": "object"
+      },
       "BuildStanding": {
         "oneOf": [
           {
@@ -5899,6 +6878,95 @@
             "type": "object"
           }
         ]
+      },
+      "BuildStructure": {
+        "additionalProperties": false,
+        "properties": {
+          "blocks": {
+            "items": {
+              "$ref": "#/$defs/BuildBlock"
+            },
+            "type": "array"
+          },
+          "title_duration_us": {
+            "description": "Applies only to the plain title card, not to authored opening audio.",
+            "format": "uint64",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "blocks"
+        ],
+        "type": "object"
+      },
+      "BuildVisualFit": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor_x": {
+            "description": "Fraction of leftover space before the fitted image: 0=start, .5=center, 1=end.",
+            "format": "double",
+            "type": "number"
+          },
+          "anchor_y": {
+            "format": "double",
+            "type": "number"
+          },
+          "mode": {
+            "$ref": "#/$defs/BuildFitMode"
+          }
+        },
+        "required": [
+          "mode",
+          "anchor_x",
+          "anchor_y"
+        ],
+        "type": "object"
+      },
+      "BuildVisualFits": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "standing",
+          "opening_standing"
+        ],
+        "type": "object"
       },
       "Character": {
         "additionalProperties": false,
@@ -6824,6 +7892,65 @@
           "right"
         ],
         "type": "string"
+      },
+      "Transform": {
+        "additionalProperties": false,
+        "properties": {
+          "fade": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VisualFade"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "flip_x": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "height": {
+            "format": "double",
+            "type": "number"
+          },
+          "motion": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VisualMotion"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opacity": {
+            "format": "double",
+            "type": "number"
+          },
+          "width": {
+            "format": "double",
+            "type": "number"
+          },
+          "x": {
+            "format": "double",
+            "type": "number"
+          },
+          "y": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height",
+          "opacity"
+        ],
+        "type": "object"
       },
       "VideoAudioStreamInfo": {
         "additionalProperties": false,
@@ -10600,6 +11727,56 @@
         ],
         "type": "object"
       },
+      "BuildBlock": {
+        "enum": [
+          "foreword",
+          "opening",
+          "body",
+          "credits"
+        ],
+        "type": "string"
+      },
+      "BuildCreditsStyle": {
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "fade": {
+            "$ref": "#/$defs/VisualFade"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "omit_lines_containing": {
+            "description": "Explicit imported display policy; asset/character attribution is retained.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "background",
+          "color",
+          "font_size",
+          "transform",
+          "layout",
+          "fade",
+          "omit_lines_containing"
+        ],
+        "type": "object"
+      },
       "BuildDiagram": {
         "additionalProperties": false,
         "properties": {
@@ -10670,6 +11847,34 @@
         ],
         "type": "object"
       },
+      "BuildEnding": {
+        "additionalProperties": false,
+        "properties": {
+          "background_asset_id": {
+            "description": "Full-canvas image. None retains the credit card's solid background.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildFitMode": {
+        "enum": [
+          "stretch",
+          "contain"
+        ],
+        "type": "string"
+      },
       "BuildForeword": {
         "additionalProperties": false,
         "properties": {
@@ -10692,6 +11897,46 @@
         ],
         "type": "object"
       },
+      "BuildLayoutSlots": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "diagrams_behind_standings": {
+            "type": "boolean"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/Transform"
+            },
+            "description": "Keys are recipe role names. Unspecified roles keep their preset rectangle.",
+            "type": "object"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "standing",
+          "diagrams_behind_standings"
+        ],
+        "type": "object"
+      },
       "BuildLine": {
         "additionalProperties": false,
         "properties": {
@@ -10703,6 +11948,16 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "psd_states": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildPsdState"
+            },
+            "description": "Role-keyed PSD pose and mouth binding changes at this line's start.\nOmitted roles hold their state; each scene starts from role defaults.",
+            "type": [
+              "object",
+              "null"
             ]
           },
           "role": {
@@ -10728,6 +11983,292 @@
         "required": [
           "role",
           "subtitle_text"
+        ],
+        "type": "object"
+      },
+      "BuildOpening": {
+        "additionalProperties": false,
+        "properties": {
+          "audio": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningAudio"
+            },
+            "type": "array"
+          },
+          "background_asset_id": {
+            "type": "string"
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpeningImage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "performers": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningPerformer"
+            },
+            "type": "array"
+          },
+          "theme": {
+            "$ref": "#/$defs/BuildOpeningText"
+          }
+        },
+        "required": [
+          "duration_us",
+          "background_asset_id",
+          "audio",
+          "performers",
+          "theme"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningAudio": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "playback": {
+            "$ref": "#/$defs/AudioPlayback"
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "playback"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningImage": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "fade": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VisualFade"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "transform"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningPerformer": {
+        "additionalProperties": false,
+        "properties": {
+          "mouth_open": {
+            "description": "Sorted, disjoint open-mouth intervals; the remaining opening is closed.",
+            "items": {
+              "$ref": "#/$defs/BuildOpeningRange"
+            },
+            "type": "array"
+          },
+          "role": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "role",
+          "transform",
+          "mouth_open"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningRange": {
+        "additionalProperties": false,
+        "properties": {
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "start_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start_us",
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningText": {
+        "additionalProperties": false,
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "outline": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SubtitleOutline"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "text": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "text",
+          "range",
+          "transform",
+          "font_size",
+          "color",
+          "layout"
+        ],
+        "type": "object"
+      },
+      "BuildPresentation": {
+        "additionalProperties": false,
+        "properties": {
+          "bgm_speech_envelope": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildSpeechEnvelope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "credits": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildCreditsStyle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ending": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildEnding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fitting": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFits"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpening"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Fixed, credited media and authored mouth cues, before synthesized scenes."
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildLayoutSlots"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exact static rectangles, resolved before the first layout is committed."
+          },
+          "standing_offset_y": {
+            "description": "Offset from the preset's fitted standing rectangle, in canvas pixels.",
+            "format": "double",
+            "type": "number"
+          },
+          "structure": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildStructure"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Ordered sections. Body and collected credits are required; omitted optional sections are hidden."
+          }
+        },
+        "required": [
+          "standing_offset_y"
+        ],
+        "type": "object"
+      },
+      "BuildPsdState": {
+        "additionalProperties": false,
+        "properties": {
+          "pose": {
+            "$ref": "#/$defs/PsdPose"
+          },
+          "speech": {
+            "$ref": "#/$defs/PsdSpeechBinding"
+          }
+        },
+        "required": [
+          "pose",
+          "speech"
         ],
         "type": "object"
       },
@@ -10799,6 +12340,17 @@
                 "type": "null"
               }
             ]
+          },
+          "presentation": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildPresentation"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Resolved by the common editor before the first save/render."
           },
           "preset_id": {
             "type": "string"
@@ -10929,6 +12481,26 @@
         ],
         "type": "object"
       },
+      "BuildSpeechEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "ramp_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "speech_level": {
+            "description": "Music starts at project zero, including the optional foreword.\nLevel is 1 outside the synthesized first-to-last speech interval.",
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "speech_level",
+          "ramp_us"
+        ],
+        "type": "object"
+      },
       "BuildStanding": {
         "oneOf": [
           {
@@ -11030,6 +12602,30 @@
             "type": "object"
           }
         ]
+      },
+      "BuildStructure": {
+        "additionalProperties": false,
+        "properties": {
+          "blocks": {
+            "items": {
+              "$ref": "#/$defs/BuildBlock"
+            },
+            "type": "array"
+          },
+          "title_duration_us": {
+            "description": "Applies only to the plain title card, not to authored opening audio.",
+            "format": "uint64",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "blocks"
+        ],
+        "type": "object"
       },
       "BuildVideoRequest": {
         "oneOf": [
@@ -11150,6 +12746,71 @@
             "type": "object"
           }
         ]
+      },
+      "BuildVisualFit": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor_x": {
+            "description": "Fraction of leftover space before the fitted image: 0=start, .5=center, 1=end.",
+            "format": "double",
+            "type": "number"
+          },
+          "anchor_y": {
+            "format": "double",
+            "type": "number"
+          },
+          "mode": {
+            "$ref": "#/$defs/BuildFitMode"
+          }
+        },
+        "required": [
+          "mode",
+          "anchor_x",
+          "anchor_y"
+        ],
+        "type": "object"
+      },
+      "BuildVisualFits": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "standing",
+          "opening_standing"
+        ],
+        "type": "object"
       },
       "Canvas": {
         "additionalProperties": false,
@@ -16554,6 +18215,19 @@
           {
             "additionalProperties": false,
             "properties": {
+              "type": {
+                "const": "get_runtime_environment",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
               "args": {
                 "$ref": "#/$defs/SaveRuntimeSettingsArgs"
               },
@@ -19716,6 +21390,56 @@
         ],
         "type": "object"
       },
+      "BuildBlock": {
+        "enum": [
+          "foreword",
+          "opening",
+          "body",
+          "credits"
+        ],
+        "type": "string"
+      },
+      "BuildCreditsStyle": {
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "fade": {
+            "$ref": "#/$defs/VisualFade"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "omit_lines_containing": {
+            "description": "Explicit imported display policy; asset/character attribution is retained.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "background",
+          "color",
+          "font_size",
+          "transform",
+          "layout",
+          "fade",
+          "omit_lines_containing"
+        ],
+        "type": "object"
+      },
       "BuildDiagram": {
         "additionalProperties": false,
         "properties": {
@@ -19786,6 +21510,34 @@
         ],
         "type": "object"
       },
+      "BuildEnding": {
+        "additionalProperties": false,
+        "properties": {
+          "background_asset_id": {
+            "description": "Full-canvas image. None retains the credit card's solid background.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildFitMode": {
+        "enum": [
+          "stretch",
+          "contain"
+        ],
+        "type": "string"
+      },
       "BuildForeword": {
         "additionalProperties": false,
         "properties": {
@@ -19808,6 +21560,46 @@
         ],
         "type": "object"
       },
+      "BuildLayoutSlots": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "diagrams_behind_standings": {
+            "type": "boolean"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/Transform"
+            },
+            "description": "Keys are recipe role names. Unspecified roles keep their preset rectangle.",
+            "type": "object"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Transform"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "standing",
+          "diagrams_behind_standings"
+        ],
+        "type": "object"
+      },
       "BuildLine": {
         "additionalProperties": false,
         "properties": {
@@ -19819,6 +21611,16 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "psd_states": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildPsdState"
+            },
+            "description": "Role-keyed PSD pose and mouth binding changes at this line's start.\nOmitted roles hold their state; each scene starts from role defaults.",
+            "type": [
+              "object",
+              "null"
             ]
           },
           "role": {
@@ -19844,6 +21646,292 @@
         "required": [
           "role",
           "subtitle_text"
+        ],
+        "type": "object"
+      },
+      "BuildOpening": {
+        "additionalProperties": false,
+        "properties": {
+          "audio": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningAudio"
+            },
+            "type": "array"
+          },
+          "background_asset_id": {
+            "type": "string"
+          },
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpeningImage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "performers": {
+            "items": {
+              "$ref": "#/$defs/BuildOpeningPerformer"
+            },
+            "type": "array"
+          },
+          "theme": {
+            "$ref": "#/$defs/BuildOpeningText"
+          }
+        },
+        "required": [
+          "duration_us",
+          "background_asset_id",
+          "audio",
+          "performers",
+          "theme"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningAudio": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "playback": {
+            "$ref": "#/$defs/AudioPlayback"
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "playback"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningImage": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "type": "string"
+          },
+          "fade": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/VisualFade"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "asset_id",
+          "range",
+          "transform"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningPerformer": {
+        "additionalProperties": false,
+        "properties": {
+          "mouth_open": {
+            "description": "Sorted, disjoint open-mouth intervals; the remaining opening is closed.",
+            "items": {
+              "$ref": "#/$defs/BuildOpeningRange"
+            },
+            "type": "array"
+          },
+          "role": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "role",
+          "transform",
+          "mouth_open"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningRange": {
+        "additionalProperties": false,
+        "properties": {
+          "duration_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "start_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start_us",
+          "duration_us"
+        ],
+        "type": "object"
+      },
+      "BuildOpeningText": {
+        "additionalProperties": false,
+        "properties": {
+          "color": {
+            "type": "string"
+          },
+          "font_size": {
+            "format": "double",
+            "type": "number"
+          },
+          "layout": {
+            "$ref": "#/$defs/SubtitleLayout"
+          },
+          "outline": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SubtitleOutline"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "$ref": "#/$defs/BuildOpeningRange"
+          },
+          "text": {
+            "type": "string"
+          },
+          "transform": {
+            "$ref": "#/$defs/Transform"
+          }
+        },
+        "required": [
+          "text",
+          "range",
+          "transform",
+          "font_size",
+          "color",
+          "layout"
+        ],
+        "type": "object"
+      },
+      "BuildPresentation": {
+        "additionalProperties": false,
+        "properties": {
+          "bgm_speech_envelope": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildSpeechEnvelope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "credits": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildCreditsStyle"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ending": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildEnding"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fitting": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFits"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildOpening"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Fixed, credited media and authored mouth cues, before synthesized scenes."
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildLayoutSlots"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exact static rectangles, resolved before the first layout is committed."
+          },
+          "standing_offset_y": {
+            "description": "Offset from the preset's fitted standing rectangle, in canvas pixels.",
+            "format": "double",
+            "type": "number"
+          },
+          "structure": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildStructure"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Ordered sections. Body and collected credits are required; omitted optional sections are hidden."
+          }
+        },
+        "required": [
+          "standing_offset_y"
+        ],
+        "type": "object"
+      },
+      "BuildPsdState": {
+        "additionalProperties": false,
+        "properties": {
+          "pose": {
+            "$ref": "#/$defs/PsdPose"
+          },
+          "speech": {
+            "$ref": "#/$defs/PsdSpeechBinding"
+          }
+        },
+        "required": [
+          "pose",
+          "speech"
         ],
         "type": "object"
       },
@@ -19915,6 +22003,17 @@
                 "type": "null"
               }
             ]
+          },
+          "presentation": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildPresentation"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Resolved by the common editor before the first save/render."
           },
           "preset_id": {
             "type": "string"
@@ -20093,6 +22192,26 @@
         ],
         "type": "object"
       },
+      "BuildSpeechEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "ramp_us": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "speech_level": {
+            "description": "Music starts at project zero, including the optional foreword.\nLevel is 1 outside the synthesized first-to-last speech interval.",
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "speech_level",
+          "ramp_us"
+        ],
+        "type": "object"
+      },
       "BuildStanding": {
         "oneOf": [
           {
@@ -20194,6 +22313,30 @@
             "type": "object"
           }
         ]
+      },
+      "BuildStructure": {
+        "additionalProperties": false,
+        "properties": {
+          "blocks": {
+            "items": {
+              "$ref": "#/$defs/BuildBlock"
+            },
+            "type": "array"
+          },
+          "title_duration_us": {
+            "description": "Applies only to the plain title card, not to authored opening audio.",
+            "format": "uint64",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "blocks"
+        ],
+        "type": "object"
       },
       "BuildVideoJob": {
         "additionalProperties": false,
@@ -20317,6 +22460,71 @@
           "render",
           "review_job_id",
           "review"
+        ],
+        "type": "object"
+      },
+      "BuildVisualFit": {
+        "additionalProperties": false,
+        "properties": {
+          "anchor_x": {
+            "description": "Fraction of leftover space before the fitted image: 0=start, .5=center, 1=end.",
+            "format": "double",
+            "type": "number"
+          },
+          "anchor_y": {
+            "format": "double",
+            "type": "number"
+          },
+          "mode": {
+            "$ref": "#/$defs/BuildFitMode"
+          }
+        },
+        "required": [
+          "mode",
+          "anchor_x",
+          "anchor_y"
+        ],
+        "type": "object"
+      },
+      "BuildVisualFits": {
+        "additionalProperties": false,
+        "properties": {
+          "diagram": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_logo": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuildVisualFit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opening_standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          },
+          "standing": {
+            "additionalProperties": {
+              "$ref": "#/$defs/BuildVisualFit"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "standing",
+          "opening_standing"
         ],
         "type": "object"
       },
@@ -26079,6 +28287,148 @@
         ],
         "type": "object"
       },
+      "RuntimeEnvironment": {
+        "additionalProperties": false,
+        "description": "Selection diagnostics for future operations, not a job's frozen runtime.",
+        "properties": {
+          "data_directory": {
+            "type": "string"
+          },
+          "runtime_settings_path": {
+            "type": "string"
+          },
+          "saved": {
+            "$ref": "#/$defs/RuntimeEnvironmentValues"
+          },
+          "scope": {
+            "$ref": "#/$defs/RuntimeEnvironmentScope"
+          },
+          "selected": {
+            "$ref": "#/$defs/RuntimeEnvironmentSelections"
+          },
+          "verification": {
+            "$ref": "#/$defs/RuntimeEnvironmentVerification"
+          }
+        },
+        "required": [
+          "data_directory",
+          "runtime_settings_path",
+          "scope",
+          "saved",
+          "selected",
+          "verification"
+        ],
+        "type": "object"
+      },
+      "RuntimeEnvironmentScope": {
+        "description": "VRM, speech profiles, per-operation work directories and running jobs are excluded.",
+        "enum": [
+          "render_paths_and_runtime_root"
+        ],
+        "type": "string"
+      },
+      "RuntimeEnvironmentSelections": {
+        "additionalProperties": false,
+        "properties": {
+          "ffmpeg": {
+            "$ref": "#/$defs/RuntimeSettingSelection"
+          },
+          "ffprobe": {
+            "$ref": "#/$defs/RuntimeSettingSelection"
+          },
+          "font": {
+            "$ref": "#/$defs/RuntimeSettingSelection"
+          },
+          "font_sha256": {
+            "$ref": "#/$defs/RuntimeSettingSelection"
+          },
+          "runtime_root": {
+            "$ref": "#/$defs/RuntimeSettingSelection"
+          }
+        },
+        "required": [
+          "runtime_root",
+          "ffmpeg",
+          "ffprobe",
+          "font",
+          "font_sha256"
+        ],
+        "type": "object"
+      },
+      "RuntimeEnvironmentValues": {
+        "additionalProperties": false,
+        "properties": {
+          "ffmpeg": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ffprobe": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "font": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "font_sha256": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "runtime_root": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "RuntimeEnvironmentVerification": {
+        "description": "Referenced files, mounts, hashes, executables and rendering are not checked.",
+        "enum": [
+          "not_run"
+        ],
+        "type": "string"
+      },
+      "RuntimeSettingSelection": {
+        "additionalProperties": false,
+        "properties": {
+          "environment_variable": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/$defs/RuntimeSettingSource"
+          },
+          "value": {
+            "description": "Selected verbatim, including an empty or invalid explicit override.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "source",
+          "environment_variable"
+        ],
+        "type": "object"
+      },
+      "RuntimeSettingSource": {
+        "enum": [
+          "environment",
+          "saved",
+          "unset"
+        ],
+        "type": "string"
+      },
       "RuntimeSettings": {
         "additionalProperties": false,
         "properties": {
@@ -26666,6 +29016,23 @@
             "required": [
               "type",
               "settings"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "environment": {
+                "$ref": "#/$defs/RuntimeEnvironment"
+              },
+              "type": {
+                "const": "runtime_environment",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "environment"
             ],
             "type": "object"
           },

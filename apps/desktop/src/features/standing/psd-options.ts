@@ -1,3 +1,4 @@
+import { uiText } from '../../shared/i18n/extended-ui';
 import type { PsdProbe } from '@sungeki/api-client';
 
 const parent = (path: string) => path.slice(0, path.lastIndexOf('/'));
@@ -13,8 +14,8 @@ export function psdOptions(probe: PsdProbe, minimumOptions = 2) {
   return probe.layers.filter(layer => layer.kind === 'group' && (children.get(layer.path)?.length ?? 0) >= minimumOptions)
     .map(layer => {
       const hierarchy: string[] = [];
-      for (let path = layer.path; path; path = parent(path)) hierarchy.unshift(names.get(path) ?? '名称なし');
+      for (let path = layer.path; path; path = parent(path)) hierarchy.unshift(names.get(path) ?? uiText("名称なし"));
       return { path: layer.path, label: hierarchy.join(' / '),
-        options: children.get(layer.path)!.map(child => ({ path: child.path, label: names.get(child.path) || '名称なし' })) };
+        options: children.get(layer.path)!.map(child => ({ path: child.path, label: names.get(child.path) || uiText("名称なし") })) };
     });
 }

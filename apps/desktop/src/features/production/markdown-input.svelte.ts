@@ -1,3 +1,4 @@
+import { locale } from '../../shared/i18n/locale.svelte';
 import type { HostApi, MarkdownScene } from '@sungeki/api-client';
 import { newScene, type SceneInput } from './scenes';
 import { parseDialogue } from './dialogue';
@@ -17,8 +18,8 @@ export function markdownScenesToForm(scenes: MarkdownScene[]): SceneInput[] {
   return scenes.map(scene => ({ ...newScene(scene.name), script: scene.lines.map(line => {
     if (!['left', 'right'].includes(line.role) || /[\r\n]/.test(line.subtitle_text)
       || (line.spoken_text !== null && /[\r\n]/.test(line.spoken_text))) throw new Error('Invalid Markdown response');
-    return `${line.role === 'left' ? '左' : '右'}：${line.subtitle_text}`
-      + (line.spoken_text === null ? '' : `\n読み：${line.spoken_text}`);
+    return `${locale.current === 'en' ? line.role : line.role === 'left' ? '左' : '右'}：${line.subtitle_text}`
+      + (line.spoken_text === null ? '' : `\n${locale.current === 'en' ? 'reading' : '読み'}：${line.spoken_text}`);
   }).join('\n') }));
 }
 export class MarkdownInput {

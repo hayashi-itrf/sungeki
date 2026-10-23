@@ -1,3 +1,4 @@
+import { extraText } from '../../shared/i18n/extra-ui';
 import { open } from '@tauri-apps/plugin-dialog';
 import type { AssetProbe } from '@sungeki/api-client';
 import { hostApi } from '../../shared/host-api';
@@ -30,7 +31,7 @@ export async function probeAsset(path: string, registered: AssetProbe): Promise<
       break;
     }
   }
-  throw new Error('素材の検査結果を取得できませんでした。');
+  throw new Error(extraText("素材の検査結果を取得できませんでした。"));
 }
 export async function chooseReplacement(probe: AssetProbe) {
   const extensions = {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { extraText } from '../../shared/i18n/extra-ui';
   import { characterText as t, characterDiagnostic } from './character-messages';
   import { onDestroy } from 'svelte';
   import type { VoicevoxEngineInfo, VoicevoxSpeakerInfo, VoicevoxSpeakerDetails } from '@sungeki/api-client';
@@ -31,7 +32,7 @@
     await run(async () => {
       const result = await hostApi.session({ type: 'discover_voicevox', args: { base_url: baseUrl } });
       if (!alive) return;
-      if (result.type !== 'voicevox_engine') throw new Error('接続情報の応答が不正です。');
+      if (result.type !== 'voicevox_engine') throw new Error(extraText("接続情報の応答が不正です。"));
       engine = result.engine;
       rememberVoicevoxUrl(baseUrl);
       if (engine.core_versions.length === 1) { core = engine.core_versions[0]!; await catalog(); }
@@ -41,16 +42,16 @@
     if (!engine || !core) return;
     const result = await hostApi.session({ type: 'get_voicevox_catalog', args: { base_url: baseUrl, expected_engine: engine, core_version: core } });
     if (!alive) return;
-    if (result.type !== 'voicevox_catalog') throw new Error('声一覧の応答が不正です。');
+    if (result.type !== 'voicevox_catalog') throw new Error(extraText("声一覧の応答が不正です。"));
     speakers = result.speakers;
-    if (!speakers.length) error = 'このエンジンには利用できる読み上げ話者がありません。';
+    if (!speakers.length) error = extraText("このエンジンには利用できる読み上げ話者がありません。");
   }
   async function loadDetails() {
     if (!engine || !speakerId) return;
     await run(async () => {
       const result = await hostApi.session({ type: 'get_voicevox_speaker', args: { base_url: baseUrl, expected_engine: engine!, core_version: core, speaker_uuid: speakerId } });
       if (!alive) return;
-      if (result.type !== 'voicevox_speaker') throw new Error('話者情報の応答が不正です。');
+      if (result.type !== 'voicevox_speaker') throw new Error(extraText("話者情報の応答が不正です。"));
       details = result.details; styleId = String(details.speaker.styles[0]?.id ?? ''); publish();
     });
   }
